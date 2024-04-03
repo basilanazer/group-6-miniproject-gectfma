@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../Requirements/DetailsField.dart';
 import '../Complaint_Summary/complaint_summary.dart';
-import 'forgot_pswd.dart';
+
+import 'forgot_pw.dart';
 
 class Login extends StatefulWidget {
   Login({
@@ -67,7 +68,7 @@ class _LoginState extends State<Login> {
               padding: const EdgeInsets.all(8.0),
               width: 370,
               decoration: BoxDecoration(
-                  color: Colors.brown[300],
+                  color: Colors.brown[800],
                   borderRadius: BorderRadius.circular(10)),
               child: TextButton(
                 onPressed: () {
@@ -101,7 +102,7 @@ class _LoginState extends State<Login> {
                 )),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return ForgotPaswd();
+                return ForgotPasswordPage();
               }));
             },
           )
@@ -122,14 +123,47 @@ class _LoginState extends State<Login> {
                       deptName: dept,
                     );
                   }));
-    } catch (e) {
+    } 
+    on FirebaseAuthException catch (e) {
       // Login failed, handle error
       print('Error logging in user: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Login failed. Please try again.'),
-        ),
-      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text('Login failed. Please try again.'),
+      //   ),
+      // );
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.zero, // Remove rounded corners
+              ),
+              backgroundColor: Colors.white,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "LOGIN FAILED",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    "Incorrect email or password. Please try again.",
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+
     }
   }
 }

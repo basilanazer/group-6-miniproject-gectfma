@@ -1,16 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:gectfma/Requirements/DetailsField.dart';
-import 'package:gectfma/Complaint_Summary/complaint_summary.dart';
-import 'package:gectfma/Login/forgot_pswd.dart';
 import 'package:gectfma/firebase_options.dart';
 
 import 'Login/login_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
-      ;
+  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
