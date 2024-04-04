@@ -192,7 +192,7 @@ class _FileComplaintState extends State<FileComplaint> {
               )
             ],
           ),
-          Headings(title: "Preffered date and time"),
+          Headings(title: "Preffered date and Time"),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
