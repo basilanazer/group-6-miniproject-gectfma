@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
 import 'package:gectfma/File_Complaint/file_complaint.dart';
+import 'package:gectfma/View_Complaints/view_complaint_summary.dart';
 
 class ComplaintSummary extends StatelessWidget {
   final String deptName;
@@ -14,7 +15,9 @@ class ComplaintSummary extends StatelessWidget {
         body: Column(
           children: <Widget>[
             TopBar(
-                dept: "DEPARTMENT OF " + deptName,
+                dept: (deptName == "Sergeant" || deptName == "Principal")
+                    ? "Welcome ${deptName}"
+                    : "DEPARTMENT OF ${deptName}",
                 iconLabel: "Log Out",
                 title: "Total complaints 7",
                 icon: Icons.logout),
@@ -86,7 +89,17 @@ class ComplaintSummary extends StatelessWidget {
             ),
             Column(children: <Widget>[
               InkWell(
-                onTap: (() {}),
+                onTap: (() {
+                  // if (deptName == "Sergeant" || deptName == "Principal") {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return ViewComplaintSummary(
+                      dept: deptName,
+                    );
+                  }));
+                  // } else
+                  //   () {};
+                }),
                 child: Icon(
                   size: 80.0,
                   Icons.manage_search,

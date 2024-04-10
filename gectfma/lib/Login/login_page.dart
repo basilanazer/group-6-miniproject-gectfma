@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gectfma/View_Complaints/view_complaint_summary.dart';
 import '../Requirements/DetailsField.dart';
 import '../Complaint_Summary/complaint_summary.dart';
-import 'forgot_pswd.dart';
 
 class Login extends StatefulWidget {
   Login({
@@ -17,7 +17,7 @@ class _LoginState extends State<Login> {
   final emailController = TextEditingController();
 
   final paswdController = TextEditingController();
-  String dept = "";
+  String deptOrDesignation = "";
   String email = "";
   String pswd = "";
 
@@ -31,7 +31,10 @@ class _LoginState extends State<Login> {
           ),
           Text(
             "Government Engineering College Thrissur".toUpperCase(),
-            style: TextStyle(color: Colors.brown[600],fontWeight: FontWeight.bold, fontSize: 16),
+            style: TextStyle(
+                color: Colors.brown[600],
+                fontWeight: FontWeight.bold,
+                fontSize: 16),
           ),
           SizedBox(
             height: 20,
@@ -67,7 +70,7 @@ class _LoginState extends State<Login> {
               padding: const EdgeInsets.all(8.0),
               width: 370,
               decoration: BoxDecoration(
-                  color: Colors.brown[300],
+                  color: Colors.brown[500],
                   borderRadius: BorderRadius.circular(10)),
               child: TextButton(
                 onPressed: () {
@@ -75,13 +78,18 @@ class _LoginState extends State<Login> {
                     email = emailController.text;
                     pswd = paswdController.text;
                     if (email.isNotEmpty)
-                      dept = email.split("@")[0].substring(3);
+                      deptOrDesignation = email.split("@")[0].substring(3);
+                    if (email.split("@")[0] == "sergeant") {
+                      deptOrDesignation = "Sergeant";
+                    } else if (email.split("@")[0] == "principal") {
+                      deptOrDesignation = "Principal";
+                    }
                   });
-                  login(email, pswd,dept,context);
+                  login(email, pswd, deptOrDesignation, context);
                   // Navigator.of(context)
                   //     .push(MaterialPageRoute(builder: (context) {
                   //   return ComplaintSummary(
-                  //     deptName: dept,
+                  //     deptName: deptOrDesignation,
                   //   );
                   // }));
                 },
@@ -94,34 +102,45 @@ class _LoginState extends State<Login> {
             height: 10,
           ),
           TextButton(
-            child: Text("Forgot Password?",
-                style: TextStyle(
-                  decoration: TextDecoration.underline,
-                  color: Colors.blue,
-                )),
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return ForgotPaswd();
-              }));
-            },
-          )
+              child: Text("Forgot Password?",
+                  style: TextStyle(
+                    decoration: TextDecoration.underline,
+                    color: Colors.blue,
+                  )),
+              onPressed: () {}
+              //   Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              //     return ForgotPasswordPage();
+              //   }));
+              // },
+              )
         ]),
       ],
     );
   }
-  void login(String email, String password,String dept, BuildContext context) async {
+
+  void login(String email, String password, String deptOrDesignation,
+      BuildContext context) async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      emailController.clear();
+      paswdController.clear();
       // Login successful, navigate to home page
-      Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return ComplaintSummary(
-                      deptName: dept,
-                    );
-                  }));
+      if (deptOrDesignation != "Sergeant" && deptOrDesignation != "Principal") {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return ComplaintSummary(
+            deptName: deptOrDesignation,
+          );
+        }));
+      } else {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return ViewComplaintSummary(
+            dept: deptOrDesignation,
+          );
+        }));
+      }
     } catch (e) {
       // Login failed, handle error
       print('Error logging in user: $e');
