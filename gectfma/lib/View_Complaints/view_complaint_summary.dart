@@ -70,17 +70,31 @@ class ViewComplaintSummary extends StatelessWidget {
               height: 20,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 ElevatedButton(
                     onPressed: () {
                       status = "Pending";
-                    },
+                    },style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.brown[50], 
+                          backgroundColor: Colors.brown[800], // Text color
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10), // Corner radius
+                          ),
+                          minimumSize: Size(185, 50), // Width and height
+                        ),
                     child: Text("PENDING")),
                 ElevatedButton(
                     onPressed: () {
                       status = "Completed";
-                    },
+                    },style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.brown[50], 
+                          backgroundColor: Colors.brown[200], // Text color
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10), // Corner radius
+                          ),
+                          minimumSize: Size(185, 50), // Width and height
+                        ),
                     child: Text("COMPLETED"))
               ],
             ),
