@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(primarySwatch: Colors.brown),
+      theme: ThemeData(scaffoldBackgroundColor: Colors.brown[50],primarySwatch: Colors.brown),
       debugShowCheckedModeBanner: false,
       color: Colors.amberAccent,
       title: "Facilities Management App",
