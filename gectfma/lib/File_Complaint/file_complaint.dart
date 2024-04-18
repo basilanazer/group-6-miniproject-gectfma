@@ -63,7 +63,7 @@ class _FileComplaintState extends State<FileComplaint> {
           TopBar(
             dept: "DEPARTMENT OF " + widget.dept,
             iconLabel: "Home",
-            title: "new issue",
+            title: "NEW COMPLAINT",
             icon: Icons.home_filled,
           ),
           SizedBox(

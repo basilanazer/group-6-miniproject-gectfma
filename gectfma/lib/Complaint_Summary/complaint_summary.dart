@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
 import 'package:gectfma/File_Complaint/file_complaint.dart';
-import 'package:gectfma/View_Complaints/view_complaint_summary.dart';
+import 'package:gectfma/View_Complaints/view_dept_complaint.dart';
 
 class ComplaintSummary extends StatelessWidget {
   final String deptName;
@@ -19,7 +19,7 @@ class ComplaintSummary extends StatelessWidget {
                     ? "Welcome ${deptName}"
                     : "DEPARTMENT OF ${deptName}",
                 iconLabel: "Log Out",
-                title: "Total complaints 7",
+                title: "TOTAL COMPLAINTS 7",
                 icon: Icons.logout),
             Container(
               margin: EdgeInsets.only(top: 40, left: 20, right: 20, bottom: 20),
@@ -93,7 +93,7 @@ class ComplaintSummary extends StatelessWidget {
                   // if (deptName == "Sergeant" || deptName == "Principal") {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
-                    return ViewComplaintSummary(
+                    return viewDeptComplaints(
                       dept: deptName,
                     );
                   }));
