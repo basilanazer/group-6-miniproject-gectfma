@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gectfma/Requirements/DetailsField.dart';
-
+import 'package:gectfma/Requirements/show_my_dialog.dart';
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
 
@@ -99,56 +99,17 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 void resetpswd(String email,BuildContext context) async {
   try{
     await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-    showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.zero, // Remove rounded corners
-              ),
-              backgroundColor: Colors.white,
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "An email containing instructions to reset your password has been sent to your email address. Please check your inbox and follow the instructions provided.If you don't receive the email, check your spam folder.",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
+    MyDialog.showCustomDialog(context, 
+    "EMAIL SENT",
+    "An email containing instructions to reset your password has been sent to your email address. Please check your inbox and follow the instructions provided.If you don't receive the email, check your spam folder.",
+);
 
   }
   on FirebaseAuthException catch (e){
     print(e);
-    showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.zero, // Remove rounded corners
-              ),
-              backgroundColor: Colors.white,
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Incorrect email. Please try again.",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
+    MyDialog.showCustomDialog(context, 
+      'ERROR!!',
+      "Incorrect email. Please try again." );
 
   }
 }

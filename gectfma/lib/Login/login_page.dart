@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gectfma/Login/forgot_pw.dart';
+import 'package:gectfma/Requirements/show_my_dialog.dart';
 import 'package:gectfma/View_Complaints/view_complaint_summary.dart';
 import '../Requirements/DetailsField.dart';
 import '../Complaint_Summary/complaint_summary.dart';
-
 class Login extends StatefulWidget {
   Login({
     Key? key,
@@ -24,7 +24,8 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return Material(
+      child: ListView(
       children: [
         Column(children: <Widget>[
           SizedBox(
@@ -116,7 +117,7 @@ class _LoginState extends State<Login> {
           )
         ]),
       ],
-    );
+    ));
   }
 
   void login(String email, String password, String deptOrDesignation,
@@ -145,42 +146,10 @@ class _LoginState extends State<Login> {
     } on FirebaseAuthException catch (e) {
       // Login failed, handle error
       print('Error logging in user: $e');
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(
-      //     content: Text('Login failed. Please try again.'),
-      //   ),
-      // );
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero, // Remove rounded corners
-            ),
-            backgroundColor: Colors.white,
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "LOGIN FAILED",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  "Incorrect email or password. Please try again.",
-                  style: TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      );
+      MyDialog.showCustomDialog(context, 
+      "LOGIN FAILED", 
+      "Incorrect email or password. Please try again.");
+      
     }
   }
 }

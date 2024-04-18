@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gectfma/Login/login_page.dart';
 
 class TopBar extends StatelessWidget {
   final IconData icon;
@@ -54,7 +55,13 @@ class TopBar extends StatelessWidget {
                 style: TextStyle(color: Colors.brown[600]),
               ),
               onPressed: () {
-                Navigator.pop(context);
+                //Navigator.pop(context);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Login(),
+                  ),
+                );
               },
               icon: Icon(
                 icon,
