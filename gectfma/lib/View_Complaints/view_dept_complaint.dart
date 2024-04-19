@@ -22,9 +22,9 @@ class _viewDeptComplaintsState extends State<viewDeptComplaints> {
           child: Column(
             children: [
               TopBar(
-                iconLabel: "Home",
+                iconLabel: "Go Back",
                 title: "ALL COMPLAINTS",
-                icon: Icons.home,
+                icon: Icons.arrow_back,
                 dept: "DEPARTMENT OF ${widget.dept}"),
             ],
           ),

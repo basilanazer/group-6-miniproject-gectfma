@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:gectfma/Login/forgot_pw.dart';
 import 'package:gectfma/firebase_options.dart';
 
 import 'Login/login_page.dart';
@@ -19,7 +20,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       color: Colors.amberAccent,
       title: "Facilities Management App",
-      home: SplashScreen(), // Set SplashScreen as the initial screen
+      home: SplashScreen(), 
+      // Set SplashScreen as the initial screen
+      routes: {
+        '/login': (context) => Login(), // Assuming your Login widget is named Login
+        
+      },
     );
   }
 }

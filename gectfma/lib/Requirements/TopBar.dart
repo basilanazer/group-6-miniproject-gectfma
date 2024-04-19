@@ -1,5 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:gectfma/Login/login_page.dart';
+import 'package:gectfma/Requirements/show_my_dialog.dart';
 
 class TopBar extends StatelessWidget {
   final IconData icon;
@@ -55,13 +56,13 @@ class TopBar extends StatelessWidget {
                 style: TextStyle(color: Colors.brown[600]),
               ),
               onPressed: () {
-                //Navigator.pop(context);
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Login(),
-                  ),
-                );
+                if (iconLabel == 'Log Out') {
+                  logOut(context);
+                }
+                else{//
+                  Navigator.pop(context);
+                  
+                }
               },
               icon: Icon(
                 icon,
@@ -88,4 +89,17 @@ class TopBar extends StatelessWidget {
       ),
     ]);
   }
+  Future<void> logOut(context) async {
+  try {
+    await FirebaseAuth.instance.signOut();
+    // Navigate to your login screen or any other screen you desire
+    // For example:
+    Navigator.of(context).pushReplacementNamed('/home');
+    MyDialog.showCustomDialog(context, "LOGGING OUT", "you have to log back in");
+    
+  } catch (e) {
+    print("Error signing out: $e");
+  }
+}
+
 }

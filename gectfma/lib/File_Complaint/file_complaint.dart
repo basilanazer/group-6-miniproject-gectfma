@@ -61,9 +61,9 @@ class _FileComplaintState extends State<FileComplaint> {
         children: [
           TopBar(
             dept: "DEPARTMENT OF " + widget.dept,
-            iconLabel: "Home",
+            iconLabel: 'Go Back',
             title: "NEW COMPLAINT",
-            icon: Icons.home_filled,
+            icon: Icons.arrow_back,
           ),
           Headings(title: "Department Details*"),
           DetailFields(
