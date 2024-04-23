@@ -14,7 +14,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-    Future.delayed(Duration(seconds: 5), () {
+    Future.delayed(Duration(seconds: 7), () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => HomeScreen()));
       // Navigate to MyApp instead of MyHomePage
     });
@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         width: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.blue, Colors.pink],
+            colors: [Colors.brown,Colors.brown.shade600,Colors.brown.shade700,Colors.brown.shade800],
             begin: Alignment.topRight,
             end: Alignment.bottomLeft,
           ),
@@ -43,13 +43,21 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
           children: [
             Text(
               "GECT FMA",
-              style: TextStyle(color: Colors.white, fontSize: 30),
+              style: TextStyle(color: Colors.white, fontSize: 30,fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
             Container(
-              height: 50,
-              width: 50,
-              child: Image.asset("assets/images/logo.png"),
+                      height: 100,
+                      width: 100,
+                      child: Image.asset("assets/images/logo2.png")
+            ),
+            SizedBox(height: 40,),
+            const CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            ), const SizedBox(height: 20),
+            const Text(
+              "Loading...",
+              style: TextStyle(color: Colors.white, fontSize: 16,fontWeight: FontWeight.bold),
             ),
           ],
         ),

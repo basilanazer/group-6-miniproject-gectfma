@@ -94,7 +94,7 @@ class TopBar extends StatelessWidget {
     await FirebaseAuth.instance.signOut();
     // Navigate to your login screen or any other screen you desire
     // For example:
-    Navigator.of(context).pushReplacementNamed('/home');
+    Navigator.of(context).pushReplacementNamed('/login');
     MyDialog.showCustomDialog(context, "LOGGING OUT", "you have to log back in");
     
   } catch (e) {

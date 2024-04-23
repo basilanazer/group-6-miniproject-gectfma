@@ -25,6 +25,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: Colors.brown[50],
       child: ListView(
       children: [
         Column(children: <Widget>[
@@ -34,7 +35,7 @@ class _LoginState extends State<Login> {
           Text(
             "Government Engineering College Thrissur".toUpperCase(),
             style: TextStyle(
-                color: Colors.brown[600],
+                color: Colors.brown[800],
                 fontWeight: FontWeight.bold,
                 fontSize: 16),
           ),
@@ -107,7 +108,7 @@ class _LoginState extends State<Login> {
             child: Text("Forgot Password?",
                 style: TextStyle(
                   decoration: TextDecoration.underline,
-                  color: Colors.blue,
+                  color: Colors.brown[800],
                 )),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {

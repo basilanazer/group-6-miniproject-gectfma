@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:gectfma/Login/forgot_pw.dart';
 import 'package:gectfma/firebase_options.dart';
 
 import 'Login/login_page.dart';

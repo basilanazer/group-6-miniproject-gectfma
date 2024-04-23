@@ -3,35 +3,42 @@ import 'package:flutter/material.dart';
 class MyDialog {
   static void showCustomDialog(BuildContext context, String heading, String body) {
     showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.zero, // Remove rounded corners
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: Colors.amber.shade50,
+          title: 
+          Text(
+            heading.toUpperCase(),
+            style: 
+              TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.brown.shade800
+              ),
           ),
-          backgroundColor: Colors.white,
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+          content: 
+            Text(
+              body,
+              style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.brown.shade800
+                ),
+            ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: 
               Text(
-                heading,
+                'OK',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
+                  color: Colors.brown[800]
+                ), 
               ),
-              SizedBox(height: 10),
-              Text(
-                body,
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+            ),
+          ],
+        ),
+      );
+    
   }
 }

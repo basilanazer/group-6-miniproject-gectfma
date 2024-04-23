@@ -80,6 +80,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         child: Text('Back to Login',
                         style: TextStyle(
                           color: Colors.brown[800],
+                          decoration: TextDecoration.underline,
                           fontSize: 15,
                         ),),
           ),

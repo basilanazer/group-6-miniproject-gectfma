@@ -1,10 +1,16 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gectfma/Complaint_Summary/complaint_summary.dart';
 import 'package:gectfma/Requirements/Headings.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
 import '../Requirements/DetailsField.dart';
 import '../Requirements/TopBar.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class FileComplaint extends StatefulWidget {
   final String dept;
@@ -18,6 +24,50 @@ class FileComplaint extends StatefulWidget {
 List<String> levels = ["High", "Medium", "Low"];
 
 class _FileComplaintState extends State<FileComplaint> {
+  PlatformFile? pickedFile;
+  UploadTask? uploadTask;
+  String urlDownload = '';
+  
+  Future selectFile() async{
+    final result = await FilePicker.platform.pickFiles();
+    if(result==null){
+      print("file didnt selected");
+    }
+    setState(() {
+      pickedFile = result?.files.first;
+    });
+  }
+
+  Future uploadFile() async {
+    if (pickedFile == null) {
+      print("No file selected for upload.");
+      return;
+    }
+
+    try {
+      String fname = await generateDeptId(widget.dept);
+      final path = '${widget.dept}/$fname';
+
+      final file = File(pickedFile!.path!);
+      final contentType = pickedFile!.extension ?? 'octet-stream';
+
+      final ref = FirebaseStorage.instance.ref().child(path);
+      final metadata = SettableMetadata(contentType: 'image/$contentType');
+
+      uploadTask = ref.putFile(file, metadata);
+      
+      final snapshot = await uploadTask!.whenComplete(() {});
+      urlDownload = await snapshot.ref.getDownloadURL();
+
+      print('Download link - $urlDownload');
+      MyDialog.showCustomDialog(context, 'image uploaded', 'The image was successfully uploaded.');
+    } catch (e) {
+      print(e);
+    }
+  }
+
+
+
   String urgency = levels[0];
   String? nature;
   TextEditingController contactController = TextEditingController();
@@ -32,19 +82,6 @@ class _FileComplaintState extends State<FileComplaint> {
     hodController.dispose();
     super.dispose();
   }
-  // DateTime _dateTime = DateTime.now();
-  // void _showDatePicker() {
-  //   showDatePicker(
-  //           context: context,
-  //           initialDate: DateTime.now(),
-  //           firstDate: DateTime.now(),
-  //           lastDate: DateTime(2025))
-  //       .then((value) {
-  //     setState(() {
-  //       _dateTime = value!;
-  //     });
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -121,9 +158,29 @@ class _FileComplaintState extends State<FileComplaint> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Text("Docs"),
+              if(pickedFile == null)
+              TextButton.icon(
+                onPressed: (){
+                  selectFile();
+                }, 
+                label: Text("select file",
+                selectionColor: Colors.brown[400],
+                style: TextStyle(color: Colors.brown[600],decoration: TextDecoration.underline,),
+                ),
+                icon: Icon(Icons.file_open_outlined,color: Colors.brown[600],),
+              ),
+              if(pickedFile != null)
+              TextButton(
+                onPressed: () => showImageDialog(), 
+                child: 
+                Text(
+                  pickedFile!.name,
+                  style: TextStyle(color: Colors.brown,decoration: TextDecoration.underline)
+                )
+              ),
               ElevatedButton(
                 onPressed: () {
+                  uploadFile();
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.brown[50], 
@@ -135,9 +192,11 @@ class _FileComplaintState extends State<FileComplaint> {
                 ),
                 child: Text('UPLOAD'),
               ),
+              
             ],
             
           ),
+          SizedBox(height: 20,),
           Headings(title: "Urgency level*"),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -194,23 +253,6 @@ class _FileComplaintState extends State<FileComplaint> {
             ),
           ),
           
-          // Headings(title: "Preffered date and Time"),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //   children: [
-          //     IconButton(
-          //         onPressed: _showDatePicker,
-          //         icon: Icon(
-          //           Icons.calendar_month_outlined,
-          //           color: Colors.brown[600],
-          //           size: 40,
-          //         )),
-          //     Text(
-          //       _dateTime.toUtc().toString(),
-          //       style: TextStyle(fontSize: 15),
-          //     )
-          //   ],
-          // ),
           SizedBox(
             height: 10,
           ),
@@ -268,7 +310,9 @@ class _FileComplaintState extends State<FileComplaint> {
             'nature': nature,
             'desc': desc,
             'urgency': urgency,
-            'status' : 'pending'
+            'status' : 'pending',
+            'filed_date' : DateTime.now(),
+            'image' : urlDownload
           });
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return ComplaintSummary(
@@ -304,35 +348,29 @@ class _FileComplaintState extends State<FileComplaint> {
   String paddedNumber = (numberOfDocuments + 1).toString().padLeft(3, '0'); // +1 for the next document
   return '$dept$paddedNumber';
 }
+void showImageDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.amber.shade50,
+          content: Container(
+            // You might want to constrain the size here depending on your design needs
+            width: double.maxFinite,
+            child: Image.file(
+              File(pickedFile!.path!),
+              fit: BoxFit.cover,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(), // Close the dialog
+              child: Text('Close',style: TextStyle(color: Colors.brown),),
+            ),
+          ],
+        );
+      },
+    );
 }
-
-// class Buttons extends StatelessWidget {
-//   final String buttonTitle;
-//   final Function() fn;
-//   const Buttons({
-//     Key? key,
-//     required this.buttonTitle,
-//     required this.fn,
-//   }) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//         padding: const EdgeInsets.all(8.0),
-//         width: 150,
-//         height: 50,
-//         decoration: BoxDecoration(
-//             color: Colors.brown[600], borderRadius: BorderRadius.circular(10)),
-//         child: TextButton(
-//           onPressed: (){
-//             addComplaints(widget.dept, hod, contact, nature, desc, urgency)
-//           },
-//           child: Text(
-//             buttonTitle,
-//             style: TextStyle(color: Colors.white, fontSize: 17),
-//           ),
-//         ));
-//   }
-
-  
+}
 
