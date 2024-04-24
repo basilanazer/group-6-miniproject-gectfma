@@ -16,7 +16,7 @@ class ViewComplaintSummary extends StatelessWidget {
         child: Column(
           children: [
             TopBar(
-                iconLabel: "LogOut",
+                iconLabel: "Log Out",
                 title: "Total complaints 7",
                 icon: Icons.logout,
                 dept: "Welcome ${dept}"),

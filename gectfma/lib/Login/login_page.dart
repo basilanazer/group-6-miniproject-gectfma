@@ -132,13 +132,13 @@ class _LoginState extends State<Login> {
       paswdController.clear();
       // Login successful, navigate to home page
       if (deptOrDesignation != "Sergeant" && deptOrDesignation != "Principal") {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
           return ComplaintSummary(
             deptName: deptOrDesignation,
           );
         }));
       } else {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
           return ViewComplaintSummary(
             dept: deptOrDesignation,
           );

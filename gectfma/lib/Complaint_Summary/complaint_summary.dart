@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
 import 'package:gectfma/File_Complaint/file_complaint.dart';
 import 'package:gectfma/View_Complaints/view_dept_complaint.dart';
@@ -12,126 +12,165 @@ class ComplaintSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        body: FutureBuilder(
-          future: getCounts(deptName),
-          builder: (context, AsyncSnapshot<Map<String, int>> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text("Error: ${snapshot.error}"));
-            } else {
-              int? total = snapshot.data?['total'];
-              int? completed = snapshot.data?['completed'];
-              int? pending = snapshot.data?['pending'];
+      child: WillPopScope(
+        onWillPop: () async {
+          // Show exit confirmation dialog
+          bool exit = await showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              backgroundColor: Colors.amber[50],
+              title: Text('Are you sure you want to exit?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    // Close the dialog and return false
+                    Navigator.of(context).pop(false);
+                  },
+                  child:
+                  Text(
+                    'No',
+                    style: TextStyle(color: Colors.brown[800]
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    // Close the dialog and return true
+                    Navigator.of(context).pop(true);
+                  },
+                  child: 
+                  Text(
+                    'yes',
+                    style: TextStyle(color: Colors.brown[800]
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
 
-              return Column(
-                children: <Widget>[
-                  TopBar(
-                    dept: "DEPARTMENT OF ${deptName}",
-                    iconLabel: "Log Out",
-                    title: "TOTAL COMPLAINTS $total",
-                    icon: Icons.logout,
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                    height: 70,
-                    decoration: BoxDecoration(
-                      color: Colors.green[100],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "resolved complaints".toUpperCase(),
-                            style: TextStyle(fontSize: 17, color: Colors.brown[600]),
-                          ),
-                          Text(
-                            "$completed",
-                            style: TextStyle(fontSize: 17, color: Colors.brown[600]),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                    height: 70,
-                    decoration: BoxDecoration(
-                      color: Colors.red[100],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Pending complaints".toUpperCase(),
-                            style: TextStyle(fontSize: 17, color: Colors.brown[600]),
-                          ),
-                          Text(
-                            "$pending",
-                            style: TextStyle(fontSize: 17, color: Colors.brown[600]),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Column(
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                            return FileComplaint(
-                              dept: deptName,
-                            );
-                          }));
-                          
+          // Return exit if user confirmed, otherwise don't exit
+          return exit ?? false;
+        },
+        child: Scaffold(
+          body: FutureBuilder(
+            future: getCounts(deptName),
+            builder: (context, AsyncSnapshot<Map<String, int>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text("Error: ${snapshot.error}"));
+              } else {
+                int? total = snapshot.data?['total'];
+                int? completed = snapshot.data?['completed'];
+                int? pending = snapshot.data?['pending'];
 
-                        },
-                        child: Icon(
-                          size: 80.0,
-                          Icons.note_add_outlined,
-                          color: Colors.brown[600],
+                return Column(
+                  children: <Widget>[
+                    TopBar(
+                      dept: "DEPARTMENT OF ${deptName}",
+                      iconLabel: "Log Out",
+                      title: "TOTAL COMPLAINTS $total",
+                      icon: Icons.logout,
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                      height: 70,
+                      decoration: BoxDecoration(
+                        color: Colors.green[100],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "resolved complaints".toUpperCase(),
+                              style: TextStyle(fontSize: 17, color: Colors.brown[600]),
+                            ),
+                            Text(
+                              "$completed",
+                              style: TextStyle(fontSize: 17, color: Colors.brown[600]),
+                            ),
+                          ],
                         ),
                       ),
-                      Text(
-                        "File New Complaint",
-                        style: TextStyle(color: Colors.brown[700]),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                      height: 70,
+                      decoration: BoxDecoration(
+                        color: Colors.red[100],
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 40),
-                  Column(
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                            return viewDeptComplaints(
-                              dept: deptName,
-                            );
-                          }));
-                        },
-                        child: Icon(
-                          size: 80.0,
-                          Icons.manage_search,
-                          color: Colors.brown[600],
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Pending complaints".toUpperCase(),
+                              style: TextStyle(fontSize: 17, color: Colors.brown[600]),
+                            ),
+                            Text(
+                              "$pending",
+                              style: TextStyle(fontSize: 17, color: Colors.brown[600]),
+                            ),
+                          ],
                         ),
                       ),
-                      Text(
-                        "View Complaints",
-                        style: TextStyle(color: Colors.brown[700]),
-                      ),
-                    ],
-                  ),
-                ],
-              );
-            }
-          },
+                    ),
+                    Column(
+                      children: <Widget>[
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+                              return FileComplaint(
+                                dept: deptName,
+                              );
+                            }));
+                          },
+                          child: Icon(
+                            size: 80.0,
+                            Icons.note_add_outlined,
+                            color: Colors.brown[600],
+                          ),
+                        ),
+                        Text(
+                          "File New Complaint",
+                          style: TextStyle(color: Colors.brown[700]),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 40),
+                    Column(
+                      children: <Widget>[
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+                              return viewDeptComplaints(
+                                dept: deptName,
+                              );
+                            }));
+                          },
+                          child: Icon(
+                            size: 80.0,
+                            Icons.manage_search,
+                            color: Colors.brown[600],
+                          ),
+                        ),
+                        Text(
+                          "View Complaints",
+                          style: TextStyle(color: Colors.brown[700]),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              }
+            },
+          ),
         ),
       ),
     );

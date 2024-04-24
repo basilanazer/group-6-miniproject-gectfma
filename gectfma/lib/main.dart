@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gectfma/firebase_options.dart';
 
 import 'Login/login_page.dart';
-import 'splash_screen.dart'; // Import splash_screen.dart where SplashScreen is defined
+import 'splash_screen.dart'; 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

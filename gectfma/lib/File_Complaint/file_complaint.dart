@@ -10,7 +10,6 @@ import 'package:gectfma/Requirements/show_my_dialog.dart';
 import '../Requirements/DetailsField.dart';
 import '../Requirements/TopBar.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class FileComplaint extends StatefulWidget {
   final String dept;
@@ -290,7 +289,7 @@ class _FileComplaintState extends State<FileComplaint> {
 
   void addComplaints(String dept, String hod, String contact, String? nature, String desc, String urgency) async {
     try {
-      if(dept=='' || hod == '' || contact == '' || nature == null || desc == ''){
+      if(dept=='' || hod == '' || contact == '' || nature == null || desc == ''||urlDownload == ''){
         MyDialog.showCustomDialog(context,
           "ERROR!!",
           "None of the fields can be empty",
@@ -314,11 +313,15 @@ class _FileComplaintState extends State<FileComplaint> {
             'filed_date' : DateTime.now(),
             'image' : urlDownload
           });
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return ComplaintSummary(
-            deptName: dept,
-          );
-        }));
+          // Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          // return ComplaintSummary(
+          //   deptName: dept,
+          // );
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+            return ComplaintSummary(
+              deptName: dept,
+            );
+          }));
           MyDialog.showCustomDialog(context,
           "NEW COMPLAINT REGISTERED", 
           "Your complaint ID is $customDocId"

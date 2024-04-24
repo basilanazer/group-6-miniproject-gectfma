@@ -25,8 +25,8 @@ class _viewDeptComplaintsState extends State<viewDeptComplaints> {
                 iconLabel: "Go Back",
                 title: "ALL COMPLAINTS",
                 icon: Icons.arrow_back,
-                dept: "DEPARTMENT OF ${widget.dept}"),
-            ],
+                dept:  "DEPARTMENT OF $widget.dept",
+          )],
           ),
         )
       )

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gectfma/Complaint_Summary/complaint_summary.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
 
 class TopBar extends StatelessWidget {
@@ -59,9 +60,12 @@ class TopBar extends StatelessWidget {
                 if (iconLabel == 'Log Out') {
                   logOut(context);
                 }
-                else{//
-                  Navigator.pop(context);
-                  
+                else if (dept!= "Sergeant" && dept != "Principal"){//
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+                    return ComplaintSummary(
+                      deptName: dept.split(' ').last,
+                    );
+                  }));
                 }
               },
               icon: Icon(
