@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gectfma/Complaint_Summary/sergeant_complaint_sergeant.dart';
 import 'package:gectfma/Login/forgot_pw.dart';
 import 'package:gectfma/NatureOfIssue/nature.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
@@ -11,7 +12,7 @@ class Login extends StatefulWidget {
   Login({
     Key? key,
   }) : super(key: key);
-
+  final String plumbingInCharge = "vmeera";
   @override
   State<Login> createState() => _LoginState();
 }
@@ -88,6 +89,9 @@ class _LoginState extends State<Login> {
                           deptOrDesignation = "Sergeant";
                         } else if (email.split("@")[0] == "principal") {
                           deptOrDesignation = "Principal";
+                        } else if (email.split("@")[0] ==
+                            widget.plumbingInCharge) {
+                          deptOrDesignation = widget.plumbingInCharge;
                         }
                       });
                       login(email, pswd, deptOrDesignation, context);
@@ -135,26 +139,33 @@ class _LoginState extends State<Login> {
       paswdController.clear();
 
       // Login successful, navigate to home page
-      if (deptOrDesignation == "Plumber" || deptOrDesignation == "ee") {
+      if (deptOrDesignation == widget.plumbingInCharge ||
+          deptOrDesignation == "ee") {
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (context) {
           return NatureOfIssue(
             deptOrDesignation: deptOrDesignation,
           );
         }));
-      } else if (deptOrDesignation != "Sergeant" &&
-          deptOrDesignation != "Principal") {
+      } else if (deptOrDesignation == "Sergeant") {
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (context) {
+          return SergeantComplaintSummary(
+            deptName: deptOrDesignation,
+          );
+        }));
+      } else if (deptOrDesignation == "Principal") {
+        // Navigator.of(context)
+        //     .pushReplacement(MaterialPageRoute(builder: (context) {
+        //   return (
+        //     deptName: deptOrDesignation,
+        //   );
+        // }));
+      } else {
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (context) {
           return ComplaintSummary(
             deptName: deptOrDesignation,
-          );
-        }));
-      } else {
-        Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (context) {
-          return ViewComplaintSummary(
-            dept: deptOrDesignation,
           );
         }));
       }
