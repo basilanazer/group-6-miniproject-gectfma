@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gectfma/Complaint_Summary/complaint_summary.dart';
+import 'package:gectfma/Complaint_Summary/sergeant_complaint_sergeant.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
 
 class TopBar extends StatelessWidget {
@@ -59,9 +60,25 @@ class TopBar extends StatelessWidget {
               onPressed: () {
                 if (iconLabel == 'Log Out') {
                   logOut(context);
-                }
-                else if (dept!= "Sergeant" && dept != "Principal"){//
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+                } else if (dept == "Sergeant") {
+                  //
+                  Navigator.of(context)
+                      .pushReplacement(MaterialPageRoute(builder: (context) {
+                    return SergeantComplaintSummary(
+                      deptName: "Sergeant",
+                    );
+                  }));
+                } else if (dept == "Principal") {
+                  //
+                  // Navigator.of(context)
+                  //     .pushReplacement(MaterialPageRoute(builder: (context) {
+                  //   return SergeantComplaintSummary(
+                  //     deptName: "Sergeant",
+                  //   );
+                  // }));
+                } else {
+                  Navigator.of(context)
+                      .pushReplacement(MaterialPageRoute(builder: (context) {
                     return ComplaintSummary(
                       deptName: dept.split(' ').last,
                     );
@@ -93,17 +110,17 @@ class TopBar extends StatelessWidget {
       ),
     ]);
   }
-  Future<void> logOut(context) async {
-  try {
-    await FirebaseAuth.instance.signOut();
-    // Navigate to your login screen or any other screen you desire
-    // For example:
-    Navigator.of(context).pushReplacementNamed('/login');
-    MyDialog.showCustomDialog(context, "LOGGING OUT", "you have to log back in");
-    
-  } catch (e) {
-    print("Error signing out: $e");
-  }
-}
 
+  Future<void> logOut(context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      // Navigate to your login screen or any other screen you desire
+      // For example:
+      Navigator.of(context).pushReplacementNamed('/login');
+      MyDialog.showCustomDialog(
+          context, "LOGGING OUT", "you have to log back in");
+    } catch (e) {
+      print("Error signing out: $e");
+    }
+  }
 }
