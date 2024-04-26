@@ -68,13 +68,13 @@ class ComplaintSummary extends StatelessWidget {
                 children: <Widget>[
                   TopBar(
                     dept: "DEPARTMENT OF ${deptName}",
-                    iconLabel: deptName=='ee'? "Go Back":"Log Out",
+                    iconLabel: deptName=='ee'? "Home":"Log Out",
                     title: "TOTAL COMPLAINTS $total",
-                    icon: deptName=='ee'? Icons.arrow_back:Icons.logout,
+                    icon: deptName=='ee'? Icons.home_outlined:Icons.logout,
                   ),
                   ComplaintsType(
                       goto: () {},
-                      complainttype: "Completed",
+                      complainttype: "Solved",
                       complaintstatus: completed),
                   ComplaintsType(
                       goto: () {},

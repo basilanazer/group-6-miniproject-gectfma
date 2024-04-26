@@ -177,7 +177,7 @@ class _LoginState extends State<Login> {
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (context) {
           return NatureOfIssue(
-            deptOrDesignation: deptOrDesignation,
+            dept: deptOrDesignation,
           );
         }));
       } 

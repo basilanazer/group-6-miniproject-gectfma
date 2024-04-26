@@ -84,12 +84,12 @@ class TopBar extends StatelessWidget {
                 //       deptName: dept.split(' ').last,
                 // }
                 }
-                if ((dept).toUpperCase() == "DEPARTMENT OF EE" && iconLabel == 'Go Back' ){//
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+                if ((dept).toUpperCase() == "DEPARTMENT OF EE" && iconLabel == 'Home' ){//
+                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) {
                     return NatureOfIssue(
-                      deptOrDesignation: "EE",
+                      dept: "ee",
                     );
-                  }));
+                  }),(Route<dynamic> route) => false,);
                 }
                 else if (iconLabel == 'Go Back' ){//
                   Navigator.of(context).pop();

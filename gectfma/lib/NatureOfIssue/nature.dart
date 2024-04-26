@@ -5,8 +5,8 @@ import 'package:gectfma/Requirements/Buttons.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
 
 class NatureOfIssue extends StatelessWidget {
-  final String deptOrDesignation;
-  const NatureOfIssue({super.key, required this.deptOrDesignation});
+  final String dept;
+  const NatureOfIssue({super.key, required this.dept});
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +54,7 @@ class NatureOfIssue extends StatelessWidget {
               iconLabel: "Log Out",
               title: "navigate to",
               icon: Icons.logout,
-              dept: "DEPARTMENT OF ${deptOrDesignation}"),
+              dept: "DEPARTMENT OF ${dept}"),
           Column(
             children: [
               SizedBox(
@@ -66,7 +66,7 @@ class NatureOfIssue extends StatelessWidget {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
                     return ComplaintSummary(
-                      deptName: deptOrDesignation,
+                      deptName: dept,
                     );
                   }));
                 },

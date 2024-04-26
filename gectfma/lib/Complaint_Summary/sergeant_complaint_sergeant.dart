@@ -181,10 +181,10 @@ class ComplaintsType extends StatelessWidget {
     return InkWell(
       onTap: goto(),
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+        margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
         height: 70,
         decoration: BoxDecoration(
-          color: Colors.green[100],
+          color: Colors.brown[100],
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
