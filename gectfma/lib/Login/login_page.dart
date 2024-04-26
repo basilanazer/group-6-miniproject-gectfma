@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gectfma/Complaint_Summary/sergeant_complaint_sergeant.dart';
 import 'package:gectfma/Login/forgot_pw.dart';
 import 'package:gectfma/NatureOfIssue/comp_verification.dart';
 import 'package:gectfma/NatureOfIssue/nature.dart';
@@ -12,7 +13,7 @@ class Login extends StatefulWidget {
   Login({
     Key? key,
   }) : super(key: key);
-
+  final String plumbingInCharge = "vmeera";
   @override
   State<Login> createState() => _LoginState();
 }
@@ -125,6 +126,9 @@ class _LoginState extends State<Login> {
                           deptOrDesignation = "Sergeant";
                         } else if (email.split("@")[0] == "principal") {
                           deptOrDesignation = "Principal";
+                        } else if (email.split("@")[0] ==
+                            widget.plumbingInCharge) {
+                          deptOrDesignation = widget.plumbingInCharge;
                         }
                       });
                       login(email, pswd, deptOrDesignation, context);
@@ -176,27 +180,44 @@ class _LoginState extends State<Login> {
             deptOrDesignation: deptOrDesignation,
           );
         }));
-      } else if(email=='vmeera@gectcr.ac.in'){
+      } 
+      else if(email=='vmeera@gectcr.ac.in'){
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (context) {
           return complaintVerification(nature: "Plumbing");
         }));
       }
-      else if (deptOrDesignation != "Sergeant" &&
-          deptOrDesignation != "Principal") {
+      else if (deptOrDesignation == "Sergeant") {
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (context) {
-          return ComplaintSummary(
+          return SergeantComplaintSummary(
             deptName: deptOrDesignation,
           );
         }));
       }
+      // else if (deptOrDesignation != "Sergeant" &&
+      //     deptOrDesignation != "Principal") {
+      //   Navigator.of(context)
+      //       .pushReplacement(MaterialPageRoute(builder: (context) {
+      //     return SergeantComplaintSummary(
+      //       deptName: deptOrDesignation,
+      //     );
+      //   }));
+      // } 
+      else if (deptOrDesignation == "Principal") {
+        // Navigator.of(context)
+        //     .pushReplacement(MaterialPageRoute(builder: (context) {
+        //   return (
+        //     deptName: deptOrDesignation,
+        //   );
+        // }));
+      }
       
-       else {
+      else {
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (context) {
-          return ViewComplaintSummary(
-            dept: deptOrDesignation,
+          return ComplaintSummary(
+            deptName: deptOrDesignation,
           );
         }));
       }
