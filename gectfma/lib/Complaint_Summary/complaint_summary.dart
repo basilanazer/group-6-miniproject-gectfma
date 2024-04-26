@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
 import 'package:gectfma/File_Complaint/file_complaint.dart';
 import 'package:gectfma/View_Complaints/view_complaint_summary.dart';
-import 'package:gectfma/View_Complaints/view_dept_complaint.dart';
 
 class ComplaintSummary extends StatelessWidget {
   final String deptName;
@@ -13,7 +13,7 @@ class ComplaintSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: WillPopScope(
+      child:WillPopScope(
       onWillPop: () async {
         // Show exit confirmation dialog
         bool exit = await showDialog(
@@ -59,35 +59,39 @@ class ComplaintSummary extends StatelessWidget {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else {
               int? total = snapshot.data?['total'];
-              int? accepted = snapshot.data?['accepted'];
+              int? approved = snapshot.data?['approved'];
               int? declined = snapshot.data?['declined'];
               int? pending = snapshot.data?['pending'];
+              int? completed = snapshot.data?['completed'];
 
               return Column(
                 children: <Widget>[
                   TopBar(
                     dept: "DEPARTMENT OF ${deptName}",
-                    iconLabel: "Log Out",
+                    iconLabel: deptName=='ee'? "Go Back":"Log Out",
                     title: "TOTAL COMPLAINTS $total",
-                    icon: Icons.logout,
+                    icon: deptName=='ee'? Icons.arrow_back:Icons.logout,
                   ),
                   ComplaintsType(
                       goto: () {},
-                      complainttype: "Accepted",
-                      complaintstatus: accepted),
+                      complainttype: "Completed",
+                      complaintstatus: completed),
                   ComplaintsType(
                       goto: () {},
                       complainttype: "Pending",
-                      complaintstatus: pending),
+                      complaintstatus: (pending! + approved!)),
                   ComplaintsType(
                       goto: () {},
                       complainttype: "Declined",
                       complaintstatus: declined),
-                  Column(
+                  SizedBox(height: 30,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children : [Column(
                     children: <Widget>[
                       InkWell(
                         onTap: () {
-                          Navigator.of(context).pushReplacement(
+                          Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) {
                             return FileComplaint(
                               dept: deptName,
@@ -111,7 +115,7 @@ class ComplaintSummary extends StatelessWidget {
                     children: <Widget>[
                       InkWell(
                         onTap: () {
-                          Navigator.of(context).pushReplacement(
+                          Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) {
                             return ViewComplaintSummary(
                               dept: deptName,
@@ -129,7 +133,7 @@ class ComplaintSummary extends StatelessWidget {
                         style: TextStyle(color: Colors.brown[700]),
                       ),
                     ],
-                  ),
+                  ),]),
                 ],
               );
             }
@@ -151,21 +155,26 @@ class ComplaintSummary extends StatelessWidget {
       int pendingCount = pendingSnapshot.size;
 
       // Query the collection for documents with status 'accepted'
-      QuerySnapshot acceptedSnapshot =
-          await collectionRef.where('status', isEqualTo: 'accepted').get();
-      int acceptedCount = acceptedSnapshot.size;
+      QuerySnapshot approvedSnapshot =
+          await collectionRef.where('status', isEqualTo: 'approved').get();
+      int approvedCount = approvedSnapshot.size;
 
       // Query the collection for documents with status 'declined'
       QuerySnapshot declinedSnapshot =
           await collectionRef.where('status', isEqualTo: 'declined').get();
       int declinedCount = declinedSnapshot.size;
 
-      int totalCount = pendingCount + acceptedCount + declinedCount;
+      QuerySnapshot completedSnapshot =
+          await collectionRef.where('status', isEqualTo: 'completed').get();
+      int completedCount = completedSnapshot.size;
+
+      int totalCount = pendingCount + approvedCount + declinedCount + completedCount;
 
       return {
         'pending': pendingCount,
-        'accepted': acceptedCount,
+        'approved': approvedCount,
         'declined': declinedCount,
+        'completed':completedCount,
         'total': totalCount
       };
     } catch (e) {
@@ -192,14 +201,14 @@ class ComplaintsType extends StatelessWidget {
     return InkWell(
       onTap: goto(),
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+        margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
         height: 70,
         decoration: BoxDecoration(
-          color: Colors.green[100],
+          color: Colors.brown[100],
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(10.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

@@ -333,11 +333,11 @@ class _FileComplaintState extends State<FileComplaint> {
           'image': urlDownload
         });
         Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (context) {
+            .pushAndRemoveUntil(MaterialPageRoute(builder: (context) {
           return ComplaintSummary(
             deptName: dept,
           );
-        }));
+        }),(Route<dynamic> route) => false,);
         MyDialog.showCustomDialog(context, "NEW COMPLAINT REGISTERED",
             "Your complaint ID is $customDocId");
         print("Document added with ID: $customDocId");

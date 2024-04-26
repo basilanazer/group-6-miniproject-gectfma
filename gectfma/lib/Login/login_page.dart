@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gectfma/Login/forgot_pw.dart';
+import 'package:gectfma/NatureOfIssue/comp_verification.dart';
 import 'package:gectfma/NatureOfIssue/nature.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
 import 'package:gectfma/View_Complaints/view_complaint_summary.dart';
@@ -28,6 +29,42 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Material(
         color: Colors.brown[50],
+        child: WillPopScope(
+        onWillPop: () async {
+        // Show exit confirmation dialog
+        bool exit = await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            backgroundColor: Colors.amber[50],
+            title: Text('Are you sure you want to exit?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  // Close the dialog and return false
+                  Navigator.of(context).pop(false);
+                },
+                child: Text(
+                  'No',
+                  style: TextStyle(color: Colors.brown[800]),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  // Close the dialog and return true
+                  Navigator.of(context).pop(true);
+                },
+                child: Text(
+                  'yes',
+                  style: TextStyle(color: Colors.brown[800]),
+                ),
+              ),
+            ],
+          ),
+        );
+
+        // Return exit if user confirmed, otherwise don't exit
+        return exit ?? false;
+      },
         child: ListView(
           children: [
             Column(children: <Widget>[
@@ -121,7 +158,7 @@ class _LoginState extends State<Login> {
               )
             ]),
           ],
-        ));
+        )));
   }
 
   void login(String email, String password, String deptOrDesignation,
@@ -131,18 +168,21 @@ class _LoginState extends State<Login> {
         email: email,
         password: password,
       );
-      emailController.clear();
-      paswdController.clear();
-
       // Login successful, navigate to home page
-      if (deptOrDesignation == "Plumber" || deptOrDesignation == "ee") {
+      if (deptOrDesignation == "ee") {
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (context) {
           return NatureOfIssue(
             deptOrDesignation: deptOrDesignation,
           );
         }));
-      } else if (deptOrDesignation != "Sergeant" &&
+      } else if(email=='vmeera@gectcr.ac.in'){
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (context) {
+          return complaintVerification(nature: "Plumbing");
+        }));
+      }
+      else if (deptOrDesignation != "Sergeant" &&
           deptOrDesignation != "Principal") {
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (context) {
@@ -150,7 +190,9 @@ class _LoginState extends State<Login> {
             deptName: deptOrDesignation,
           );
         }));
-      } else {
+      }
+      
+       else {
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (context) {
           return ViewComplaintSummary(
