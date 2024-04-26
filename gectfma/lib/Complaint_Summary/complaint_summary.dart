@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
 import 'package:gectfma/File_Complaint/file_complaint.dart';
 import 'package:gectfma/View_Complaints/view_complaint_summary.dart';
-import 'package:gectfma/View_Complaints/view_dept_complaint.dart';
 
 class ComplaintSummary extends StatelessWidget {
   final String deptName;
