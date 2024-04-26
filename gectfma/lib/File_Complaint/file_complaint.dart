@@ -26,10 +26,10 @@ class _FileComplaintState extends State<FileComplaint> {
   PlatformFile? pickedFile;
   UploadTask? uploadTask;
   String urlDownload = '';
-  
-  Future selectFile() async{
+
+  Future selectFile() async {
     final result = await FilePicker.platform.pickFiles();
-    if(result==null){
+    if (result == null) {
       print("file didnt selected");
     }
     setState(() {
@@ -54,28 +54,29 @@ class _FileComplaintState extends State<FileComplaint> {
       final metadata = SettableMetadata(contentType: 'image/$contentType');
 
       uploadTask = ref.putFile(file, metadata);
-      
+
       final snapshot = await uploadTask!.whenComplete(() {});
       urlDownload = await snapshot.ref.getDownloadURL();
 
       print('Download link - $urlDownload');
-      MyDialog.showCustomDialog(context, 'image uploaded', 'The image was successfully uploaded.');
+      MyDialog.showCustomDialog(
+          context, 'image uploaded', 'The image was successfully uploaded.');
     } catch (e) {
       print(e);
     }
   }
-
-
 
   String urgency = levels[0];
   String? nature;
   TextEditingController contactController = TextEditingController();
   TextEditingController descController = TextEditingController();
   TextEditingController hodController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
 
   @override
   void dispose() {
     // Dispose of the controllers when the widget is removed from the widget tree
+    titleController.dispose();
     contactController.dispose();
     descController.dispose();
     hodController.dispose();
@@ -87,8 +88,7 @@ class _FileComplaintState extends State<FileComplaint> {
     String contact = "";
     String desc = "";
     String hod = "";
-    
-
+    String title = "";
     return SafeArea(
         child: Scaffold(
             body: SingleChildScrollView(
@@ -150,6 +150,10 @@ class _FileComplaintState extends State<FileComplaint> {
             ),
           ),
           DetailFields(
+            controller: titleController,
+            hintText: "Title",
+          ),
+          DetailFields(
             controller: descController,
             hintText: "Description",
           ),
@@ -157,45 +161,50 @@ class _FileComplaintState extends State<FileComplaint> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              if(pickedFile == null)
-              TextButton.icon(
-                onPressed: (){
-                  selectFile();
-                }, 
-                label: Text("select file",
-                selectionColor: Colors.brown[400],
-                style: TextStyle(color: Colors.brown[600],decoration: TextDecoration.underline,),
+              if (pickedFile == null)
+                TextButton.icon(
+                  onPressed: () {
+                    selectFile();
+                  },
+                  label: Text(
+                    "select file",
+                    selectionColor: Colors.brown[400],
+                    style: TextStyle(
+                      color: Colors.brown[600],
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                  icon: Icon(
+                    Icons.file_open_outlined,
+                    color: Colors.brown[600],
+                  ),
                 ),
-                icon: Icon(Icons.file_open_outlined,color: Colors.brown[600],),
-              ),
-              if(pickedFile != null)
-              TextButton(
-                onPressed: () => showImageDialog(), 
-                child: 
-                Text(
-                  pickedFile!.name,
-                  style: TextStyle(color: Colors.brown,decoration: TextDecoration.underline)
-                )
-              ),
+              if (pickedFile != null)
+                TextButton(
+                    onPressed: () => showImageDialog(),
+                    child: Text(pickedFile!.name,
+                        style: TextStyle(
+                            color: Colors.brown,
+                            decoration: TextDecoration.underline))),
               ElevatedButton(
                 onPressed: () {
                   uploadFile();
                 },
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.brown[50], 
+                  foregroundColor: Colors.brown[50],
                   backgroundColor: Colors.brown[800], // Text color
                   shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // Corner radius
+                    borderRadius: BorderRadius.circular(10), // Corner radius
                   ),
                   minimumSize: Size(150, 50), // Width and height
                 ),
                 child: Text('UPLOAD'),
               ),
-              
             ],
-            
           ),
-          SizedBox(height: 20,),
+          SizedBox(
+            height: 20,
+          ),
           Headings(title: "Urgency level*"),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -251,7 +260,6 @@ class _FileComplaintState extends State<FileComplaint> {
               ],
             ),
           ),
-          
           SizedBox(
             height: 10,
           ),
@@ -264,19 +272,20 @@ class _FileComplaintState extends State<FileComplaint> {
                 hod = hodController.text;
                 contact = contactController.text;
                 desc = descController.text;
-
+                title = titleController.text;
               });
-              addComplaints(widget.dept, hod, contact, nature, desc, urgency);
+              addComplaints(
+                  widget.dept, hod, contact, nature, desc, title, urgency);
             },
             style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.brown[50], 
+              foregroundColor: Colors.brown[50],
               backgroundColor: Colors.brown[800], // Text color
               shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10), // Corner radius
+                borderRadius: BorderRadius.circular(10), // Corner radius
               ),
-                          minimumSize: Size(150, 50), // Width and height
-                        ),
-                        child: Text('SUBMIT'),
+              minimumSize: Size(150, 50), // Width and height
+            ),
+            child: Text('SUBMIT'),
           ),
           SizedBox(
             height: 40,
@@ -285,73 +294,81 @@ class _FileComplaintState extends State<FileComplaint> {
       ),
     )));
   }
-  
 
-  void addComplaints(String dept, String hod, String contact, String? nature, String desc, String urgency) async {
+  void addComplaints(String dept, String hod, String contact, String? nature,
+      String desc, String title, String urgency) async {
     try {
-      if(dept=='' || hod == '' || contact == '' || nature == null || desc == ''||urlDownload == ''){
-        MyDialog.showCustomDialog(context,
+      if (dept == '' ||
+          hod == '' ||
+          title == '' ||
+          contact == '' ||
+          nature == null ||
+          desc == '' ||
+          urlDownload == '') {
+        MyDialog.showCustomDialog(
+          context,
           "ERROR!!",
           "None of the fields can be empty",
         );
-      }
-      else{
-          // Generate the custom ID
-          String customDocId = await generateDeptId(dept);
+      } else {
+        // Generate the custom ID
+        String customDocId = await generateDeptId(dept);
 
-          // Get a reference to the specific document with the custom ID
-          DocumentReference docRef = FirebaseFirestore.instance.collection(dept).doc(customDocId);
+        // Get a reference to the specific document with the custom ID
+        DocumentReference docRef =
+            FirebaseFirestore.instance.collection(dept).doc(customDocId);
 
-          // Set the data in the document with the custom ID
-          await docRef.set({
-            'hod': hod,
-            'contact': contact,
-            'nature': nature,
-            'desc': desc,
-            'urgency': urgency,
-            'status' : 'pending',
-            'filed_date' : DateTime.now(),
-            'image' : urlDownload
-          });
-          // Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          // return ComplaintSummary(
-          //   deptName: dept,
-          // );
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
-            return ComplaintSummary(
-              deptName: dept,
-            );
-          }));
-          MyDialog.showCustomDialog(context,
-          "NEW COMPLAINT REGISTERED", 
-          "Your complaint ID is $customDocId"
+        // Set the data in the document with the custom ID
+        await docRef.set({
+          'id': customDocId,
+          'dept': dept,
+          'hod': hod,
+          'contact': contact,
+          'nature': nature,
+          'desc': desc,
+          'title': title,
+          'urgency': urgency,
+          'status': 'pending',
+          'filed_date': DateTime.now(),
+          'image': urlDownload
+        });
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (context) {
+          return ComplaintSummary(
+            deptName: dept,
           );
-          print("Document added with ID: $customDocId");
-          
+        }));
+        MyDialog.showCustomDialog(context, "NEW COMPLAINT REGISTERED",
+            "Your complaint ID is $customDocId");
+        print("Document added with ID: $customDocId");
       } // Optionally, confirm document was added
     } catch (e) {
       print("Error adding document: $e");
-       MyDialog.showCustomDialog(context,
-         "ERROR!!",
+      MyDialog.showCustomDialog(
+        context,
+        "ERROR!!",
         "Some error occured. Please try again",
       ); // Handle errors here
     }
   }
 
   Future<String> generateDeptId(String dept) async {
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-  // Reference to the department's collection
-  CollectionReference deptCollection = firestore.collection(dept);
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    // Reference to the department's collection
+    CollectionReference deptCollection = firestore.collection(dept);
 
-  // Retrieve all documents to count them
-  QuerySnapshot snapshot = await deptCollection.get();
-  int numberOfDocuments = snapshot.docs.length;
+    // Retrieve all documents to count them
+    QuerySnapshot snapshot = await deptCollection.get();
+    int numberOfDocuments = snapshot.docs.length;
 
-  // Generate the ID with padding to ensure it is always three digits
-  String paddedNumber = (numberOfDocuments + 1).toString().padLeft(3, '0'); // +1 for the next document
-  return '$dept$paddedNumber';
-}
-void showImageDialog() {
+    // Generate the ID with padding to ensure it is always three digits
+    String paddedNumber = (numberOfDocuments + 1)
+        .toString()
+        .padLeft(3, '0'); // +1 for the next document
+    return '$dept$paddedNumber';
+  }
+
+  void showImageDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -368,12 +385,14 @@ void showImageDialog() {
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(), // Close the dialog
-              child: Text('Close',style: TextStyle(color: Colors.brown),),
+              child: Text(
+                'Close',
+                style: TextStyle(color: Colors.brown),
+              ),
             ),
           ],
         );
       },
     );
+  }
 }
-}
-
