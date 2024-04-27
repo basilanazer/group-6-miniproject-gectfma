@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
 import 'package:gectfma/File_Complaint/file_complaint.dart';
 import 'package:gectfma/View_Complaints/view_all_complaint.dart';
+import 'package:gectfma/View_Complaints/view_all_complaint.dart';
 
 class ComplaintSummary extends StatefulWidget {
   final String deptName;
@@ -115,60 +116,53 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
                       },
                       complainttype: "Declined",
                       complaintstatus: declined),
-                  SizedBox(
-                    height: 30,
+                  Column(
+                    children: <Widget>[
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (context) {
+                            return FileComplaint(
+                              dept: widget.deptName,
+                            );
+                          }));
+                        },
+                        child: Icon(
+                          size: 80.0,
+                          Icons.note_add_outlined,
+                          color: Colors.brown[600],
+                        ),
+                      ),
+                      Text(
+                        "File New Complaint",
+                        style: TextStyle(color: Colors.brown[700]),
+                      ),
+                    ],
                   ),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(
-                          children: <Widget>[
-                            InkWell(
-                              onTap: () {
-                                Navigator.of(context)
-                                    .push(MaterialPageRoute(builder: (context) {
-                                  return FileComplaint(
-                                    dept: widget.deptName,
-                                  );
-                                }));
-                              },
-                              child: Icon(
-                                size: 80.0,
-                                Icons.note_add_outlined,
-                                color: Colors.brown[600],
-                              ),
-                            ),
-                            Text(
-                              "File New Complaint",
-                              style: TextStyle(color: Colors.brown[700]),
-                            ),
-                          ],
+                  SizedBox(height: 40),
+                  Column(
+                    children: <Widget>[
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (context) {
+                            return ViewAllComplaint(
+                              dept: widget.deptName,
+                            );
+                          }));
+                        },
+                        child: Icon(
+                          size: 80.0,
+                          Icons.manage_search,
+                          color: Colors.brown[600],
                         ),
-                        SizedBox(height: 40),
-                        Column(
-                          children: <Widget>[
-                            InkWell(
-                              onTap: () {
-                                Navigator.of(context)
-                                    .push(MaterialPageRoute(builder: (context) {
-                                  return ViewAllComplaint(
-                                    dept: widget.deptName,
-                                  );
-                                }));
-                              },
-                              child: Icon(
-                                size: 80.0,
-                                Icons.manage_search,
-                                color: Colors.brown[600],
-                              ),
-                            ),
-                            Text(
-                              "View All Complaints",
-                              style: TextStyle(color: Colors.brown[700]),
-                            ),
-                          ],
-                        ),
-                      ]),
+                      ),
+                      Text(
+                        "View All Complaints",
+                        style: TextStyle(color: Colors.brown[700]),
+                      ),
+                    ],
+                  ),
                 ],
               );
             }
