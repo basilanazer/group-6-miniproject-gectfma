@@ -48,6 +48,9 @@ class _ViewComplaintState extends State<ViewComplaint> {
             iconLabel: 'Go Back',
             title: "${widget.id}".toUpperCase(),
             icon: Icons.arrow_back,
+            goto: () {
+              Navigator.of(context).pop();
+            },
           ),
           Headings(title: "Department Details*"),
           DetailFields(

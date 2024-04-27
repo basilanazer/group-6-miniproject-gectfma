@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:gectfma/Login/logout.dart';
 import 'package:gectfma/NatureOfIssue/list_complints.dart';
+import 'package:gectfma/NatureOfIssue/nature.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
 
 class complaintVerification extends StatefulWidget{
@@ -43,6 +45,21 @@ class _complaintVerificationState extends State<complaintVerification>{
                         title: "Total ${widget.nature} complaints $total",
                         icon: widget.nature =='Electrical'? Icons.arrow_back:Icons.logout,
                         dept: "${widget.nature} in-charge",
+                        goto: () {
+                          if (widget.nature =='Electrical') {
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(builder: (context) {
+                                  return NatureOfIssue(
+                                    dept: "ee",
+                                  );
+                                }),
+                                (Route<dynamic> route) => false,
+                              );
+                          }
+                          else{
+                            logout.logOut(context);
+                          }
+                        },
                       ),
                      Column(
                       children:[
@@ -148,7 +165,7 @@ class ComplaintsType extends StatelessWidget {
             TextButton(onPressed: (){
               Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) {
-                            return listComplaints(status: status, nature: nature, number: number!);
+                            return listComplaints(status: status, nature: nature);
                           }));
             },
              child: Text(

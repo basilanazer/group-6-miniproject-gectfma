@@ -1,8 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:gectfma/NatureOfIssue/nature.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
 import 'package:gectfma/File_Complaint/file_complaint.dart';
+import 'package:gectfma/Requirements/show_my_dialog.dart';
 import 'package:gectfma/View_Complaints/view_all_complaint.dart';
+import 'package:gectfma/Login/logout.dart';
 
 class ComplaintSummary extends StatefulWidget {
   final String deptName;
@@ -72,11 +76,26 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
                 children: <Widget>[
                   TopBar(
                     dept: "DEPARTMENT OF ${widget.deptName}",
-                    iconLabel: widget.deptName == 'ee' ? "Home" : "Log Out",
+                    iconLabel: widget.deptName == 'ee' ? "Go Back" : "Log Out",
                     title: "TOTAL COMPLAINTS $total",
                     icon: widget.deptName == 'ee'
-                        ? Icons.home_outlined
+                        ? Icons.arrow_back
                         : Icons.logout,
+                    goto: () {
+                      if (widget.deptName=='ee') {
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) {
+                            return NatureOfIssue(
+                              dept: "ee",
+                            );
+                          }),
+                          (Route<dynamic> route) => false,
+                        );
+                      }
+                      else{
+                          logout.logOut(context); 
+                      }
+                    },
                   ),
                   ComplaintsType(
                       goto: () {

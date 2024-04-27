@@ -100,6 +100,9 @@ class _FileComplaintState extends State<FileComplaint> {
             iconLabel: 'Go Back',
             title: "NEW COMPLAINT",
             icon: Icons.arrow_back,
+            goto: () {
+              Navigator.of(context).pop();
+            },
           ),
           Headings(title: "Department Details*"),
           DetailFields(

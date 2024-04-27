@@ -1,6 +1,8 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gectfma/NatureOfIssue/approve_decline.dart';
+import 'package:gectfma/NatureOfIssue/comp_verification.dart';
 import 'package:gectfma/Requirements/Headings.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
 import 'package:gectfma/View_Complaints/view_complaint.dart';
@@ -8,8 +10,8 @@ import 'package:gectfma/View_Complaints/view_complaint.dart';
 class listComplaints extends StatefulWidget {
   final String status;
   final String nature;
-  final int number;
-  const listComplaints({super.key, required this.status,required this.nature,required this.number});
+  //final int number;
+  const listComplaints({super.key, required this.status,required this.nature});
 
   @override
   State<listComplaints> createState() => _listComplaintsState();
@@ -32,9 +34,19 @@ class _listComplaintsState extends State<listComplaints> {
             children: [
               TopBar(
                 iconLabel: "Go Back",
-                 title: widget.status == 'pending'? "${widget.status} Complaints To Approve ${widget.number}":"${widget.status} Complaints ${widget.number}", 
+                 title: widget.status == 'pending'? "${widget.status} Complaints To Approve ":"${widget.status} Complaints ", 
                  icon: Icons.arrow_back, 
-                 dept: "${widget.nature} in-charge"),
+                 dept: "${widget.nature} in-charge",
+                 goto: () {
+                   Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) {
+                      return complaintVerification(
+                        nature: widget.nature,
+                      );
+                    }),(Route<dynamic> route) => false,
+                   );
+                 },
+              ),
               SizedBox(height: 20),
               //for(var dept in deptCollection)
               for(var dept in deptCollection)
@@ -99,7 +111,7 @@ class _listComplaintsState extends State<listComplaints> {
                       return approveOrDecline(
                         dept: dept,
                         id: complaintData['id'],
-                        number: widget.number,
+                        //number: widget.number,
                       );
                     }));
                   }

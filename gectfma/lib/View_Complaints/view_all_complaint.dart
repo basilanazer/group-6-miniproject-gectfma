@@ -53,6 +53,9 @@ class _ViewAllComplaintState extends State<ViewAllComplaint> {
                     "${widget.status == "" ? "Total" : widget.status} complaints",
                 icon: Icons.arrow_back,
                 dept: "Welcome ${widget.dept}",
+                goto: () {
+                  Navigator.of(context).pop();
+                },
               ),
               SizedBox(height: 10),
               // Padding(

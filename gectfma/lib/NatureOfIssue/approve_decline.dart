@@ -11,8 +11,8 @@ import '../Requirements/TopBar.dart';
 class approveOrDecline extends StatefulWidget {
   final String dept;
   final String id;
-  final int number;
-  const approveOrDecline({super.key, required this.dept, this.id = "",required this.number});
+  //final int number;
+  const approveOrDecline({super.key, required this.dept, this.id = ""});
 
   @override
   State<approveOrDecline> createState() => _approveOrDeclineState();
@@ -32,13 +32,14 @@ TextEditingController remarkController = TextEditingController();
 String imageURL='';
 
 class _approveOrDeclineState extends State<approveOrDecline> {
+  String remark ='';
   @override
   void initState() {
     // TODO: implement initState
     if (widget.id != "") {
       viewComplaint(widget.id, widget.dept);
-      imageCache.clear();
     }
+    remarkController = TextEditingController();
     super.initState();
   }
   @override
@@ -58,6 +59,9 @@ class _approveOrDeclineState extends State<approveOrDecline> {
             iconLabel: 'Go Back',
             title: "${widget.id}".toUpperCase(),
             icon: Icons.arrow_back,
+            goto: () {
+              Navigator.of(context).pop();
+            },
           ),
           Headings(title: "Department Details"),
           DetailFields(
@@ -95,28 +99,28 @@ class _approveOrDeclineState extends State<approveOrDecline> {
           ),
           Headings(title: "Images"),
           //Image To be added
-          // Padding(
-          //   padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
-          //   child:Image.network(
-          //   imageURL,
-          //   key: ValueKey(widget.id),
-          //   loadingBuilder: (context, child, loadingProgress) {
-          //     if (loadingProgress == null) {
-          //       return child;
-          //     }
-          //     return Center(
-          //       child: CircularProgressIndicator(
-          //         value: loadingProgress.expectedTotalBytes != null
-          //             ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-          //             : null,
-          //       ),
-          //     );
-          //   },
-          //   errorBuilder: (context, error, stackTrace) {
-          //     return Text('Error loading image');
-          //   },
-          // ),
-          // ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
+            child:Image.network(
+              imageURL,
+            key: ValueKey(widget.id),
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) {
+                return child;
+              }
+              return Center(
+                child: CircularProgressIndicator(
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                      : null,
+                ),
+              );
+            },
+            errorBuilder: (context, error, stackTrace) {
+              return Text('Error loading image');
+            },
+          ),
+          ),
           Headings(title: "Urgency level"),
           DetailFields(
             isEnable: false,
@@ -135,7 +139,10 @@ class _approveOrDeclineState extends State<approveOrDecline> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  addRemark(widget.dept, widget.id, remarkController.text, "approved");
+                  setState(() {
+                    remark = remarkController.text;
+                  });
+                  addRemark(widget.dept, widget.id, remark, "approved");
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.green,
@@ -193,7 +200,7 @@ class _approveOrDeclineState extends State<approveOrDecline> {
         //     }),(Route<dynamic> route) => false,);
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
             builder: (context) {
-              return listComplaints(status: status, nature: natureController.text, number: widget.number);
+              return listComplaints(status: status, nature: natureController.text);
             }
           ), (route) => route is complaintVerification);
         MyDialog.showCustomDialog(context, "STATUS UPDATED",

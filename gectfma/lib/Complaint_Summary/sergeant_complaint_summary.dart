@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:gectfma/Login/logout.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
 import 'package:gectfma/File_Complaint/file_complaint.dart';
+import 'package:gectfma/Requirements/show_my_dialog.dart';
 import 'package:gectfma/View_Complaints/view_all_complaint.dart';
 
 class SergeantComplaintSummary extends StatelessWidget {
@@ -69,6 +72,9 @@ class SergeantComplaintSummary extends StatelessWidget {
                     iconLabel: "Log Out",
                     title: "TOTAL COMPLAINTS $total",
                     icon: Icons.logout,
+                    goto: (){
+                      logout.logOut(context);
+                    },
                   ),
                   ComplaintsType(
                       goto: () {},

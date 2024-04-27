@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gectfma/Complaint_Summary/complaint_summary.dart';
+import 'package:gectfma/Login/logout.dart';
 import 'package:gectfma/NatureOfIssue/comp_verification.dart';
 import 'package:gectfma/Requirements/Buttons.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
@@ -54,7 +55,11 @@ class NatureOfIssue extends StatelessWidget {
               iconLabel: "Log Out",
               title: "navigate to",
               icon: Icons.logout,
-              dept: "DEPARTMENT OF ${dept}"),
+              dept: "DEPARTMENT OF ${dept}",
+              goto: () {
+                logout.logOut(context);
+              },
+          ),
           Column(
             children: [
               SizedBox(
