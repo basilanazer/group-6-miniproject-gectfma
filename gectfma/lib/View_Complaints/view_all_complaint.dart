@@ -126,7 +126,7 @@ class _ViewAllComplaintState extends State<ViewAllComplaint> {
               child: ListTile(
                 onTap: () {
                   Navigator.of(context)
-                      .pushReplacement(MaterialPageRoute(builder: (context) {
+                      .push(MaterialPageRoute(builder: (context) {
                     return ViewComplaint(
                       dept: widget.dept,
                       id: complaintData['id'],

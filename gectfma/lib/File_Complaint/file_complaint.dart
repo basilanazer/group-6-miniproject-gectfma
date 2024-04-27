@@ -330,7 +330,9 @@ class _FileComplaintState extends State<FileComplaint> {
           'urgency': urgency,
           'status': 'pending',
           'filed_date': DateTime.now(),
-          'image': urlDownload
+          'image': urlDownload,
+          'assigned_staff':'',
+          'assigned_staff_no':''
         });
         Navigator.of(context)
             .pushAndRemoveUntil(MaterialPageRoute(builder: (context) {

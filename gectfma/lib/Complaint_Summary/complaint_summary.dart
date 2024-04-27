@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
 import 'package:gectfma/File_Complaint/file_complaint.dart';
-import 'package:gectfma/View_Complaints/view_all_complaint.dart';
 import 'package:gectfma/View_Complaints/view_all_complaint.dart';
 
 class ComplaintSummary extends StatefulWidget {
@@ -120,7 +118,7 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
                     children: <Widget>[
                       InkWell(
                         onTap: () {
-                          Navigator.of(context).pushReplacement(
+                          Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) {
                             return FileComplaint(
                               dept: widget.deptName,
@@ -144,7 +142,7 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
                     children: <Widget>[
                       InkWell(
                         onTap: () {
-                          Navigator.of(context).pushReplacement(
+                          Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) {
                             return ViewAllComplaint(
                               dept: widget.deptName,

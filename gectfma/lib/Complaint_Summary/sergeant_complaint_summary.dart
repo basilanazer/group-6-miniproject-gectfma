@@ -106,7 +106,7 @@ class SergeantComplaintSummary extends StatelessWidget {
                     children: <Widget>[
                       InkWell(
                         onTap: () {
-                          Navigator.of(context).pushReplacement(
+                          Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) {
                             return ViewAllComplaint(
                               dept: deptName,

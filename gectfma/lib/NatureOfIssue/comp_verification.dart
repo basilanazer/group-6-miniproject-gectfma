@@ -46,19 +46,20 @@ class _complaintVerificationState extends State<complaintVerification>{
                       ),
                      Column(
                       children:[
+                        SizedBox(height: 70,),
                         ComplaintsType(
                               nature: widget.nature,
-                              status: "Approved",
+                              status: "approved",
                               number: approved
                         ),
                         ComplaintsType(
                                 nature: widget.nature,
-                                status: "Declined",
+                                status: "declined",
                                 number: declined
                         ),
                         ComplaintsType(
                                 nature: widget.nature,
-                                status: "Pending",
+                                status: "pending",
                                 number: pending
                         ),
                       ]

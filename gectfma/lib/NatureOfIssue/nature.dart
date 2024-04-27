@@ -75,7 +75,7 @@ class NatureOfIssue extends StatelessWidget {
                 height: 100,
               ),
               Buttons(
-                  buttonTitle: "COMPLAINTS TO APPROVE",
+                  buttonTitle: "COMPLAINTS TO VERIFY",
                   fn: () {
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {
