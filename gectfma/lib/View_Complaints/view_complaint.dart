@@ -1,15 +1,9 @@
 import 'dart:async';
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:gectfma/Complaint_Summary/complaint_summary.dart';
 import 'package:gectfma/Requirements/Headings.dart';
-import 'package:gectfma/Requirements/show_my_dialog.dart';
 import '../Requirements/DetailsField.dart';
 import '../Requirements/TopBar.dart';
-import 'package:file_picker/file_picker.dart';
 
 class ViewComplaint extends StatefulWidget {
   final String dept;
@@ -101,60 +95,6 @@ class _ViewComplaintState extends State<ViewComplaint> {
             controller: urgencyController,
             hintText: "Level",
           ),
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-          //     crossAxisAlignment: CrossAxisAlignment.center,
-          //     children: <Widget>[
-          //       Row(
-          //         children: [
-          //           Radio<String>(
-          //             groupValue: urgency,
-          //             value: levels[0],
-          //             onChanged: (value) {
-          //               setState(() {
-          //                 urgency = value.toString();
-          //               });
-          //             },
-          //             activeColor: Colors.brown[600], // Change the color here
-          //           ),
-          //           Text("High")
-          //         ],
-          //       ),
-          //       Row(
-          //         children: [
-          //           Radio<String>(
-          //             groupValue: urgency,
-          //             value: levels[1],
-          //             onChanged: (value) {
-          //               setState(() {
-          //                 urgency = value.toString();
-          //               });
-          //             },
-          //             activeColor: Colors.brown[600], // Change the color here
-          //           ),
-          //           Text("Medium")
-          //         ],
-          //       ),
-          //       Row(
-          //         children: [
-          //           Radio<String>(
-          //             groupValue: urgency,
-          //             value: levels[2],
-          //             onChanged: (value) {
-          //               setState(() {
-          //                 urgency = value.toString();
-          //               });
-          //             },
-          //             activeColor: Colors.brown[600], // Change the color here
-          //           ),
-          //           Text("Low")
-          //         ],
-          //       ),
-          //     ],
-          //   ),
-          // ),
         ],
       ),
     )));
