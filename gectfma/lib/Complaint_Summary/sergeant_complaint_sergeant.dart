@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
 import 'package:gectfma/File_Complaint/file_complaint.dart';
-import 'package:gectfma/View_Complaints/view_complaint_summary.dart';
+import 'package:gectfma/View_Complaints/view_all_complaint.dart';
 
 class SergeantComplaintSummary extends StatelessWidget {
   final String deptName;
@@ -108,7 +108,7 @@ class SergeantComplaintSummary extends StatelessWidget {
                         onTap: () {
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (context) {
-                            return ViewComplaintSummary(
+                            return ViewAllComplaint(
                               dept: deptName,
                             );
                           }));
