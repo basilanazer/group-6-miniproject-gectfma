@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:gectfma/NatureOfIssue/list_complints.dart';
-import 'package:gectfma/Requirements/Headings.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
 
 class complaintVerification extends StatefulWidget{
@@ -37,30 +36,30 @@ class _complaintVerificationState extends State<complaintVerification>{
                 return SingleChildScrollView(
                   scrollDirection: Axis.vertical,
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       TopBar(
                         iconLabel: widget.nature =='Electrical'? "Go Back":"Log Out",
                         title: "Total ${widget.nature} complaints $total",
                         icon: widget.nature =='Electrical'? Icons.arrow_back:Icons.logout,
-                        dept: "${widget.nature} complaints",
+                        dept: "${widget.nature} in-charge",
                       ),
                      Column(
                       children:[
                         ComplaintsType(
-                             // goto: () {},
-                              complainttype: "Approved",
-                              complaintstatus: approved
+                              nature: widget.nature,
+                              status: "Approved",
+                              number: approved
                         ),
                         ComplaintsType(
-                               // goto: () {},
-                                complainttype: "Declined",
-                                complaintstatus: declined
+                                nature: widget.nature,
+                                status: "Declined",
+                                number: declined
                         ),
                         ComplaintsType(
-                               // goto: () {},
-                                //listComplaints(status: "pending", nature: widget.nature, number: pending),
-                                complainttype: "Pending",
-                                complaintstatus: pending
+                                nature: widget.nature,
+                                status: "Pending",
+                                number: pending
                         ),
                       ]
                     )
@@ -120,13 +119,14 @@ class _complaintVerificationState extends State<complaintVerification>{
   }
 }
 class ComplaintsType extends StatelessWidget {
-  final String complainttype;
-  //final Function goto;
-  final int? complaintstatus;
+  final String nature;
+  final String status;
+  final int? number;
   const ComplaintsType({
     super.key,
-    required this.complainttype,
-    required this.complaintstatus,
+    required this.status,
+    required this.nature,
+    required this.number,
     //required this.goto,
   });
 
@@ -147,16 +147,16 @@ class ComplaintsType extends StatelessWidget {
             TextButton(onPressed: (){
               Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) {
-                            return listComplaints(status: "pending", nature: "nature", number: 8);
+                            return listComplaints(status: status, nature: nature, number: number!);
                           }));
             },
              child: Text(
-              "$complainttype complaints".toUpperCase(),
+              "$status complaints".toUpperCase(),
               style: TextStyle(fontSize: 17, color: Colors.brown[600]),
             ),),
           
             Text(
-              "$complaintstatus",
+              "$number",
               style: TextStyle(fontSize: 17, color: Colors.brown[600]),
             ),
           ],
