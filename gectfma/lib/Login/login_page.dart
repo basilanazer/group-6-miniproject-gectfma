@@ -132,12 +132,6 @@ class _LoginState extends State<Login> {
                         }
                       });
                       login(email, pswd, deptOrDesignation, context);
-                      // Navigator.of(context)
-                      //     .push(MaterialPageRoute(builder: (context) {
-                      //   return ComplaintSummary(
-                      //     deptName: deptOrDesignation,
-                      //   );
-                      // }));
                     },
                     child: Text(
                       "LOGIN",
