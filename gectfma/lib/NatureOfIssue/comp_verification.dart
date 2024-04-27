@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:gectfma/NatureOfIssue/list_complints.dart';
 import 'package:gectfma/Requirements/Headings.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
 
@@ -41,18 +44,26 @@ class _complaintVerificationState extends State<complaintVerification>{
                         icon: widget.nature =='Electrical'? Icons.arrow_back:Icons.logout,
                         dept: "${widget.nature} complaints",
                       ),
-                      ComplaintsType(
-                              goto: () {},
+                     Column(
+                      children:[
+                        ComplaintsType(
+                             // goto: () {},
                               complainttype: "Approved",
                               complaintstatus: approved
-                      ),
-                      ComplaintsType(
-                              goto: () {},
-                              complainttype: "Declined",
-                              complaintstatus: declined
-                      ),
-                      Divider(thickness: 1,color: Colors.black,),
-                      Headings(title: "Complaints to Verify")
+                        ),
+                        ComplaintsType(
+                               // goto: () {},
+                                complainttype: "Declined",
+                                complaintstatus: declined
+                        ),
+                        ComplaintsType(
+                               // goto: () {},
+                                //listComplaints(status: "pending", nature: widget.nature, number: pending),
+                                complainttype: "Pending",
+                                complaintstatus: pending
+                        ),
+                      ]
+                    )
                     ]
                   )
                 );
@@ -110,41 +121,45 @@ class _complaintVerificationState extends State<complaintVerification>{
 }
 class ComplaintsType extends StatelessWidget {
   final String complainttype;
-  final Function goto;
+  //final Function goto;
   final int? complaintstatus;
   const ComplaintsType({
     super.key,
     required this.complainttype,
     required this.complaintstatus,
-    required this.goto,
+    //required this.goto,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: goto(),
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-        height: 70,
-        decoration: BoxDecoration(
-          color: Colors.brown[100],
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "$complainttype complaints".toUpperCase(),
-                style: TextStyle(fontSize: 17, color: Colors.brown[600]),
-              ),
-              Text(
-                "$complaintstatus",
-                style: TextStyle(fontSize: 17, color: Colors.brown[600]),
-              ),
-            ],
-          ),
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+      height: 70,
+      decoration: BoxDecoration(
+        color: Colors.brown[100],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextButton(onPressed: (){
+              Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) {
+                            return listComplaints(status: "pending", nature: "nature", number: 8);
+                          }));
+            },
+             child: Text(
+              "$complainttype complaints".toUpperCase(),
+              style: TextStyle(fontSize: 17, color: Colors.brown[600]),
+            ),),
+          
+            Text(
+              "$complaintstatus",
+              style: TextStyle(fontSize: 17, color: Colors.brown[600]),
+            ),
+          ],
         ),
       ),
     );

@@ -42,7 +42,7 @@ class _ViewComplaintSummaryState extends State<ViewComplaintSummary> {
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
+          scrollDirection: Axis.vertical, 
           child: Column(
             children: [
               TopBar(
