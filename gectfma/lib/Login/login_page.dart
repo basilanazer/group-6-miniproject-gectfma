@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gectfma/Complaint_Summary/sergeant_complaint_sergeant.dart';
+import 'package:gectfma/Complaint_Summary/sergeant_complaint_summary.dart';
 import 'package:gectfma/Login/forgot_pw.dart';
 import 'package:gectfma/NatureOfIssue/comp_verification.dart';
 import 'package:gectfma/NatureOfIssue/nature.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
-import 'package:gectfma/View_Complaints/view_complaint_summary.dart';
+import 'package:gectfma/View_Complaints/view_all_complaint.dart';
 import '../Requirements/DetailsField.dart';
 import '../Complaint_Summary/complaint_summary.dart';
 

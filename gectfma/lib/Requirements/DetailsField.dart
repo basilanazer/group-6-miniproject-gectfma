@@ -25,11 +25,17 @@ class _DetailFieldsState extends State<DetailFields> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
+        style:
+            TextStyle(color: widget.isEnable ? Colors.black : Colors.black87),
         controller: widget.controller,
         obscureText: widget.obscure,
         obscuringCharacter: widget.obscureChar,
         enabled: widget.isEnable,
         decoration: InputDecoration(
+            disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Colors.black45),
+            ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide(color: Colors.brown),

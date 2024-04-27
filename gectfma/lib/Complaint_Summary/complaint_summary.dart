@@ -3,17 +3,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
 import 'package:gectfma/File_Complaint/file_complaint.dart';
-import 'package:gectfma/View_Complaints/view_complaint_summary.dart';
+import 'package:gectfma/View_Complaints/view_all_complaint.dart';
 
-class ComplaintSummary extends StatelessWidget {
+class ComplaintSummary extends StatefulWidget {
   final String deptName;
 
   const ComplaintSummary({Key? key, required this.deptName}) : super(key: key);
 
   @override
+  State<ComplaintSummary> createState() => _ComplaintSummaryState();
+}
+
+class _ComplaintSummaryState extends State<ComplaintSummary> {
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child:WillPopScope(
+        child: WillPopScope(
       onWillPop: () async {
         // Show exit confirmation dialog
         bool exit = await showDialog(
@@ -51,7 +56,7 @@ class ComplaintSummary extends StatelessWidget {
       },
       child: Scaffold(
         body: FutureBuilder(
-          future: getCounts(deptName),
+          future: getCounts(widget.deptName),
           builder: (context, AsyncSnapshot<Map<String, int>> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -67,73 +72,103 @@ class ComplaintSummary extends StatelessWidget {
               return Column(
                 children: <Widget>[
                   TopBar(
-                    dept: "DEPARTMENT OF ${deptName}",
-                    iconLabel: deptName=='ee'? "Home":"Log Out",
+                    dept: "DEPARTMENT OF ${widget.deptName}",
+                    iconLabel: widget.deptName == 'ee' ? "Home" : "Log Out",
                     title: "TOTAL COMPLAINTS $total",
-                    icon: deptName=='ee'? Icons.home_outlined:Icons.logout,
+                    icon: widget.deptName == 'ee'
+                        ? Icons.home_outlined
+                        : Icons.logout,
                   ),
                   ComplaintsType(
-                      goto: () {},
-                      complainttype: "Solved",
+                      goto: () {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return ViewAllComplaint(
+                            status: "completed",
+                            dept: widget.deptName,
+                          );
+                        }));
+                      },
+                      complainttype: "Completed",
                       complaintstatus: completed),
                   ComplaintsType(
-                      goto: () {},
+                      goto: () {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return ViewAllComplaint(
+                            status: "pending",
+                            dept: widget.deptName,
+                          );
+                        }));
+                      },
                       complainttype: "Pending",
                       complaintstatus: (pending! + approved!)),
                   ComplaintsType(
-                      goto: () {},
+                      goto: () {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return ViewAllComplaint(
+                            status: "declined",
+                            dept: widget.deptName,
+                          );
+                        }));
+                      },
                       complainttype: "Declined",
                       complaintstatus: declined),
-                  SizedBox(height: 30,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children : [Column(
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) {
-                            return FileComplaint(
-                              dept: deptName,
-                            );
-                          }));
-                        },
-                        child: Icon(
-                          size: 80.0,
-                          Icons.note_add_outlined,
-                          color: Colors.brown[600],
-                        ),
-                      ),
-                      Text(
-                        "File New Complaint",
-                        style: TextStyle(color: Colors.brown[700]),
-                      ),
-                    ],
+                  SizedBox(
+                    height: 30,
                   ),
-                  SizedBox(height: 40),
-                  Column(
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) {
-                            return ViewComplaintSummary(
-                              dept: deptName,
-                            );
-                          }));
-                        },
-                        child: Icon(
-                          size: 80.0,
-                          Icons.manage_search,
-                          color: Colors.brown[600],
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Column(
+                          children: <Widget>[
+                            InkWell(
+                              onTap: () {
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (context) {
+                                  return FileComplaint(
+                                    dept: widget.deptName,
+                                  );
+                                }));
+                              },
+                              child: Icon(
+                                size: 80.0,
+                                Icons.note_add_outlined,
+                                color: Colors.brown[600],
+                              ),
+                            ),
+                            Text(
+                              "File New Complaint",
+                              style: TextStyle(color: Colors.brown[700]),
+                            ),
+                          ],
                         ),
-                      ),
-                      Text(
-                        "View All Complaints",
-                        style: TextStyle(color: Colors.brown[700]),
-                      ),
-                    ],
-                  ),]),
+                        SizedBox(height: 40),
+                        Column(
+                          children: <Widget>[
+                            InkWell(
+                              onTap: () {
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (context) {
+                                  return ViewAllComplaint(
+                                    dept: widget.deptName,
+                                  );
+                                }));
+                              },
+                              child: Icon(
+                                size: 80.0,
+                                Icons.manage_search,
+                                color: Colors.brown[600],
+                              ),
+                            ),
+                            Text(
+                              "View All Complaints",
+                              style: TextStyle(color: Colors.brown[700]),
+                            ),
+                          ],
+                        ),
+                      ]),
                 ],
               );
             }
@@ -168,26 +203,27 @@ class ComplaintSummary extends StatelessWidget {
           await collectionRef.where('status', isEqualTo: 'completed').get();
       int completedCount = completedSnapshot.size;
 
-      int totalCount = pendingCount + approvedCount + declinedCount + completedCount;
+      int totalCount =
+          pendingCount + approvedCount + declinedCount + completedCount;
 
       return {
         'pending': pendingCount,
         'approved': approvedCount,
         'declined': declinedCount,
-        'completed':completedCount,
+        'completed': completedCount,
         'total': totalCount
       };
     } catch (e) {
       // Handle errors
       print("Error getting counts: $e");
-      return {'pending': 0, 'accepted': 0, 'declined': 0, 'total': 0};
+      return {'pending': 0, 'completed': 0, 'declined': 0, 'total': 0};
     }
   }
 }
 
 class ComplaintsType extends StatelessWidget {
   final String complainttype;
-  final Function goto;
+  final Function() goto;
   final int? complaintstatus;
   const ComplaintsType({
     super.key,
@@ -199,7 +235,7 @@ class ComplaintsType extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: goto(),
+      onTap: goto,
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
         height: 70,

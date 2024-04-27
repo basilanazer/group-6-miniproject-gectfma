@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gectfma/Complaint_Summary/complaint_summary.dart';
-import 'package:gectfma/Complaint_Summary/sergeant_complaint_sergeant.dart';
-import 'package:gectfma/NatureOfIssue/nature.dart';
+import 'package:gectfma/Complaint_Summary/sergeant_complaint_summary.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
+import 'package:gectfma/NatureOfIssue/nature.dart';
 
 class TopBar extends StatelessWidget {
   final IconData icon;
@@ -77,24 +77,28 @@ class TopBar extends StatelessWidget {
                   //     deptName: "Sergeant",
                   //   );
                   // }));
-                // } else {
-                //   Navigator.of(context)
-                //       .pushReplacement(MaterialPageRoute(builder: (context) {
-                //     return ComplaintSummary(
-                //       deptName: dept.split(' ').last,
-                // }
+                  // } else {
+                  //   Navigator.of(context)
+                  //       .pushReplacement(MaterialPageRoute(builder: (context) {
+                  //     return ComplaintSummary(
+                  //       deptName: dept.split(' ').last,
+                  // }
                 }
-                if ((dept).toUpperCase() == "DEPARTMENT OF EE" && iconLabel == 'Home' ){//
-                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) {
-                    return NatureOfIssue(
-                      dept: "ee",
-                    );
-                  }),(Route<dynamic> route) => false,);
-                }
-                else if (iconLabel == 'Go Back' ){//
+                if ((dept).toUpperCase() == "DEPARTMENT OF EE" &&
+                    iconLabel == 'Home') {
+                  //
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) {
+                      return NatureOfIssue(
+                        dept: "ee",
+                      );
+                    }),
+                    (Route<dynamic> route) => false,
+                  );
+                } else if (iconLabel == 'Go Back') {
+                  //
                   Navigator.of(context).pop();
                 }
-               
               },
               icon: Icon(
                 icon,
