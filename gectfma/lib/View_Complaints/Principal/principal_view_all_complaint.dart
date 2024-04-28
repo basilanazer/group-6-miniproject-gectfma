@@ -38,19 +38,10 @@ class _PrincipalViewAllComplaintState extends State<PrincipalViewAllComplaint> {
             icon: Icons.logout,
           ),
           SizedBox(height: 10),
-          for (String dept in [
-            "arch",
-            "ce",
-            "che",
-            "cse",
-            "ece",
-            "ee",
-            "me",
-            "pe"
-          ])
+          for (String dept in ["arch","ce","che","cse","ece", "ee","me","pe" ])
             Column(
               children: [
-                Headings(title: "Department Of ${dept.toUpperCase()}"),
+                //Headings(title: "Department Of ${dept.toUpperCase()}"),
                 FutureBuilder<List<Map<String, dynamic>>>(
                   future: getData(dept, widget.status),
                   builder: (context, snapshot) {
@@ -61,11 +52,25 @@ class _PrincipalViewAllComplaintState extends State<PrincipalViewAllComplaint> {
                     } else {
                       temp = snapshot.data;
                       filteredData = temp;
-                      return Column(
+                      return Container(
+                        child: Column(
+                          children: [
+                            if(filteredData!.isNotEmpty)
+                          Headings(title: 'department of $dept',),
+                          Column(
                         children: filteredData!.map((complaintData) {
                           return eachComplaint(dept, complaintData);
                         }).toList(),
+                      )
+                          ],
+                          
+                        ),
                       );
+                      // return Column(
+                      //   children: filteredData!.map((complaintData) {
+                      //     return eachComplaint(dept, complaintData);
+                      //   }).toList(),
+                      // );
                     }
                   },
                 ),
@@ -92,7 +97,7 @@ class _PrincipalViewAllComplaintState extends State<PrincipalViewAllComplaint> {
               child: ListTile(
                 onTap: () {
                   Navigator.of(context)
-                      .pushReplacement(MaterialPageRoute(builder: (context) {
+                      .push(MaterialPageRoute(builder: (context) {
                     return ViewComplaint(
                       dept: dept,
                       id: complaintData['id'],

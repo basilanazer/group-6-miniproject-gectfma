@@ -24,7 +24,7 @@ class _listComplaintsState extends State<listComplaints> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> deptCollection = ['cse','che','ece','ee','pe','ce','me','arch'];
+    List<String> deptCollection = ["arch","ce","che","cse","ece","ee","me","pe"];
     //String dept = 'cse';
     return SafeArea(
       child: Scaffold(
@@ -65,7 +65,7 @@ class _listComplaintsState extends State<listComplaints> {
                       child:Column(
                         children: [
                           if(filteredData!.isNotEmpty)
-                          Headings(title: dept,),
+                          Headings(title: 'department of $dept',),
                           Column(
                             // children: snapshot.data!.map((complaintData) {
                             //   return eachComplaint(complaintData);

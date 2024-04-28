@@ -185,10 +185,25 @@ class _FileComplaintState extends State<FileComplaint> {
               if (pickedFile != null)
                 TextButton(
                     onPressed: () => showImageDialog(),
-                    child: Text(pickedFile!.name,
-                        style: TextStyle(
+                    child: 
+                      Text(
+                        pickedFile!.name,
+                        style: 
+                          TextStyle(
                             color: Colors.brown,
-                            decoration: TextDecoration.underline))),
+                            decoration: TextDecoration.underline
+                          )
+                      )
+                ),
+                // if (pickedFile != null)
+                // IconButton(
+                //   onPressed: () {
+                //     pickedFile = null;
+
+                //   }, 
+                //   icon: Icon(Icons.close),
+                // ),
+
               ElevatedButton(
                 onPressed: () {
                   uploadFile();

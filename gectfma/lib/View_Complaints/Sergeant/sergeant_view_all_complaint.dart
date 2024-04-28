@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gectfma/Complaint_Summary/sergeant_complaint_summary.dart';
 import 'package:gectfma/View_Complaints/Sergeant/sergeant_approved_complaint.dart';
 import 'package:gectfma/Requirements/Headings.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
@@ -31,7 +32,11 @@ class _SergeantViewAllComplaintState extends State<SergeantViewAllComplaint> {
         children: <Widget>[
           TopBar(
             goto: () {
-              Navigator.of(context).pop();
+             Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) {
+                      return SergeantComplaintSummary(deptName: "Sergeant");
+                    }),(Route<dynamic> route) => false,
+                   );
             },
             dept: "WELCOME Sergeant",
             iconLabel: 'Go Back',
@@ -53,7 +58,7 @@ class _SergeantViewAllComplaintState extends State<SergeantViewAllComplaint> {
           ])
             Column(
               children: [
-                Headings(title: "Department Of ${dept.toUpperCase()}"),
+                //Headings(title: "Department Of ${dept.toUpperCase()}"),
                 FutureBuilder<List<Map<String, dynamic>>>(
                   future: getData(dept, widget.status),
                   builder: (context, snapshot) {
@@ -64,11 +69,24 @@ class _SergeantViewAllComplaintState extends State<SergeantViewAllComplaint> {
                     } else {
                       temp = snapshot.data;
                       filteredData = temp;
-                      return Column(
-                        children: filteredData!.map((complaintData) {
-                          return eachComplaint(dept, complaintData);
-                        }).toList(),
+                      return Container(
+                        child: Column(
+                          children: [
+                            if(filteredData!.isNotEmpty)
+                          Headings(title: 'department of $dept',),
+                          Column(
+                              children: filteredData!.map((complaintData) {
+                                return eachComplaint(dept, complaintData);
+                              }).toList(),
+                            )
+                          ],
+                        ),
                       );
+                      // return Column(
+                      //   children: filteredData!.map((complaintData) {
+                      //     return eachComplaint(dept, complaintData);
+                      //   }).toList(),
+                      // );
                     }
                   },
                 ),
@@ -96,15 +114,16 @@ class _SergeantViewAllComplaintState extends State<SergeantViewAllComplaint> {
                 onTap: () {
                   if (widget.status == 'approved') {
                     Navigator.of(context)
-                        .pushReplacement(MaterialPageRoute(builder: (context) {
+                        .push(MaterialPageRoute(builder: (context) {
                       return SergeantApprovedComplaint(
                         dept: dept,
                         id: complaintData['id'],
+                        total: widget.total
                       );
                     }));
                   } else {
                     Navigator.of(context)
-                        .pushReplacement(MaterialPageRoute(builder: (context) {
+                        .push(MaterialPageRoute(builder: (context) {
                       return ViewComplaint(
                         designation:
                             widget.status == "assigned" ? "sergeant" : "",

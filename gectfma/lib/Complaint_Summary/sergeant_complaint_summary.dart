@@ -88,7 +88,7 @@ class SergeantComplaintSummary extends StatelessWidget {
                   ),
                   ComplaintsType(
                       goto: () {
-                        Navigator.of(context).pushReplacement(
+                        Navigator.of(context).push(
                             MaterialPageRoute(builder: (context) {
                           return SergeantViewAllComplaint(
                             total: completed!,
@@ -100,7 +100,7 @@ class SergeantComplaintSummary extends StatelessWidget {
                       complaintstatus: completed),
                   ComplaintsType(
                       goto: () {
-                        Navigator.of(context).pushReplacement(
+                        Navigator.of(context).push(
                             MaterialPageRoute(builder: (context) {
                           return SergeantViewAllComplaint(
                             total: assigned!,
@@ -112,7 +112,7 @@ class SergeantComplaintSummary extends StatelessWidget {
                       complaintstatus: assigned),
                   ComplaintsType(
                       goto: () {
-                        Navigator.of(context).pushReplacement(
+                        Navigator.of(context).push(
                             MaterialPageRoute(builder: (context) {
                           return SergeantViewAllComplaint(
                             total: approved!,

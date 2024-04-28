@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gectfma/Requirements/Headings.dart';
+import 'package:gectfma/Requirements/show_my_dialog.dart';
+import 'package:gectfma/View_Complaints/Sergeant/sergeant_view_all_complaint.dart';
 import '../Requirements/DetailFields.dart';
 import '../Requirements/TopBar.dart';
 
@@ -142,6 +144,23 @@ class _ViewComplaintState extends State<ViewComplaint> {
       ),
     )));
   }
+  Future<void> updateStatus(String id, String dept) async {
+  try {
+    CollectionReference collectionRef =
+        FirebaseFirestore.instance.collection(dept);
+
+    // Update the document
+    await collectionRef.doc(id).update({
+      'status': status,
+    });
+          
+    MyDialog.showCustomDialog(context, "Completed", "The complaint is marked as completed");
+    
+  } catch (e) {
+    // Handle errors
+    print("Error updating data: $e");
+  }
+}
 }
 
 Future<Map<String, dynamic>> viewComplaint(String id, String dept) async {
@@ -186,17 +205,4 @@ Future<Map<String, dynamic>> viewComplaint(String id, String dept) async {
   }
 }
 
-Future<void> updateStatus(String id, String dept) async {
-  try {
-    CollectionReference collectionRef =
-        FirebaseFirestore.instance.collection(dept);
 
-    // Update the document
-    await collectionRef.doc(id).update({
-      'status': status,
-    });
-  } catch (e) {
-    // Handle errors
-    print("Error updating data: $e");
-  }
-}

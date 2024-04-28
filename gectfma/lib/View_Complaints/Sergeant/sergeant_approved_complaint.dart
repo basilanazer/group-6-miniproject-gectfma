@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gectfma/Requirements/Headings.dart';
+import 'package:gectfma/Requirements/show_my_dialog.dart';
 import 'package:gectfma/View_Complaints/Sergeant/sergeant_view_all_complaint.dart';
 import '../../Requirements/DetailFields.dart';
 import '../../Requirements/TopBar.dart';
@@ -9,8 +10,9 @@ import '../../Requirements/TopBar.dart';
 class SergeantApprovedComplaint extends StatefulWidget {
   final String dept;
   final String id;
+  final int total;
   const SergeantApprovedComplaint(
-      {super.key, required this.dept, this.id = ""});
+      {super.key, required this.dept, this.id = "",required this.total});
 
   @override
   State<SergeantApprovedComplaint> createState() =>
@@ -132,7 +134,7 @@ class _SergeantApprovedComplaintState extends State<SergeantApprovedComplaint> {
               ),
               minimumSize: Size(150, 50), // Width and height
             ),
-            child: Text('UPDATE DETAILS'),
+            child: Text('ASSIGN STAFF'),
           ),
           SizedBox(
             height: 10,
@@ -141,6 +143,31 @@ class _SergeantApprovedComplaintState extends State<SergeantApprovedComplaint> {
       ),
     )));
   }
+  Future<void> updateAssignedStaff(String id, String dept) async {
+  try {
+    CollectionReference collectionRef =
+        FirebaseFirestore.instance.collection(dept);
+
+    // Update the document
+    await collectionRef.doc(id).update({
+      'assigned_staff': assignedStaffName,
+      'assigned_staff_no': assignedStaffNumber,
+      'status': status,
+    });
+    Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) {
+            return SergeantViewAllComplaint(total: widget.total+1,status:'assigned',);
+          }),
+          (Route<dynamic> route) => false,
+        );
+    MyDialog.showCustomDialog(context, "Staff Assigned", "$assignedStaffName is assigned to complaint $id");
+    
+  } catch (e) {
+    // Handle errors
+    print("Error updating data: $e");
+  }
+}
+
 }
 
 Future<Map<String, dynamic>> viewComplaint(String id, String dept) async {
@@ -178,21 +205,6 @@ Future<Map<String, dynamic>> viewComplaint(String id, String dept) async {
     print("Error getting data: $e");
     return {};
   }
+  
 }
 
-Future<void> updateAssignedStaff(String id, String dept) async {
-  try {
-    CollectionReference collectionRef =
-        FirebaseFirestore.instance.collection(dept);
-
-    // Update the document
-    await collectionRef.doc(id).update({
-      'assigned_staff': assignedStaffName,
-      'assigned_staff_no': assignedStaffNumber,
-      'status': status,
-    });
-  } catch (e) {
-    // Handle errors
-    print("Error updating data: $e");
-  }
-}
