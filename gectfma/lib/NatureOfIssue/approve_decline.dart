@@ -5,7 +5,7 @@ import 'package:gectfma/NatureOfIssue/comp_verification.dart';
 import 'package:gectfma/NatureOfIssue/list_complints.dart';
 import 'package:gectfma/Requirements/Headings.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
-import '../Requirements/DetailsField.dart';
+import '../Requirements/DetailFields.dart';
 import '../Requirements/TopBar.dart';
 
 class approveOrDecline extends StatefulWidget {
@@ -29,10 +29,10 @@ TextEditingController natureController = TextEditingController();
 TextEditingController statusController = TextEditingController();
 TextEditingController urgencyController = TextEditingController();
 TextEditingController remarkController = TextEditingController();
-String imageURL='';
+String imageURL = '';
 
 class _approveOrDeclineState extends State<approveOrDecline> {
-  String remark ='';
+  String remark = '';
   @override
   void initState() {
     // TODO: implement initState
@@ -42,12 +42,14 @@ class _approveOrDeclineState extends State<approveOrDecline> {
     remarkController = TextEditingController();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     Future<bool> evictImage(String imageURL) async {
-  final NetworkImage provider = NetworkImage(imageURL);
-  return await provider.evict();
-  }
+      final NetworkImage provider = NetworkImage(imageURL);
+      return await provider.evict();
+    }
+
     return SafeArea(
         child: Scaffold(
             body: SingleChildScrollView(
@@ -101,25 +103,26 @@ class _approveOrDeclineState extends State<approveOrDecline> {
           //Image To be added
           Padding(
             padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
-            child:Image.network(
+            child: Image.network(
               imageURL,
-            key: ValueKey(widget.id),
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) {
-                return child;
-              }
-              return Center(
-                child: CircularProgressIndicator(
-                  value: loadingProgress.expectedTotalBytes != null
-                      ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                      : null,
-                ),
-              );
-            },
-            errorBuilder: (context, error, stackTrace) {
-              return Text('Error loading image');
-            },
-          ),
+              key: ValueKey(widget.id),
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                }
+                return Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes!
+                        : null,
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Text('Error loading image');
+              },
+            ),
           ),
           Headings(title: "Urgency level"),
           DetailFields(
@@ -127,13 +130,17 @@ class _approveOrDeclineState extends State<approveOrDecline> {
             controller: urgencyController,
             hintText: "Level",
           ),
-          SizedBox(height: 20,),
+          SizedBox(
+            height: 20,
+          ),
           Headings(title: "Remarks*"),
           DetailFields(
-              hintText: "Remarks",
-              controller: remarkController,
+            hintText: "Remarks",
+            controller: remarkController,
           ),
-          SizedBox(height: 20,),
+          SizedBox(
+            height: 20,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -156,7 +163,8 @@ class _approveOrDeclineState extends State<approveOrDecline> {
               ),
               ElevatedButton(
                 onPressed: () {
-                 addRemark(widget.dept, widget.id, remarkController.text, "declined");
+                  addRemark(widget.dept, widget.id, remarkController.text,
+                      "declined");
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.red,
@@ -170,12 +178,15 @@ class _approveOrDeclineState extends State<approveOrDecline> {
               ),
             ],
           ),
-          SizedBox(height: 30,)
+          SizedBox(
+            height: 30,
+          )
         ],
       ),
     )));
   }
-  void addRemark(String dept,String id,String remark,String status) async {
+
+  void addRemark(String dept, String id, String remark, String status) async {
     try {
       if (remark == '') {
         MyDialog.showCustomDialog(
@@ -184,27 +195,22 @@ class _approveOrDeclineState extends State<approveOrDecline> {
           "Remark should be given",
         );
       } else {
-
         // Get a reference to the specific document with the custom ID
         DocumentReference docRef =
             FirebaseFirestore.instance.collection(dept).doc(id);
 
         // Set the data in the document with the custom ID
-        await docRef.update({
-          'verification_remark' : remark,
-          'status': status
-        });
+        await docRef.update({'verification_remark': remark, 'status': status});
         // Navigator.of(context)
         //     .pushAndRemoveUntil(MaterialPageRoute(builder: (context) {
         //       return complaintVerification(nature: natureController.text);
         //     }),(Route<dynamic> route) => false,);
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-            builder: (context) {
-              return listComplaints(status: status, nature: natureController.text);
-            }
-          ), (route) => route is complaintVerification);
-        MyDialog.showCustomDialog(context, "STATUS UPDATED",
-            "Remarks added and Status is updated");
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) {
+          return listComplaints(status: status, nature: natureController.text);
+        }), (route) => route is complaintVerification);
+        MyDialog.showCustomDialog(
+            context, "STATUS UPDATED", "Remarks added and Status is updated");
       }
     } catch (e) {
       print("Error adding document: $e");
@@ -215,7 +221,6 @@ class _approveOrDeclineState extends State<approveOrDecline> {
       ); // Handle errors here
     }
   }
-
 }
 
 Future<Map<String, dynamic>> viewComplaint(String id, String dept) async {
@@ -230,13 +235,13 @@ Future<Map<String, dynamic>> viewComplaint(String id, String dept) async {
         'contact': documentSnapshot['contact'],
         'desc': documentSnapshot['desc'],
         'hod': documentSnapshot['hod'],
-        'image' : documentSnapshot['image'],
+        'image': documentSnapshot['image'],
         'nature': documentSnapshot['nature'],
         'status': documentSnapshot['status'],
         'title': documentSnapshot['title'],
         'urgency': documentSnapshot['urgency'],
       };
-      
+
       contactController.text = data['contact'];
       descController.text = data['desc'];
       hodController.text = data['hod'];
