@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:gectfma/Complaint_Summary/complaint_summary.dart';
 import 'package:gectfma/Requirements/Headings.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
-import '../Requirements/DetailsField.dart';
+import '../Requirements/DetailFields.dart';
 import '../Requirements/TopBar.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -337,12 +337,14 @@ class _FileComplaintState extends State<FileComplaint> {
           'assigned_staff':'',
           'assigned_staff_no':''
         });
-        Navigator.of(context)
-            .pushAndRemoveUntil(MaterialPageRoute(builder: (context) {
-          return ComplaintSummary(
-            deptName: dept,
-          );
-        }),(Route<dynamic> route) => false,);
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) {
+            return ComplaintSummary(
+              deptName: dept,
+            );
+          }),
+          (Route<dynamic> route) => false,
+        );
         MyDialog.showCustomDialog(context, "NEW COMPLAINT REGISTERED",
             "Your complaint ID is $customDocId");
         print("Document added with ID: $customDocId");

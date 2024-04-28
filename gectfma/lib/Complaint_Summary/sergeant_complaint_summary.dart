@@ -2,10 +2,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gectfma/Login/logout.dart';
+import 'package:gectfma/Requirements/ComplaintType.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
 import 'package:gectfma/File_Complaint/file_complaint.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
+import 'package:gectfma/View_Complaints/Sergeant/sergeant_view_all_complaint.dart';
 import 'package:gectfma/View_Complaints/view_all_complaint.dart';
+
+/*
+The Sergeant has 3 complaint access
+Completed---Refers to completed tasks
+Assigned--Refers to ones where staff has been assigned
+Pending or Approved refers to the ones approved but staff is not yet assigned
+*/
 
 class SergeantComplaintSummary extends StatelessWidget {
   final String deptName;
@@ -54,7 +63,7 @@ class SergeantComplaintSummary extends StatelessWidget {
       },
       child: Scaffold(
         body: FutureBuilder(
-          future: getCounts(deptName),
+          future: getCounts(),
           builder: (context, AsyncSnapshot<Map<String, int>> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -62,8 +71,9 @@ class SergeantComplaintSummary extends StatelessWidget {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else {
               int? total = snapshot.data?['total'];
-              int? accepted = snapshot.data?['accepted'];
-              int? pending = snapshot.data?['pending'];
+              int? completed = snapshot.data?['completed'];
+              int? assigned = snapshot.data?['assigned'];
+              int? approved = snapshot.data?['approved'];
 
               return Column(
                 children: <Widget>[
@@ -72,51 +82,54 @@ class SergeantComplaintSummary extends StatelessWidget {
                     iconLabel: "Log Out",
                     title: "TOTAL COMPLAINTS $total",
                     icon: Icons.logout,
-                    goto: (){
+                    goto: () {
                       logout.logOut(context);
                     },
                   ),
                   ComplaintsType(
-                      goto: () {},
-                      complainttype: "Assigned",
-                      complaintstatus: accepted),
+                      goto: () {
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) {
+                          return SergeantViewAllComplaint(
+                            total: completed!,
+                            status: "completed",
+                          );
+                        }));
+                      },
+                      complainttype: "Completed",
+                      complaintstatus: completed),
                   ComplaintsType(
-                      goto: () {},
+                      goto: () {
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) {
+                          return SergeantViewAllComplaint(
+                            total: assigned!,
+                            status: "assigned",
+                          );
+                        }));
+                      },
+                      complainttype: "Assigned",
+                      complaintstatus: assigned),
+                  ComplaintsType(
+                      goto: () {
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) {
+                          return SergeantViewAllComplaint(
+                            total: approved!,
+                            status: "approved",
+                          );
+                        }));
+                      },
                       complainttype: "Pending",
-                      complaintstatus: pending),
-                  // Column(
-                  //   children: <Widget>[
-                  //     InkWell(
-                  //       onTap: () {
-                  //         Navigator.of(context).pushReplacement(
-                  //             MaterialPageRoute(builder: (context) {
-                  //           return FileComplaint(
-                  //             dept: deptName,
-                  //           );
-                  //         }));
-                  //       },
-                  //       child: Icon(
-                  //         size: 80.0,
-                  //         Icons.note_add_outlined,
-                  //         color: Colors.brown[600],
-                  //       ),
-                  //     ),
-                  //     Text(
-                  //       "File New Complaint",
-                  //       style: TextStyle(color: Colors.brown[700]),
-                  //     ),
-                  //   ],
-                  // ),
+                      complaintstatus: approved),
                   SizedBox(height: 40),
                   Column(
                     children: <Widget>[
                       InkWell(
                         onTap: () {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) {
-                            return ViewAllComplaint(
-                              dept: deptName,
-                            );
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return SergeantViewAllComplaint(total: total!);
                           }));
                         },
                         child: Icon(
@@ -140,76 +153,52 @@ class SergeantComplaintSummary extends StatelessWidget {
     ));
   }
 
-  Future<Map<String, int>> getCounts(String dept) async {
+  Future<Map<String, int>> getCounts() async {
     try {
+      int completedCount = 0;
+      int assignedCount = 0;
+      int approvedCount = 0;
+
+      List<String> deptCollection = [
+        'cse',
+        'che',
+        'ece',
+        'ee',
+        'pe',
+        'ce',
+        'me',
+        'arch'
+      ];
       // Get a reference to the collection
-      CollectionReference collectionRef =
-          FirebaseFirestore.instance.collection(dept);
+      for (int i = 0; i < 8; i++) {
+        String dept = deptCollection[i];
+        CollectionReference collectionRef =
+            FirebaseFirestore.instance.collection(dept);
 
-      // Query the collection for documents with status 'pending'
-      QuerySnapshot pendingSnapshot =
-          await collectionRef.where('status', isEqualTo: 'pending').get();
-      int pendingCount = pendingSnapshot.size;
+        // Query the collection for documents with status 'approved'
+        QuerySnapshot completedSnapshot =
+            await collectionRef.where('status', isEqualTo: 'completed').get();
+        completedCount += completedSnapshot.size;
+        QuerySnapshot assignedSnapshot =
+            await collectionRef.where('status', isEqualTo: 'assigned').get();
+        assignedCount += assignedSnapshot.size;
 
-      // Query the collection for documents with status 'accepted'
-      QuerySnapshot acceptedSnapshot =
-          await collectionRef.where('status', isEqualTo: 'accepted').get();
-      int acceptedCount = acceptedSnapshot.size;
-
-      int totalCount = pendingCount + acceptedCount;
-
+        // Query the collection for documents with status 'accepted'
+        QuerySnapshot approvedSnapshot =
+            await collectionRef.where('status', isEqualTo: 'approved').get();
+        approvedCount += approvedSnapshot.size;
+      }
+      int totalCount = approvedCount + assignedCount + completedCount;
       return {
-        'pending': pendingCount,
-        'accepted': acceptedCount,
+        'assigned': assignedCount,
+        'approved': approvedCount,
+        'completed': completedCount,
         'total': totalCount
       };
     } catch (e) {
       // Handle errors
       print("Error getting counts: $e");
-      return {'pending': 0, 'accepted': 0, 'total': 0};
+      return {'assigned': 0, 'approved': 0, 'completed': 0, 'total': 0};
     }
-  }
-}
-
-class ComplaintsType extends StatelessWidget {
-  final String complainttype;
-  final Function goto;
-  final int? complaintstatus;
-  const ComplaintsType({
-    super.key,
-    required this.complainttype,
-    required this.complaintstatus,
-    required this.goto,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: goto(),
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-        height: 70,
-        decoration: BoxDecoration(
-          color: Colors.green[100],
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "$complainttype complaints".toUpperCase(),
-                style: TextStyle(fontSize: 17, color: Colors.brown[600]),
-              ),
-              Text(
-                "$complaintstatus",
-                style: TextStyle(fontSize: 17, color: Colors.brown[600]),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }

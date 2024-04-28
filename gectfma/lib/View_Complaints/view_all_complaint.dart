@@ -17,7 +17,7 @@ class ViewAllComplaint extends StatefulWidget {
 }
 
 class _ViewAllComplaintState extends State<ViewAllComplaint> {
-  TextEditingController searchController = TextEditingController();
+  // TextEditingController searchController = TextEditingController();
   List<Map<String, dynamic>>? temp = [];
   List<Map<String, dynamic>>? filteredData;
   List<String>? filteredIds = [];
@@ -85,7 +85,7 @@ class _ViewAllComplaintState extends State<ViewAllComplaint> {
               //     ),
               //   ),
               // ),
-              SizedBox(height: 20),
+              // SizedBox(height: 20),
               FutureBuilder<List<Map<String, dynamic>>>(
                 future: getData(widget.dept, widget.status),
                 builder: (context, snapshot) {

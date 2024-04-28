@@ -5,8 +5,10 @@ import 'package:gectfma/Login/forgot_pw.dart';
 import 'package:gectfma/NatureOfIssue/comp_verification.dart';
 import 'package:gectfma/NatureOfIssue/nature.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
+import 'package:gectfma/View_Complaints/Principal/principal_view_all_complaint.dart';
+import 'package:gectfma/View_Complaints/Sergeant/sergeant_view_all_complaint.dart';
 import 'package:gectfma/View_Complaints/view_all_complaint.dart';
-import '../Requirements/DetailsField.dart';
+import '../Requirements/DetailFields.dart';
 import '../Complaint_Summary/complaint_summary.dart';
 
 class Login extends StatefulWidget {
@@ -20,7 +22,16 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final emailController = TextEditingController();
-
+  List<String> deptCollection = [
+    'cse',
+    'che',
+    'ece',
+    'ee',
+    'pe',
+    'ce',
+    'me',
+    'arch'
+  ];
   final paswdController = TextEditingController();
   String deptOrDesignation = "";
   String email = "";
@@ -31,132 +42,138 @@ class _LoginState extends State<Login> {
     return Material(
         color: Colors.brown[50],
         child: WillPopScope(
-        onWillPop: () async {
-        // Show exit confirmation dialog
-        bool exit = await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            backgroundColor: Colors.amber[50],
-            title: Text('Are you sure you want to exit?'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  // Close the dialog and return false
-                  Navigator.of(context).pop(false);
-                },
-                child: Text(
-                  'No',
-                  style: TextStyle(color: Colors.brown[800]),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  // Close the dialog and return true
-                  Navigator.of(context).pop(true);
-                },
-                child: Text(
-                  'yes',
-                  style: TextStyle(color: Colors.brown[800]),
-                ),
-              ),
-            ],
-          ),
-        );
-
-        // Return exit if user confirmed, otherwise don't exit
-        return exit ?? false;
-      },
-        child: ListView(
-          children: [
-            Column(children: <Widget>[
-              SizedBox(
-                height: 90,
-              ),
-              Text(
-                "Government Engineering College Thrissur".toUpperCase(),
-                style: TextStyle(
-                    color: Colors.brown[800],
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                  height: 150,
-                  width: 150,
-                  child: Image.asset("assets/images/logo.png")),
-              SizedBox(
-                height: 20,
-              ),
-              Text("LOGIN",
-                  style: TextStyle(
-                    color: Colors.brown[800],
-                    fontSize: 25,
-                  )),
-              SizedBox(
-                height: 20,
-              ),
-              DetailFields(
-                hintText: "Enter Email",
-                controller: emailController,
-              ),
-              DetailFields(
-                hintText: "Enter Password",
-                controller: paswdController,
-                obscure: true,
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                  padding: const EdgeInsets.all(8.0),
-                  width: 370,
-                  decoration: BoxDecoration(
-                      color: Colors.brown[800],
-                      borderRadius: BorderRadius.circular(10)),
-                  child: TextButton(
-                    onPressed: () {
-                      setState(() {
-                        email = emailController.text;
-                        pswd = paswdController.text;
-                        if (email.isNotEmpty)
-                          deptOrDesignation = email.split("@")[0].substring(3);
-                        if (email.split("@")[0] == "sergeant") {
-                          deptOrDesignation = "Sergeant";
-                        } else if (email.split("@")[0] == "principal") {
-                          deptOrDesignation = "Principal";
-                        } else if (email.split("@")[0] ==
-                            widget.plumbingInCharge) {
-                          deptOrDesignation = widget.plumbingInCharge;
-                        }
-                      });
-                      login(email, pswd, deptOrDesignation, context);
-                    },
-                    child: Text(
-                      "LOGIN",
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+            onWillPop: () async {
+              // Show exit confirmation dialog
+              bool exit = await showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  backgroundColor: Colors.amber[50],
+                  title: Text('Are you sure you want to exit?'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        // Close the dialog and return false
+                        Navigator.of(context).pop(false);
+                      },
+                      child: Text(
+                        'No',
+                        style: TextStyle(color: Colors.brown[800]),
+                      ),
                     ),
-                  )),
-              SizedBox(
-                height: 10,
-              ),
-              TextButton(
-                child: Text("Forgot Password?",
+                    TextButton(
+                      onPressed: () {
+                        // Close the dialog and return true
+                        Navigator.of(context).pop(true);
+                      },
+                      child: Text(
+                        'yes',
+                        style: TextStyle(color: Colors.brown[800]),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+
+              // Return exit if user confirmed, otherwise don't exit
+              return exit ?? false;
+            },
+            child: ListView(
+              children: [
+                Column(children: <Widget>[
+                  SizedBox(
+                    height: 90,
+                  ),
+                  Text(
+                    "Government Engineering College Thrissur".toUpperCase(),
                     style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      color: Colors.brown[800],
-                    )),
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return ForgotPasswordPage();
-                  }));
-                },
-              )
-            ]),
-          ],
-        )));
+                        color: Colors.brown[800],
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                      height: 150,
+                      width: 150,
+                      child: Image.asset("assets/images/logo.png")),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text("LOGIN",
+                      style: TextStyle(
+                        color: Colors.brown[800],
+                        fontSize: 25,
+                      )),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  DetailFields(
+                    hintText: "Enter Email",
+                    controller: emailController,
+                  ),
+                  DetailFields(
+                    hintText: "Enter Password",
+                    controller: paswdController,
+                    obscure: true,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                      padding: const EdgeInsets.all(8.0),
+                      width: 370,
+                      decoration: BoxDecoration(
+                          color: Colors.brown[800],
+                          borderRadius: BorderRadius.circular(10)),
+                      child: TextButton(
+                        onPressed: () {
+                          setState(() {
+                            email = emailController.text;
+                            pswd = paswdController.text;
+                            if (email.isNotEmpty)
+                              deptOrDesignation =
+                                  email.split("@")[0].substring(3);
+                            if (email.split("@")[0] == "sergeant") {
+                              deptOrDesignation = "Sergeant";
+                            } else if (email.split("@")[0] == "principal") {
+                              deptOrDesignation = "Principal";
+                            } else if (email.split("@")[0] ==
+                                widget.plumbingInCharge) {
+                              deptOrDesignation = widget.plumbingInCharge;
+                            }
+                            /*For Other Users...A new Page for students/pta members reqd */
+                            // else if (!deptCollection
+                            //     .contains(deptOrDesignation)) {
+                            //   deptOrDesignation = email.split("@")[0];
+                            // }
+                          });
+                          login(email, pswd, deptOrDesignation, context);
+                        },
+                        child: Text(
+                          "LOGIN",
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      )),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextButton(
+                    child: Text("Forgot Password?",
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          color: Colors.brown[800],
+                        )),
+                    onPressed: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return ForgotPasswordPage();
+                      }));
+                    },
+                  )
+                ]),
+              ],
+            )));
   }
 
   void login(String email, String password, String deptOrDesignation,
@@ -174,40 +191,24 @@ class _LoginState extends State<Login> {
             dept: deptOrDesignation,
           );
         }));
-      } 
-      else if(email=='vmeera@gectcr.ac.in'){
+      } else if (email == 'vmeera@gectcr.ac.in') {
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (context) {
           return complaintVerification(nature: "Plumbing");
         }));
-      }
-      else if (deptOrDesignation == "Sergeant") {
+      } else if (deptOrDesignation == "Sergeant") {
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (context) {
           return SergeantComplaintSummary(
             deptName: deptOrDesignation,
           );
         }));
-      }
-      // else if (deptOrDesignation != "Sergeant" &&
-      //     deptOrDesignation != "Principal") {
-      //   Navigator.of(context)
-      //       .pushReplacement(MaterialPageRoute(builder: (context) {
-      //     return SergeantComplaintSummary(
-      //       deptName: deptOrDesignation,
-      //     );
-      //   }));
-      // } 
-      else if (deptOrDesignation == "Principal") {
-        // Navigator.of(context)
-        //     .pushReplacement(MaterialPageRoute(builder: (context) {
-        //   return (
-        //     deptName: deptOrDesignation,
-        //   );
-        // }));
-      }
-      
-      else {
+      } else if (deptOrDesignation == "Principal") {
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (context) {
+          return PrincipalViewAllComplaint();
+        }));
+      } else if (deptCollection.contains(deptOrDesignation)) {
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (context) {
           return ComplaintSummary(
@@ -215,9 +216,11 @@ class _LoginState extends State<Login> {
           );
         }));
       }
+      /*Handle New User Landing Page */
+      // else{}
     } on FirebaseAuthException catch (e) {
       // Login failed, handle error
-      print('Error logging in user: $e');
+      // print('Error logging in user: $e');
       MyDialog.showCustomDialog(context, "LOGIN FAILED",
           "Incorrect email or password. Please try again.");
     }

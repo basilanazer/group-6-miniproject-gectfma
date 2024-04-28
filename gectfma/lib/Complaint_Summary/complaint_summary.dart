@@ -1,10 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gectfma/NatureOfIssue/nature.dart';
+import 'package:gectfma/Requirements/ComplaintType.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
 import 'package:gectfma/File_Complaint/file_complaint.dart';
-import 'package:gectfma/Requirements/show_my_dialog.dart';
 import 'package:gectfma/View_Complaints/view_all_complaint.dart';
 import 'package:gectfma/Login/logout.dart';
 
@@ -82,7 +81,7 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
                         ? Icons.arrow_back
                         : Icons.logout,
                     goto: () {
-                      if (widget.deptName=='ee') {
+                      if (widget.deptName == 'ee') {
                         Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(builder: (context) {
                             return NatureOfIssue(
@@ -91,9 +90,8 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
                           }),
                           (Route<dynamic> route) => false,
                         );
-                      }
-                      else{
-                          logout.logOut(context); 
+                      } else {
+                        logout.logOut(context);
                       }
                     },
                   ),
@@ -137,8 +135,8 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
                     children: <Widget>[
                       InkWell(
                         onTap: () {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
                             return FileComplaint(
                               dept: widget.deptName,
                             );
@@ -161,8 +159,8 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
                     children: <Widget>[
                       InkWell(
                         onTap: () {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
                             return ViewAllComplaint(
                               dept: widget.deptName,
                             );
@@ -229,48 +227,5 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
       print("Error getting counts: $e");
       return {'pending': 0, 'completed': 0, 'declined': 0, 'total': 0};
     }
-  }
-}
-
-class ComplaintsType extends StatelessWidget {
-  final String complainttype;
-  final Function() goto;
-  final int? complaintstatus;
-  const ComplaintsType({
-    super.key,
-    required this.complainttype,
-    required this.complaintstatus,
-    required this.goto,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: goto,
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-        height: 70,
-        decoration: BoxDecoration(
-          color: Colors.brown[100],
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "$complainttype complaints".toUpperCase(),
-                style: TextStyle(fontSize: 17, color: Colors.brown[600]),
-              ),
-              Text(
-                "$complaintstatus",
-                style: TextStyle(fontSize: 17, color: Colors.brown[600]),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }

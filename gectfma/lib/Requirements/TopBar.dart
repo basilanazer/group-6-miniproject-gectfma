@@ -17,7 +17,6 @@ class TopBar extends StatelessWidget {
     required this.icon,
     required this.dept,
     required this.goto,
-
   }) : super(key: key);
 
   @override
