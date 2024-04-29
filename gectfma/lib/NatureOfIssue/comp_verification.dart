@@ -96,6 +96,7 @@ class _complaintVerificationState extends State<complaintVerification>{
       int approvedCount = 0;
       int declinedCount = 0;
       int completedCount = 0;
+      int assignedCount = 0;
       List<String> deptCollection = ['cse','che','ece','ee','pe','ce','me','arch'];
       // Get a reference to the collection
       for(int i = 0; i < 8; i++){
@@ -110,7 +111,9 @@ class _complaintVerificationState extends State<complaintVerification>{
         QuerySnapshot completedSnapshot =
             await collectionRef.where('status', isEqualTo:'completed').where('nature', isEqualTo: nature).get();
         completedCount += completedSnapshot.size;
-
+        QuerySnapshot assignedSnapshot =
+            await collectionRef.where('status', isEqualTo: 'assigned').where('nature', isEqualTo: nature).get();
+        assignedCount += assignedSnapshot.size;
         // Query the collection for documents with status 'accepted'
         QuerySnapshot acceptedSnapshot =
             await collectionRef.where('status', isEqualTo: 'approved').where('nature', isEqualTo: nature).get();
@@ -121,12 +124,13 @@ class _complaintVerificationState extends State<complaintVerification>{
             await collectionRef.where('status', isEqualTo: 'declined').where('nature', isEqualTo: nature).get();
         declinedCount += declinedSnapshot.size;        
       }
-      int totalCount = pendingCount + approvedCount + declinedCount + completedCount;
+      int totalCount = pendingCount + approvedCount + declinedCount + completedCount + assignedCount;
       return {
         'pending': pendingCount,
         'approved': approvedCount,
         'declined': declinedCount,
         'completed': completedCount,
+        'assigned' : assignedCount,
         'total': totalCount
       };
     } catch (e) {

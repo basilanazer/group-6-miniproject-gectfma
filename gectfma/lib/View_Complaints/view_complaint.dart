@@ -30,7 +30,12 @@ TextEditingController statusController = TextEditingController();
 TextEditingController urgencyController = TextEditingController();
 TextEditingController staffNameController = TextEditingController();
 TextEditingController staffNumberController = TextEditingController();
+TextEditingController remarkController = TextEditingController();
+TextEditingController ratingController = TextEditingController();
+TextEditingController reviewController = TextEditingController();
 String status = "";
+String imageURL = '';
+String str_rating_no = '';
 
 class _ViewComplaintState extends State<ViewComplaint> {
   @override
@@ -93,9 +98,30 @@ class _ViewComplaintState extends State<ViewComplaint> {
             controller: descController,
             hintText: "Description",
           ),
-          Headings(title: "Additional documents*"),
-          //Image To be added
-          DetailFields(isEnable: false, hintText: "Image"),
+          Headings(title: "Images"),
+          Padding(
+            padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
+            child: Image.network(
+              imageURL,
+              key: ValueKey(widget.id),
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                }
+                return Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes!
+                        : null,
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Text('loading image');
+              },
+            ),
+          ),
           SizedBox(
             height: 20,
           ),
@@ -108,21 +134,76 @@ class _ViewComplaintState extends State<ViewComplaint> {
           SizedBox(
             height: 20,
           ),
-          Headings(title: "Assigned Staff Details"),
-          DetailFields(
-            isEnable: false,
-            hintText: "Assigned Staff Name",
-            controller: staffNameController,
+          if(statusController.text != 'pending')
+          Column(
+            children : [
+              Headings(title: "Verification remarks"),
+              DetailFields(
+              isEnable: false,
+              hintText: "no remarks given",
+              controller: remarkController,),
+              SizedBox(height: 20,),
+            ]
           ),
-          DetailFields(
-            isEnable: false,
-            hintText: "Assigned Staff Number",
-            controller: staffNumberController,
+
+          if(statusController.text == 'assigned' || statusController.text == 'completed')
+          Column(
+            children: [
+              Headings(title: "Assigned Staff Details"),
+              DetailFields(
+                isEnable: false,
+                hintText: "Assigned Staff Name",
+                controller: staffNameController,
+              ),
+              SizedBox(height: 20,),
+              DetailFields(
+                isEnable: false,
+                hintText: "Assigned Staff Number",
+                controller: staffNumberController,),
+                SizedBox(height: 20,)
+            ]
           ),
+          
+          if(statusController.text == "completed")
+          Column(
+            children: [
+              Headings(title: 'Rating and Review'),
+              if(str_rating_no == '')
+              Center(
+                child: Text(
+                         "NO RATINGS OR REVIEW GIVEN YET",
+                         style: TextStyle(
+                          color: Colors.brown[600],
+                          fontWeight: FontWeight.bold,
+                         ),
+                )
+              ),
+              
+              if(str_rating_no != '')
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for(int i = 0 ; i < double.parse(str_rating_no).round();i++ )
+                  Icon(Icons.star,
+                  color: Colors.amber,)
+                ],
+              ),
+              if(str_rating_no != '')
+              DetailFields(
+                isEnable: false,
+                hintText: "review",
+                controller: reviewController,
+              ),
+              SizedBox(height: 20,)
+            ],
+          ),
+          
+
           /*
           Handles the case of sergeant assigned complaints to be marked as completed
            */
-          if (widget.designation != "")
+      
+          if (widget.designation == "sergeant")
             ElevatedButton(
               onPressed: () {
                 setState(() {
@@ -140,30 +221,12 @@ class _ViewComplaintState extends State<ViewComplaint> {
               ),
               child: Text('MARK AS COMPLETED'),
             ),
+            SizedBox(height: 30,)
         ],
       ),
     )));
   }
-  Future<void> updateStatus(String id, String dept) async {
-  try {
-    CollectionReference collectionRef =
-        FirebaseFirestore.instance.collection(dept);
-
-    // Update the document
-    await collectionRef.doc(id).update({
-      'status': status,
-    });
-          
-    MyDialog.showCustomDialog(context, "Completed", "The complaint is marked as completed");
-    
-  } catch (e) {
-    // Handle errors
-    print("Error updating data: $e");
-  }
-}
-}
-
-Future<Map<String, dynamic>> viewComplaint(String id, String dept) async {
+  Future<Map<String, dynamic>> viewComplaint(String id, String dept) async {
   try {
     CollectionReference collectionRef =
         FirebaseFirestore.instance.collection(dept);
@@ -175,23 +238,34 @@ Future<Map<String, dynamic>> viewComplaint(String id, String dept) async {
         'contact': documentSnapshot['contact'],
         'desc': documentSnapshot['desc'],
         'hod': documentSnapshot['hod'],
-        //image
+        'image' : documentSnapshot['image'],
         'nature': documentSnapshot['nature'],
         'status': documentSnapshot['status'],
         'title': documentSnapshot['title'],
         'urgency': documentSnapshot['urgency'],
         'assigned_staff': documentSnapshot['assigned_staff'],
         'assigned_staff_no': documentSnapshot['assigned_staff_no'],
+        'verification_remark': documentSnapshot['verification_remark'],
+        'rating_no': documentSnapshot['rating_no'],
+        'hod_completed_review': documentSnapshot['hod_completed_review'],
       };
-      contactController.text = data['contact'];
-      descController.text = data['desc'];
-      hodController.text = data['hod'];
-      natureController.text = data['nature'];
-      statusController.text = data['status'];
-      titleController.text = data['title'];
-      urgencyController.text = data['urgency'];
-      staffNameController.text = data['assigned_staff'];
-      staffNumberController.text = data['assigned_staff_no'];
+      
+      setState(() {
+        contactController.text = data['contact'];
+        descController.text = data['desc'];
+        hodController.text = data['hod'];
+        natureController.text = data['nature'];
+        statusController.text = data['status'];
+        titleController.text = data['title'];
+        urgencyController.text = data['urgency'];
+        staffNameController.text = data['assigned_staff'];
+        staffNumberController.text = data['assigned_staff_no'];
+        imageURL = data['image'];
+        remarkController.text = data['verification_remark'];
+        reviewController.text = data['hod_completed_review'];
+        str_rating_no = data['rating_no'];
+        
+      });
 
       return data;
     } else {
@@ -204,5 +278,47 @@ Future<Map<String, dynamic>> viewComplaint(String id, String dept) async {
     return {};
   }
 }
+Future<int> count() async{
+  int completedCount=0;
+  List<String> depts = ['arch','ce','che','cse','ece','ee','me','pe'];
+  for(var d in depts)
+  {  CollectionReference collectionRef = FirebaseFirestore.instance.collection(d);
+      QuerySnapshot completedSnapshot =
+            await collectionRef.where('status', isEqualTo: 'completed').get();
+            completedCount += completedSnapshot.size;
+  }
+  return completedCount;
+}
 
+
+  Future<void> updateStatus(String id, String dept) async {
+  try {
+    CollectionReference collectionRef =
+        FirebaseFirestore.instance.collection(dept);
+
+    // Update the document
+    await collectionRef.doc(id).update({
+      'status': status,
+    });
+    
+     int completedCount=0;
+  List<String> depts = ['arch','ce','che','cse','ece','ee','me','pe'];
+  for(var d in depts)
+  {  CollectionReference collectionRef = FirebaseFirestore.instance.collection(d);
+      QuerySnapshot completedSnapshot =
+            await collectionRef.where('status', isEqualTo: 'completed').get();
+            completedCount += completedSnapshot.size;
+  }
+    Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) {
+          return SergeantViewAllComplaint(total:completedCount ,status: "completed",);
+        }), (route) => false);      
+    MyDialog.showCustomDialog(context, "Completed", "The complaint is marked as completed");
+    
+  } catch (e) {
+    // Handle errors
+    print("Error updating data: $e");
+  }
+}
+}
 

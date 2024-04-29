@@ -70,6 +70,7 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
               int? declined = snapshot.data?['declined'];
               int? pending = snapshot.data?['pending'];
               int? completed = snapshot.data?['completed'];
+              int? assigned  = snapshot.data?['assigned'];
 
               return Column(
                 children: <Widget>[
@@ -118,7 +119,7 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
                         }));
                       },
                       complainttype: "Pending",
-                      complaintstatus: (pending! + approved!)),
+                      complaintstatus: (pending! + approved! + assigned!)),
                   ComplaintsType(
                       goto: () {
                         Navigator.of(context)
@@ -212,15 +213,21 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
           await collectionRef.where('status', isEqualTo: 'completed').get();
       int completedCount = completedSnapshot.size;
 
+      QuerySnapshot assignedSnapshot =
+          await collectionRef.where('status', isEqualTo: 'completed').get();
+      int assignedCount = assignedSnapshot.size;
+
+
       int totalCount =
-          pendingCount + approvedCount + declinedCount + completedCount;
+          pendingCount + approvedCount + declinedCount + completedCount + assignedCount;
 
       return {
         'pending': pendingCount,
         'approved': approvedCount,
         'declined': declinedCount,
         'completed': completedCount,
-        'total': totalCount
+        'total': totalCount,
+        'assigned' : assignedCount
       };
     } catch (e) {
       // Handle errors
