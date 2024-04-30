@@ -162,7 +162,7 @@ class _FileComplaintState extends State<FileComplaint> {
           ),
           Headings(title: "Additional documents*"),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               if (pickedFile == null)
                 TextButton.icon(
@@ -195,14 +195,16 @@ class _FileComplaintState extends State<FileComplaint> {
                           )
                       )
                 ),
-                // if (pickedFile != null)
-                // IconButton(
-                //   onPressed: () {
-                //     pickedFile = null;
+                if (pickedFile != null)
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      pickedFile = null;
+                    });
 
-                //   }, 
-                //   icon: Icon(Icons.close),
-                // ),
+                  }, 
+                  icon: Icon(Icons.close,color: Colors.brown,),
+                ),
 
               ElevatedButton(
                 onPressed: () {
@@ -350,7 +352,10 @@ class _FileComplaintState extends State<FileComplaint> {
           'filed_date': DateTime.now(),
           'image': urlDownload,
           'assigned_staff':'',
-          'assigned_staff_no':''
+          'assigned_staff_no':'',
+          'verification_remark' : '',
+          'rating_no': '',
+          'hod_completed_review' : '',
         });
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) {

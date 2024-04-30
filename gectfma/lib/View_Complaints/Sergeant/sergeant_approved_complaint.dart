@@ -31,9 +31,12 @@ TextEditingController statusController = TextEditingController();
 TextEditingController urgencyController = TextEditingController();
 TextEditingController assignedstaffNameController = TextEditingController();
 TextEditingController assignedstaffNumberController = TextEditingController();
+TextEditingController remarkController = TextEditingController();
+
 String assignedStaffName = "";
 String assignedStaffNumber = "";
 String status = "";
+String imageURL = '';
 
 class _SergeantApprovedComplaintState extends State<SergeantApprovedComplaint> {
   @override
@@ -42,8 +45,56 @@ class _SergeantApprovedComplaintState extends State<SergeantApprovedComplaint> {
     if (widget.id != "") {
       viewComplaint(widget.id, widget.dept);
     }
+    assignedstaffNameController = TextEditingController();
+    assignedstaffNumberController = TextEditingController();
     super.initState();
   }
+  Future<Map<String, dynamic>> viewComplaint(String id, String dept) async {
+  try {
+    CollectionReference collectionRef =
+        FirebaseFirestore.instance.collection(dept);
+
+    DocumentSnapshot documentSnapshot = await collectionRef.doc(id).get();
+
+    if (documentSnapshot.exists) {
+      Map<String, dynamic> data = {
+        'contact': documentSnapshot['contact'],
+        'desc': documentSnapshot['desc'],
+        'hod': documentSnapshot['hod'],
+        'image' : documentSnapshot['image'],
+        'nature': documentSnapshot['nature'],
+        'status': documentSnapshot['status'],
+        'title': documentSnapshot['title'],
+        'urgency': documentSnapshot['urgency'],
+        'verification_remark': documentSnapshot['verification_remark'],
+        
+      };
+      
+      setState(() {
+        contactController.text = data['contact'];
+        descController.text = data['desc'];
+        hodController.text = data['hod'];
+        natureController.text = data['nature'];
+        statusController.text = data['status'];
+        titleController.text = data['title'];
+        urgencyController.text = data['urgency'];
+        imageURL = data['image'];
+        remarkController.text = data['verification_remark'];
+        
+      });
+
+      return data;
+    } else {
+      print('Document not found');
+      return {};
+    }
+  } catch (e) {
+    // Handle errors
+    print("Error getting data: $e");
+    return {};
+  }
+  
+}
 
   @override
   Widget build(BuildContext context) {
@@ -96,9 +147,30 @@ class _SergeantApprovedComplaintState extends State<SergeantApprovedComplaint> {
             controller: descController,
             hintText: "Description",
           ),
-          Headings(title: "Additional documents*"),
-          //Image To be added
-          DetailFields(isEnable: false, hintText: "Image"),
+          Headings(title: "images*"),
+          Padding(
+            padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
+            child: Image.network(
+              imageURL,
+              key: ValueKey(widget.id),
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                }
+                return Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes!
+                        : null,
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Text('loading image');
+              },
+            ),
+          ),
           SizedBox(
             height: 20,
           ),
@@ -137,12 +209,14 @@ class _SergeantApprovedComplaintState extends State<SergeantApprovedComplaint> {
             child: Text('ASSIGN STAFF'),
           ),
           SizedBox(
-            height: 10,
+            height: 30,
           )
         ],
       ),
     )));
   }
+  
+
   Future<void> updateAssignedStaff(String id, String dept) async {
   try {
     CollectionReference collectionRef =
@@ -168,43 +242,5 @@ class _SergeantApprovedComplaintState extends State<SergeantApprovedComplaint> {
   }
 }
 
-}
-
-Future<Map<String, dynamic>> viewComplaint(String id, String dept) async {
-  try {
-    CollectionReference collectionRef =
-        FirebaseFirestore.instance.collection(dept);
-
-    DocumentSnapshot documentSnapshot = await collectionRef.doc(id).get();
-
-    if (documentSnapshot.exists) {
-      Map<String, dynamic> data = {
-        'contact': documentSnapshot['contact'],
-        'desc': documentSnapshot['desc'],
-        'hod': documentSnapshot['hod'],
-        //image
-        'nature': documentSnapshot['nature'],
-        'status': documentSnapshot['status'],
-        'title': documentSnapshot['title'],
-        'urgency': documentSnapshot['urgency'],
-      };
-      contactController.text = data['contact'];
-      descController.text = data['desc'];
-      hodController.text = data['hod'];
-      natureController.text = data['nature'];
-      statusController.text = data['status'];
-      titleController.text = data['title'];
-      urgencyController.text = data['urgency'];
-      return data;
-    } else {
-      print('Document not found');
-      return {};
-    }
-  } catch (e) {
-    // Handle errors
-    print("Error getting data: $e");
-    return {};
-  }
-  
 }
 

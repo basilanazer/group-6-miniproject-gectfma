@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gectfma/Complaint_Summary/complaint_summary.dart';
 import 'package:gectfma/File_Complaint/file_complaint.dart';
 import 'package:gectfma/Requirements/Headings.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:gectfma/View_Complaints/completed_review.dart';
 import 'package:gectfma/View_Complaints/view_complaint.dart';
 
 class ViewAllComplaint extends StatefulWidget {
@@ -54,7 +56,11 @@ class _ViewAllComplaintState extends State<ViewAllComplaint> {
                 icon: Icons.arrow_back,
                 dept: "Welcome ${widget.dept}",
                 goto: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) {
+                      return ComplaintSummary(deptName: widget.dept );
+                    }),(Route<dynamic> route) => false,
+                   );
                 },
               ),
               SizedBox(height: 10),
@@ -128,13 +134,24 @@ class _ViewAllComplaintState extends State<ViewAllComplaint> {
               ),
               child: ListTile(
                 onTap: () {
-                  Navigator.of(context)
+                    if (widget.status == 'completed') {
+                      Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
-                    return ViewComplaint(
-                      dept: widget.dept,
-                      id: complaintData['id'],
-                    );
-                  }));
+                        return completedReview(
+                          dept: widget.dept,
+                          id: complaintData['id'],
+                        );
+                      }));
+                    }
+                    else
+                    {Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                        return ViewComplaint(
+                          dept: widget.dept,
+                          id: complaintData['id'],
+                        );
+                      }));}
+                  
                 },
                 title: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -182,7 +199,7 @@ Future<List<Map<String, dynamic>>> getData(String dept, String status) async {
     Query query = collectionRef;
     if (status.isNotEmpty) {
       if (status == "pending") {
-        query = query.where('status', whereIn: ['pending', 'approved']);
+        query = query.where('status', whereIn: ['pending', 'approved','assigned']);
       } else
         query = query.where('status', isEqualTo: status);
     }
