@@ -88,8 +88,8 @@ class SergeantComplaintSummary extends StatelessWidget {
                   ),
                   ComplaintsType(
                       goto: () {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
                           return SergeantViewAllComplaint(
                             total: completed!,
                             status: "completed",
@@ -100,8 +100,8 @@ class SergeantComplaintSummary extends StatelessWidget {
                       complaintstatus: completed),
                   ComplaintsType(
                       goto: () {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
                           return SergeantViewAllComplaint(
                             total: assigned!,
                             status: "assigned",
@@ -112,8 +112,8 @@ class SergeantComplaintSummary extends StatelessWidget {
                       complaintstatus: assigned),
                   ComplaintsType(
                       goto: () {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
                           return SergeantViewAllComplaint(
                             total: approved!,
                             status: "approved",
@@ -197,7 +197,7 @@ class SergeantComplaintSummary extends StatelessWidget {
       };
     } catch (e) {
       // Handle errors
-      print("Error getting counts: $e");
+      // print("Error getting counts: $e");
       return {'assigned': 0, 'approved': 0, 'completed': 0, 'total': 0};
     }
   }

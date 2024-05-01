@@ -108,7 +108,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         "An email containing instructions to reset your password has been sent to your email address. Please check your inbox and follow the instructions provided.If you don't receive the email, check your spam folder.",
       );
     } on FirebaseAuthException catch (e) {
-      print(e);
+      // print(e);
       MyDialog.showCustomDialog(
           context, 'ERROR!!', "Incorrect email. Please try again.");
     }

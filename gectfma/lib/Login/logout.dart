@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
@@ -13,7 +12,7 @@ class logout {
       MyDialog.showCustomDialog(
           context, "LOGGING OUT", "you have to log back in");
     } catch (e) {
-      print("Error signing out: $e");
+      // print("Error signing out: $e");
     }
   }
 }

@@ -66,30 +66,30 @@ class _approveOrDeclineState extends State<approveOrDecline> {
           'filed_date': documentSnapshot['filed_date']
         };
         DateTime filed;
-        contactController.text = data['contact'];
-        descController.text = data['desc'];
-        hodController.text = data['hod'];
-        natureController.text = data['nature'];
-        statusController.text = data['status'];
-        titleController.text = data['title'];
-        urgencyController.text = data['urgency'];
 
-        filed = data['filed_date'].toDate();
-        fileddateController.text = formatDate(filed);
-        filedtimeController.text = formatTime(filed);
         setState(() {
           imageURL = data['image'];
+          contactController.text = data['contact'];
+          descController.text = data['desc'];
+          hodController.text = data['hod'];
+          natureController.text = data['nature'];
+          statusController.text = data['status'];
+          titleController.text = data['title'];
+          urgencyController.text = data['urgency'];
+          filed = data['filed_date'].toDate();
+          fileddateController.text = formatDate(filed);
+          filedtimeController.text = formatTime(filed);
         });
-        print(data);
-        print(imageURL);
+        // print(data);
+        // print(imageURL);
         return data;
       } else {
-        print('Document not found');
+        // print('Document not found');
         return {};
       }
     } catch (e) {
       // Handle errors
-      print("Error getting data: $e");
+      // print("Error getting data: $e");
       return {};
     }
   }
@@ -150,7 +150,7 @@ class _approveOrDeclineState extends State<approveOrDecline> {
             controller: descController,
             hintText: "Description",
           ),
-          Headings(title: "Images"),
+          Headings(title: "Image"),
           Padding(
             padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
             child: Image.network(

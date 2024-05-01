@@ -70,7 +70,7 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
               int? declined = snapshot.data?['declined'];
               int? pending = snapshot.data?['pending'];
               int? completed = snapshot.data?['completed'];
-              int? assigned  = snapshot.data?['assigned'];
+              int? assigned = snapshot.data?['assigned'];
 
               return Column(
                 children: <Widget>[
@@ -214,12 +214,14 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
       int completedCount = completedSnapshot.size;
 
       QuerySnapshot assignedSnapshot =
-          await collectionRef.where('status', isEqualTo: 'completed').get();
+          await collectionRef.where('status', isEqualTo: 'assigned').get();
       int assignedCount = assignedSnapshot.size;
 
-
-      int totalCount =
-          pendingCount + approvedCount + declinedCount + completedCount + assignedCount;
+      int totalCount = pendingCount +
+          approvedCount +
+          declinedCount +
+          completedCount +
+          assignedCount;
 
       return {
         'pending': pendingCount,
@@ -227,11 +229,11 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
         'declined': declinedCount,
         'completed': completedCount,
         'total': totalCount,
-        'assigned' : assignedCount
+        'assigned': assignedCount
       };
     } catch (e) {
       // Handle errors
-      print("Error getting counts: $e");
+      // print("Error getting counts: $e");
       return {'pending': 0, 'completed': 0, 'declined': 0, 'total': 0};
     }
   }

@@ -220,7 +220,7 @@ class _LoginState extends State<Login> {
       // else{}
     } on FirebaseAuthException catch (e) {
       // Login failed, handle error
-      print('Error logging in user: $e');
+      // print('Error logging in user: $e');
       MyDialog.showCustomDialog(context, "LOGIN FAILED",
           "Incorrect email or password. Please try again.");
     }

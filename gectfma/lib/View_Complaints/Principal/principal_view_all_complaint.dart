@@ -38,7 +38,16 @@ class _PrincipalViewAllComplaintState extends State<PrincipalViewAllComplaint> {
             icon: Icons.logout,
           ),
           SizedBox(height: 10),
-          for (String dept in ["arch","ce","che","cse","ece", "ee","me","pe" ])
+          for (String dept in [
+            "arch",
+            "ce",
+            "che",
+            "cse",
+            "ece",
+            "ee",
+            "me",
+            "pe"
+          ])
             Column(
               children: [
                 //Headings(title: "Department Of ${dept.toUpperCase()}"),
@@ -55,15 +64,16 @@ class _PrincipalViewAllComplaintState extends State<PrincipalViewAllComplaint> {
                       return Container(
                         child: Column(
                           children: [
-                            if(filteredData!.isNotEmpty)
-                          Headings(title: 'department of $dept',),
-                          Column(
-                        children: filteredData!.map((complaintData) {
-                          return eachComplaint(dept, complaintData);
-                        }).toList(),
-                      )
+                            if (filteredData!.isNotEmpty)
+                              Headings(
+                                title: 'department of $dept',
+                              ),
+                            Column(
+                              children: filteredData!.map((complaintData) {
+                                return eachComplaint(dept, complaintData);
+                              }).toList(),
+                            )
                           ],
-                          
                         ),
                       );
                       // return Column(
@@ -173,7 +183,7 @@ Future<List<Map<String, dynamic>>> getData(String dept, String status) async {
     return data;
   } catch (e) {
     // Handle errors
-    print("Error getting data: $e");
+    // print("Error getting data: $e");
     return [];
   }
 }

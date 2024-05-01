@@ -58,6 +58,27 @@ class _ViewComplaintState extends State<ViewComplaint> {
     super.initState();
   }
 
+  void clearAll() {
+    // TODO: implement dispose
+    hodController.clear();
+    contactController.clear();
+    titleController.clear();
+    descController.clear();
+    natureController.clear();
+    statusController.clear();
+    urgencyController.clear();
+    assignedstaffNameController.clear();
+    assignedstaffNumberController.clear();
+    assigneddateController.clear();
+    assignedtimeController.clear();
+    fileddateController.clear();
+    filedtimeController.clear();
+    completeddateController.clear();
+    completedtimeController.clear();
+    approveddateController.clear();
+    approvedtimeController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -72,6 +93,7 @@ class _ViewComplaintState extends State<ViewComplaint> {
             title: "${widget.id}".toUpperCase(),
             icon: Icons.arrow_back,
             goto: () {
+              clearAll();
               Navigator.of(context).pop();
             },
           ),
@@ -90,7 +112,7 @@ class _ViewComplaintState extends State<ViewComplaint> {
             hintText: "Contact No",
             controller: contactController,
           ),
-          Headings(title: "Complaint Details*"),
+          Headings(title: "Complaint Details"),
           DetailFields(
               isEnable: false,
               controller: natureController,
@@ -145,34 +167,7 @@ class _ViewComplaintState extends State<ViewComplaint> {
           SizedBox(
             height: 20,
           ),
-          if (statusController.text != 'pending')
-            Column(children: [
-              Headings(title: "Verification remarks"),
-              DetailFields(
-                isEnable: false,
-                hintText: "no remarks given",
-                controller: remarkController,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-            ]),
-          if (['assigned', 'completed'].contains(statusController.text))
-            Column(
-              children: [
-                Headings(title: "Assigned Staff Details"),
-                DetailFields(
-                  isEnable: false,
-                  hintText: "Assigned Staff Name",
-                  controller: staffNameController,
-                ),
-                DetailFields(
-                  isEnable: false,
-                  hintText: "Assigned Staff Number",
-                  controller: staffNumberController,
-                ),
-              ],
-            ),
+          //Complaint Filed Date And Time
           Headings(title: "Complaint Filed Date and Time"),
           DetailFields(
             isEnable: false,
@@ -187,6 +182,43 @@ class _ViewComplaintState extends State<ViewComplaint> {
           SizedBox(
             height: 20,
           ),
+
+          //Approved Date and Time
+          if (['approved', 'assigned', 'completed']
+              .contains(statusController.text))
+            Column(
+              children: [
+                Headings(title: "Complaint Approved Date and Time"),
+                DetailFields(
+                  isEnable: false,
+                  hintText: "Date",
+                  controller: approveddateController,
+                ),
+                DetailFields(
+                  isEnable: false,
+                  hintText: "Time",
+                  controller: approvedtimeController,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
+          //Verification Remarks
+          if (['approved', 'assigned', 'completed']
+              .contains(statusController.text))
+            Column(children: [
+              Headings(title: "Verification remarks"),
+              DetailFields(
+                isEnable: false,
+                hintText: "no remarks given",
+                controller: remarkController,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+            ]),
+          //Staff Assigned Date And Time
           if (['assigned', 'completed'].contains(statusController.text))
             Column(
               children: [
@@ -206,6 +238,24 @@ class _ViewComplaintState extends State<ViewComplaint> {
                 ),
               ],
             ),
+          //Staff Details
+          if (['assigned', 'completed'].contains(statusController.text))
+            Column(
+              children: [
+                Headings(title: "Assigned Staff Details"),
+                DetailFields(
+                  isEnable: false,
+                  hintText: "Assigned Staff Name",
+                  controller: staffNameController,
+                ),
+                DetailFields(
+                  isEnable: false,
+                  hintText: "Assigned Staff Number",
+                  controller: staffNumberController,
+                ),
+              ],
+            ),
+          //Completed Date And Time
           if (['completed'].contains(statusController.text))
             Column(
               children: [
@@ -225,6 +275,7 @@ class _ViewComplaintState extends State<ViewComplaint> {
                 ),
               ],
             ),
+          //Rating and Review
           if (statusController.text == "completed")
             Column(
               children: [
@@ -343,6 +394,7 @@ class _ViewComplaintState extends State<ViewComplaint> {
 
           filed = data['filed_date'].toDate();
           fileddateController.text = formatDate(filed);
+          print(fileddateController.text);
           filedtimeController.text = formatTime(filed);
           if (['approved', 'assigned', 'completed']
               .contains(documentSnapshot['status'])) {
@@ -393,9 +445,9 @@ class _ViewComplaintState extends State<ViewComplaint> {
           FirebaseFirestore.instance.collection(dept);
 
       // Update the document
-      await collectionRef.doc(id).update({
-        'status': status,
-      });
+      await collectionRef
+          .doc(id)
+          .update({'status': status, 'completed_date': DateTime.now()});
 
       int completedCount = 0;
       List<String> depts = [
@@ -426,7 +478,7 @@ class _ViewComplaintState extends State<ViewComplaint> {
           context, "Completed", "The complaint is marked as completed");
     } catch (e) {
       // Handle errors
-      print("Error updating data: $e");
+      // print("Error updating data: $e");
     }
   }
 }
