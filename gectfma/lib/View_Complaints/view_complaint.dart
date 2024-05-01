@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gectfma/Requirements/DateAndTime.dart';
 import 'package:gectfma/Requirements/Headings.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
+import 'package:gectfma/View_Complaints/Sergeant/sergeant_approved_complaint.dart';
 import 'package:gectfma/View_Complaints/Sergeant/sergeant_view_all_complaint.dart';
 import '../Requirements/DetailFields.dart';
 import '../Requirements/TopBar.dart';
@@ -33,6 +35,15 @@ TextEditingController staffNumberController = TextEditingController();
 TextEditingController remarkController = TextEditingController();
 TextEditingController ratingController = TextEditingController();
 TextEditingController reviewController = TextEditingController();
+TextEditingController fileddateController = TextEditingController();
+TextEditingController filedtimeController = TextEditingController();
+TextEditingController approveddateController = TextEditingController();
+TextEditingController approvedtimeController = TextEditingController();
+TextEditingController assigneddateController = TextEditingController();
+TextEditingController assignedtimeController = TextEditingController();
+TextEditingController completeddateController = TextEditingController();
+TextEditingController completedtimeController = TextEditingController();
+
 String status = "";
 String imageURL = '';
 String str_rating_no = '';
@@ -64,7 +75,7 @@ class _ViewComplaintState extends State<ViewComplaint> {
               Navigator.of(context).pop();
             },
           ),
-          Headings(title: "Department Details*"),
+          Headings(title: "Department Details"),
           DetailFields(
             isEnable: false,
             hintText: widget.dept.toUpperCase(),
@@ -98,7 +109,7 @@ class _ViewComplaintState extends State<ViewComplaint> {
             controller: descController,
             hintText: "Description",
           ),
-          Headings(title: "Images"),
+          Headings(title: "Image"),
           Padding(
             padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
             child: Image.network(
@@ -125,7 +136,7 @@ class _ViewComplaintState extends State<ViewComplaint> {
           SizedBox(
             height: 20,
           ),
-          Headings(title: "Urgency level*"),
+          Headings(title: "Urgency level"),
           DetailFields(
             isEnable: false,
             controller: urgencyController,
@@ -134,75 +145,127 @@ class _ViewComplaintState extends State<ViewComplaint> {
           SizedBox(
             height: 20,
           ),
-          if(statusController.text != 'pending')
-          Column(
-            children : [
+          if (statusController.text != 'pending')
+            Column(children: [
               Headings(title: "Verification remarks"),
               DetailFields(
-              isEnable: false,
-              hintText: "no remarks given",
-              controller: remarkController,),
-              SizedBox(height: 20,),
-            ]
-          ),
-
-          if(statusController.text == 'assigned' || statusController.text == 'completed')
-          Column(
-            children: [
-              Headings(title: "Assigned Staff Details"),
-              DetailFields(
                 isEnable: false,
-                hintText: "Assigned Staff Name",
-                controller: staffNameController,
+                hintText: "no remarks given",
+                controller: remarkController,
               ),
-              SizedBox(height: 20,),
-              DetailFields(
-                isEnable: false,
-                hintText: "Assigned Staff Number",
-                controller: staffNumberController,),
-                SizedBox(height: 20,)
-            ]
+              SizedBox(
+                height: 20,
+              ),
+            ]),
+          if (['assigned', 'completed'].contains(statusController.text))
+            Column(
+              children: [
+                Headings(title: "Assigned Staff Details"),
+                DetailFields(
+                  isEnable: false,
+                  hintText: "Assigned Staff Name",
+                  controller: staffNameController,
+                ),
+                DetailFields(
+                  isEnable: false,
+                  hintText: "Assigned Staff Number",
+                  controller: staffNumberController,
+                ),
+              ],
+            ),
+          Headings(title: "Complaint Filed Date and Time"),
+          DetailFields(
+            isEnable: false,
+            hintText: "Date",
+            controller: fileddateController,
           ),
-          
-          if(statusController.text == "completed")
-          Column(
-            children: [
-              Headings(title: 'Rating and Review'),
-              if(str_rating_no == '')
-              Center(
-                child: Text(
-                         "NO RATINGS OR REVIEW GIVEN YET",
-                         style: TextStyle(
-                          color: Colors.brown[600],
-                          fontWeight: FontWeight.bold,
-                         ),
+          DetailFields(
+            isEnable: false,
+            hintText: "Time",
+            controller: filedtimeController,
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          if (['assigned', 'completed'].contains(statusController.text))
+            Column(
+              children: [
+                Headings(title: "Staff Assigned Date and Time"),
+                DetailFields(
+                  isEnable: false,
+                  hintText: "Date",
+                  controller: assigneddateController,
+                ),
+                DetailFields(
+                  isEnable: false,
+                  hintText: "Time",
+                  controller: assignedtimeController,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
+          if (['completed'].contains(statusController.text))
+            Column(
+              children: [
+                Headings(title: "Completed Date and Time"),
+                DetailFields(
+                  isEnable: false,
+                  hintText: "Date",
+                  controller: completeddateController,
+                ),
+                DetailFields(
+                  isEnable: false,
+                  hintText: "Time",
+                  controller: completedtimeController,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
+          if (statusController.text == "completed")
+            Column(
+              children: [
+                Headings(title: 'Rating and Review'),
+                if (str_rating_no == '')
+                  Center(
+                      child: Text(
+                    "NO RATINGS OR REVIEW GIVEN YET",
+                    style: TextStyle(
+                      color: Colors.brown[600],
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )),
+                if (str_rating_no != '')
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      for (int i = 0;
+                          i < double.parse(str_rating_no).round();
+                          i++)
+                        Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                        )
+                    ],
+                  ),
+                if (str_rating_no != '')
+                  DetailFields(
+                    isEnable: false,
+                    hintText: "review",
+                    controller: reviewController,
+                  ),
+                SizedBox(
+                  height: 20,
                 )
-              ),
-              
-              if(str_rating_no != '')
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  for(int i = 0 ; i < double.parse(str_rating_no).round();i++ )
-                  Icon(Icons.star,
-                  color: Colors.amber,)
-                ],
-              ),
-              if(str_rating_no != '')
-              DetailFields(
-                isEnable: false,
-                hintText: "review",
-                controller: reviewController,
-              ),
-              SizedBox(height: 20,)
-            ],
-          ),
-          
-
+              ],
+            ),
           /*
           Handles the case of sergeant assigned complaints to be marked as completed
            */
-      
+
           if (widget.designation == "sergeant")
             ElevatedButton(
               onPressed: () {
@@ -221,104 +284,149 @@ class _ViewComplaintState extends State<ViewComplaint> {
               ),
               child: Text('MARK AS COMPLETED'),
             ),
-            SizedBox(height: 30,)
+          SizedBox(
+            height: 30,
+          )
         ],
       ),
     )));
   }
+
   Future<Map<String, dynamic>> viewComplaint(String id, String dept) async {
-  try {
-    CollectionReference collectionRef =
-        FirebaseFirestore.instance.collection(dept);
+    try {
+      CollectionReference collectionRef =
+          FirebaseFirestore.instance.collection(dept);
 
-    DocumentSnapshot documentSnapshot = await collectionRef.doc(id).get();
+      DocumentSnapshot documentSnapshot = await collectionRef.doc(id).get();
 
-    if (documentSnapshot.exists) {
-      Map<String, dynamic> data = {
-        'contact': documentSnapshot['contact'],
-        'desc': documentSnapshot['desc'],
-        'hod': documentSnapshot['hod'],
-        'image' : documentSnapshot['image'],
-        'nature': documentSnapshot['nature'],
-        'status': documentSnapshot['status'],
-        'title': documentSnapshot['title'],
-        'urgency': documentSnapshot['urgency'],
-        'assigned_staff': documentSnapshot['assigned_staff'],
-        'assigned_staff_no': documentSnapshot['assigned_staff_no'],
-        'verification_remark': documentSnapshot['verification_remark'],
-        'rating_no': documentSnapshot['rating_no'],
-        'hod_completed_review': documentSnapshot['hod_completed_review'],
-      };
-      
-      setState(() {
-        contactController.text = data['contact'];
-        descController.text = data['desc'];
-        hodController.text = data['hod'];
-        natureController.text = data['nature'];
-        statusController.text = data['status'];
-        titleController.text = data['title'];
-        urgencyController.text = data['urgency'];
-        staffNameController.text = data['assigned_staff'];
-        staffNumberController.text = data['assigned_staff_no'];
-        imageURL = data['image'];
-        remarkController.text = data['verification_remark'];
-        reviewController.text = data['hod_completed_review'];
-        str_rating_no = data['rating_no'];
-        
-      });
+      if (documentSnapshot.exists) {
+        Map<String, dynamic> data = {
+          'contact': documentSnapshot['contact'],
+          'desc': documentSnapshot['desc'],
+          'hod': documentSnapshot['hod'],
+          'image': documentSnapshot['image'],
+          'nature': documentSnapshot['nature'],
+          'status': documentSnapshot['status'],
+          'title': documentSnapshot['title'],
+          'urgency': documentSnapshot['urgency'],
+          'assigned_staff': documentSnapshot['assigned_staff'],
+          'assigned_staff_no': documentSnapshot['assigned_staff_no'],
+          'verification_remark': documentSnapshot['verification_remark'],
+          'rating_no': documentSnapshot['rating_no'],
+          'hod_completed_review': documentSnapshot['hod_completed_review'],
+          'filed_date': documentSnapshot['filed_date'],
+          if (['approved', 'assigned', 'completed']
+              .contains(documentSnapshot['status']))
+            'approved_date': documentSnapshot['approved_date'],
+          if (['assigned', 'completed'].contains(documentSnapshot['status']))
+            'assigned_date': documentSnapshot['assigned_date'],
+          if (['completed'].contains(documentSnapshot['status']))
+            'completed_date': documentSnapshot['completed_date']
+        };
 
-      return data;
-    } else {
-      print('Document not found');
+        DateTime filed, approved, assigned, completed;
+
+        setState(() {
+          contactController.text = data['contact'];
+          descController.text = data['desc'];
+          hodController.text = data['hod'];
+          natureController.text = data['nature'];
+          statusController.text = data['status'];
+          titleController.text = data['title'];
+          urgencyController.text = data['urgency'];
+          staffNameController.text = data['assigned_staff'];
+          staffNumberController.text = data['assigned_staff_no'];
+          imageURL = data['image'];
+          remarkController.text = data['verification_remark'];
+          reviewController.text = data['hod_completed_review'];
+          str_rating_no = data['rating_no'];
+
+          filed = data['filed_date'].toDate();
+          fileddateController.text = formatDate(filed);
+          filedtimeController.text = formatTime(filed);
+          if (['approved', 'assigned', 'completed']
+              .contains(documentSnapshot['status'])) {
+            approved = data['approved_date'].toDate();
+            approveddateController.text = formatDate(approved);
+            approvedtimeController.text = formatTime(approved);
+          }
+          if (['assigned', 'completed'].contains(statusController.text)) {
+            assigned = data['assigned_date'].toDate();
+            assigneddateController.text = formatDate(assigned);
+            assignedtimeController.text = formatTime(assigned);
+          }
+          if (['completed'].contains(statusController.text)) {
+            completed = data['completed_date'].toDate();
+            completeddateController.text = formatDate(completed);
+            completedtimeController.text = formatTime(completed);
+          }
+        });
+
+        return data;
+      } else {
+        // print('Document not found');
+        return {};
+      }
+    } catch (e) {
+      // Handle errors
+      // print("Error getting data: $e");
       return {};
     }
-  } catch (e) {
-    // Handle errors
-    print("Error getting data: $e");
-    return {};
   }
-}
-Future<int> count() async{
-  int completedCount=0;
-  List<String> depts = ['arch','ce','che','cse','ece','ee','me','pe'];
-  for(var d in depts)
-  {  CollectionReference collectionRef = FirebaseFirestore.instance.collection(d);
-      QuerySnapshot completedSnapshot =
-            await collectionRef.where('status', isEqualTo: 'completed').get();
-            completedCount += completedSnapshot.size;
-  }
-  return completedCount;
-}
 
+  Future<int> count() async {
+    int completedCount = 0;
+    List<String> depts = ['arch', 'ce', 'che', 'cse', 'ece', 'ee', 'me', 'pe'];
+    for (var d in depts) {
+      CollectionReference collectionRef =
+          FirebaseFirestore.instance.collection(d);
+      QuerySnapshot completedSnapshot =
+          await collectionRef.where('status', isEqualTo: 'completed').get();
+      completedCount += completedSnapshot.size;
+    }
+    return completedCount;
+  }
 
   Future<void> updateStatus(String id, String dept) async {
-  try {
-    CollectionReference collectionRef =
-        FirebaseFirestore.instance.collection(dept);
+    try {
+      CollectionReference collectionRef =
+          FirebaseFirestore.instance.collection(dept);
 
-    // Update the document
-    await collectionRef.doc(id).update({
-      'status': status,
-    });
-    
-     int completedCount=0;
-  List<String> depts = ['arch','ce','che','cse','ece','ee','me','pe'];
-  for(var d in depts)
-  {  CollectionReference collectionRef = FirebaseFirestore.instance.collection(d);
-      QuerySnapshot completedSnapshot =
+      // Update the document
+      await collectionRef.doc(id).update({
+        'status': status,
+      });
+
+      int completedCount = 0;
+      List<String> depts = [
+        'arch',
+        'ce',
+        'che',
+        'cse',
+        'ece',
+        'ee',
+        'me',
+        'pe'
+      ];
+      for (var d in depts) {
+        CollectionReference collectionRef =
+            FirebaseFirestore.instance.collection(d);
+        QuerySnapshot completedSnapshot =
             await collectionRef.where('status', isEqualTo: 'completed').get();
-            completedCount += completedSnapshot.size;
-  }
-    Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) {
-          return SergeantViewAllComplaint(total:completedCount ,status: "completed",);
-        }), (route) => false);      
-    MyDialog.showCustomDialog(context, "Completed", "The complaint is marked as completed");
-    
-  } catch (e) {
-    // Handle errors
-    print("Error updating data: $e");
+        completedCount += completedSnapshot.size;
+      }
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) {
+        return SergeantViewAllComplaint(
+          total: completedCount,
+          status: "completed",
+        );
+      }), (route) => false);
+      MyDialog.showCustomDialog(
+          context, "Completed", "The complaint is marked as completed");
+    } catch (e) {
+      // Handle errors
+      print("Error updating data: $e");
+    }
   }
 }
-}
-

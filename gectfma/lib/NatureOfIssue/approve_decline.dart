@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gectfma/NatureOfIssue/comp_verification.dart';
 import 'package:gectfma/NatureOfIssue/list_complints.dart';
+import 'package:gectfma/Requirements/DateAndTime.dart';
 import 'package:gectfma/Requirements/Headings.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
 import '../Requirements/DetailFields.dart';
@@ -29,6 +30,8 @@ TextEditingController natureController = TextEditingController();
 TextEditingController statusController = TextEditingController();
 TextEditingController urgencyController = TextEditingController();
 TextEditingController remarkController = TextEditingController();
+TextEditingController fileddateController = TextEditingController();
+TextEditingController filedtimeController = TextEditingController();
 String imageURL = '';
 
 class _approveOrDeclineState extends State<approveOrDecline> {
@@ -60,8 +63,9 @@ class _approveOrDeclineState extends State<approveOrDecline> {
           'status': documentSnapshot['status'],
           'title': documentSnapshot['title'],
           'urgency': documentSnapshot['urgency'],
+          'filed_date': documentSnapshot['filed_date']
         };
-
+        DateTime filed;
         contactController.text = data['contact'];
         descController.text = data['desc'];
         hodController.text = data['hod'];
@@ -69,9 +73,12 @@ class _approveOrDeclineState extends State<approveOrDecline> {
         statusController.text = data['status'];
         titleController.text = data['title'];
         urgencyController.text = data['urgency'];
+
+        filed = data['filed_date'].toDate();
+        fileddateController.text = formatDate(filed);
+        filedtimeController.text = formatTime(filed);
         setState(() {
-          
-        imageURL = data['image'];
+          imageURL = data['image'];
         });
         print(data);
         print(imageURL);
@@ -144,7 +151,6 @@ class _approveOrDeclineState extends State<approveOrDecline> {
             hintText: "Description",
           ),
           Headings(title: "Images"),
-          //Image To be added
           Padding(
             padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
             child: Image.network(
@@ -177,13 +183,24 @@ class _approveOrDeclineState extends State<approveOrDecline> {
           SizedBox(
             height: 20,
           ),
+          Headings(title: "Complaint Filed Date and Time"),
+          DetailFields(
+            isEnable: false,
+            hintText: "Date",
+            controller: fileddateController,
+          ),
+          DetailFields(
+            isEnable: false,
+            hintText: "Time",
+            controller: filedtimeController,
+          ),
+          SizedBox(
+            height: 20,
+          ),
           Headings(title: "Remarks*"),
           DetailFields(
             hintText: "Remarks",
             controller: remarkController,
-          ),
-          SizedBox(
-            height: 20,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -244,7 +261,11 @@ class _approveOrDeclineState extends State<approveOrDecline> {
             FirebaseFirestore.instance.collection(dept).doc(id);
 
         // Set the data in the document with the custom ID
-        await docRef.update({'verification_remark': remark, 'status': status});
+        await docRef.update({
+          'verification_remark': remark,
+          'status': status,
+          if (status == 'approved') 'approved_date': DateTime.now()
+        });
         // Navigator.of(context)
         //     .pushAndRemoveUntil(MaterialPageRoute(builder: (context) {
         //       return complaintVerification(nature: natureController.text);
@@ -257,7 +278,7 @@ class _approveOrDeclineState extends State<approveOrDecline> {
             context, "STATUS UPDATED", "Remarks added and Status is updated");
       }
     } catch (e) {
-      print("Error adding document: $e");
+      // print("Error adding document: $e");
       MyDialog.showCustomDialog(
         context,
         "ERROR!!",

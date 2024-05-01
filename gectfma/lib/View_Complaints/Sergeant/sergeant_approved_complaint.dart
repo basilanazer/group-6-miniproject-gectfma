@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gectfma/Requirements/DateAndTime.dart';
 import 'package:gectfma/Requirements/Headings.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
 import 'package:gectfma/View_Complaints/Sergeant/sergeant_view_all_complaint.dart';
@@ -12,7 +13,7 @@ class SergeantApprovedComplaint extends StatefulWidget {
   final String id;
   final int total;
   const SergeantApprovedComplaint(
-      {super.key, required this.dept, this.id = "",required this.total});
+      {super.key, required this.dept, this.id = "", required this.total});
 
   @override
   State<SergeantApprovedComplaint> createState() =>
@@ -33,6 +34,10 @@ TextEditingController assignedstaffNameController = TextEditingController();
 TextEditingController assignedstaffNumberController = TextEditingController();
 TextEditingController remarkController = TextEditingController();
 
+TextEditingController fileddateController = TextEditingController();
+TextEditingController filedtimeController = TextEditingController();
+TextEditingController approveddateController = TextEditingController();
+TextEditingController approvedtimeController = TextEditingController();
 String assignedStaffName = "";
 String assignedStaffNumber = "";
 String status = "";
@@ -49,52 +54,58 @@ class _SergeantApprovedComplaintState extends State<SergeantApprovedComplaint> {
     assignedstaffNumberController = TextEditingController();
     super.initState();
   }
+
   Future<Map<String, dynamic>> viewComplaint(String id, String dept) async {
-  try {
-    CollectionReference collectionRef =
-        FirebaseFirestore.instance.collection(dept);
+    try {
+      CollectionReference collectionRef =
+          FirebaseFirestore.instance.collection(dept);
 
-    DocumentSnapshot documentSnapshot = await collectionRef.doc(id).get();
+      DocumentSnapshot documentSnapshot = await collectionRef.doc(id).get();
 
-    if (documentSnapshot.exists) {
-      Map<String, dynamic> data = {
-        'contact': documentSnapshot['contact'],
-        'desc': documentSnapshot['desc'],
-        'hod': documentSnapshot['hod'],
-        'image' : documentSnapshot['image'],
-        'nature': documentSnapshot['nature'],
-        'status': documentSnapshot['status'],
-        'title': documentSnapshot['title'],
-        'urgency': documentSnapshot['urgency'],
-        'verification_remark': documentSnapshot['verification_remark'],
-        
-      };
-      
-      setState(() {
-        contactController.text = data['contact'];
-        descController.text = data['desc'];
-        hodController.text = data['hod'];
-        natureController.text = data['nature'];
-        statusController.text = data['status'];
-        titleController.text = data['title'];
-        urgencyController.text = data['urgency'];
-        imageURL = data['image'];
-        remarkController.text = data['verification_remark'];
-        
-      });
+      if (documentSnapshot.exists) {
+        Map<String, dynamic> data = {
+          'contact': documentSnapshot['contact'],
+          'desc': documentSnapshot['desc'],
+          'hod': documentSnapshot['hod'],
+          'image': documentSnapshot['image'],
+          'nature': documentSnapshot['nature'],
+          'status': documentSnapshot['status'],
+          'title': documentSnapshot['title'],
+          'urgency': documentSnapshot['urgency'],
+          'verification_remark': documentSnapshot['verification_remark'],
+          'filed_date': documentSnapshot['filed_date'],
+          'approved_date': documentSnapshot['approved_date'],
+        };
+        DateTime filed, approved;
+        setState(() {
+          contactController.text = data['contact'];
+          descController.text = data['desc'];
+          hodController.text = data['hod'];
+          natureController.text = data['nature'];
+          statusController.text = data['status'];
+          titleController.text = data['title'];
+          urgencyController.text = data['urgency'];
+          imageURL = data['image'];
+          remarkController.text = data['verification_remark'];
+          filed = data['filed_date'].toDate();
+          fileddateController.text = formatDate(filed);
+          filedtimeController.text = formatTime(filed);
+          approved = data['approved_date'].toDate();
+          approveddateController.text = formatDate(approved);
+          approvedtimeController.text = formatTime(approved);
+        });
 
-      return data;
-    } else {
-      print('Document not found');
+        return data;
+      } else {
+        // print('Document not found');
+        return {};
+      }
+    } catch (e) {
+      // Handle errors
+      // print("Error getting data: $e");
       return {};
     }
-  } catch (e) {
-    // Handle errors
-    print("Error getting data: $e");
-    return {};
   }
-  
-}
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +124,7 @@ class _SergeantApprovedComplaintState extends State<SergeantApprovedComplaint> {
             title: "${widget.id}".toUpperCase(),
             icon: Icons.arrow_back,
           ),
-          Headings(title: "Department Details*"),
+          Headings(title: "Department Details"),
           DetailFields(
             isEnable: false,
             hintText: widget.dept.toUpperCase(),
@@ -128,7 +139,7 @@ class _SergeantApprovedComplaintState extends State<SergeantApprovedComplaint> {
             hintText: "Contact No",
             controller: contactController,
           ),
-          Headings(title: "Complaint Details*"),
+          Headings(title: "Complaint Details"),
           DetailFields(
               isEnable: false,
               controller: natureController,
@@ -147,7 +158,7 @@ class _SergeantApprovedComplaintState extends State<SergeantApprovedComplaint> {
             controller: descController,
             hintText: "Description",
           ),
-          Headings(title: "images*"),
+          Headings(title: "Image"),
           Padding(
             padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
             child: Image.network(
@@ -179,6 +190,37 @@ class _SergeantApprovedComplaintState extends State<SergeantApprovedComplaint> {
             isEnable: false,
             controller: urgencyController,
             hintText: "Level",
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Headings(title: "Filed Date and Time"),
+          DetailFields(
+            isEnable: false,
+            hintText: "Date",
+            controller: fileddateController,
+          ),
+          DetailFields(
+            isEnable: false,
+            hintText: "Time",
+            controller: filedtimeController,
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Headings(title: "Approved Date and Time"),
+          DetailFields(
+            isEnable: false,
+            hintText: "Date",
+            controller: approveddateController,
+          ),
+          DetailFields(
+            isEnable: false,
+            hintText: "Time",
+            controller: approvedtimeController,
+          ),
+          SizedBox(
+            height: 20,
           ),
           Headings(title: "Assigned Staff Details"),
           DetailFields(
@@ -215,32 +257,33 @@ class _SergeantApprovedComplaintState extends State<SergeantApprovedComplaint> {
       ),
     )));
   }
-  
 
   Future<void> updateAssignedStaff(String id, String dept) async {
-  try {
-    CollectionReference collectionRef =
-        FirebaseFirestore.instance.collection(dept);
+    try {
+      CollectionReference collectionRef =
+          FirebaseFirestore.instance.collection(dept);
 
-    // Update the document
-    await collectionRef.doc(id).update({
-      'assigned_staff': assignedStaffName,
-      'assigned_staff_no': assignedStaffNumber,
-      'status': status,
-    });
-    Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) {
-            return SergeantViewAllComplaint(total: widget.total+1,status:'assigned',);
-          }),
-          (Route<dynamic> route) => false,
-        );
-    MyDialog.showCustomDialog(context, "Staff Assigned", "$assignedStaffName is assigned to complaint $id");
-    
-  } catch (e) {
-    // Handle errors
-    print("Error updating data: $e");
+      // Update the document
+      await collectionRef.doc(id).update({
+        'assigned_staff': assignedStaffName,
+        'assigned_staff_no': assignedStaffNumber,
+        'status': status,
+        'assigned_date': DateTime.now()
+      });
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) {
+          return SergeantViewAllComplaint(
+            total: widget.total + 1,
+            status: 'assigned',
+          );
+        }),
+        (Route<dynamic> route) => false,
+      );
+      MyDialog.showCustomDialog(context, "Staff Assigned",
+          "$assignedStaffName is assigned to complaint $id");
+    } catch (e) {
+      // Handle errors
+      // print("Error updating data: $e");
+    }
   }
 }
-
-}
-
