@@ -214,7 +214,7 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
       int completedCount = completedSnapshot.size;
 
       QuerySnapshot assignedSnapshot =
-          await collectionRef.where('status', isEqualTo: 'completed').get();
+          await collectionRef.where('status', isEqualTo: 'assigned').get();
       int assignedCount = assignedSnapshot.size;
 
 

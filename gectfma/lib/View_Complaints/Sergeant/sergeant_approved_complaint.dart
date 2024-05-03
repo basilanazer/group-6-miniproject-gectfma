@@ -10,9 +10,9 @@ import '../../Requirements/TopBar.dart';
 class SergeantApprovedComplaint extends StatefulWidget {
   final String dept;
   final String id;
-  final int total;
+  //final int total;
   const SergeantApprovedComplaint(
-      {super.key, required this.dept, this.id = "",required this.total});
+      {super.key, required this.dept, this.id = ""});
 
   @override
   State<SergeantApprovedComplaint> createState() =>
@@ -228,9 +228,17 @@ class _SergeantApprovedComplaintState extends State<SergeantApprovedComplaint> {
       'assigned_staff_no': assignedStaffNumber,
       'status': status,
     });
+    int completedCount=0;
+    List<String> depts = ['arch','ce','che','cse','ece','ee','me','pe'];
+    for(var d in depts)
+  {  CollectionReference collectionRef = FirebaseFirestore.instance.collection(d);
+      QuerySnapshot completedSnapshot =
+            await collectionRef.where('status', isEqualTo: 'assigned').get();
+            completedCount += completedSnapshot.size;
+  }
     Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) {
-            return SergeantViewAllComplaint(total: widget.total+1,status:'assigned',);
+            return SergeantViewAllComplaint(total: completedCount,status:'assigned',);
           }),
           (Route<dynamic> route) => false,
         );

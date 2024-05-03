@@ -117,8 +117,8 @@ class _SergeantViewAllComplaintState extends State<SergeantViewAllComplaint> {
                         .push(MaterialPageRoute(builder: (context) {
                       return SergeantApprovedComplaint(
                         dept: dept,
-                        id: complaintData['id'],
-                        total: widget.total
+                        id: complaintData['id']
+                        
                       );
                     }));
                   } else {
