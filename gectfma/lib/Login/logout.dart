@@ -1,19 +1,32 @@
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gectfma/Login/login_page.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class logout {
-  static void logOut(context) async {
+  static Future<void> logOut(BuildContext context) async {
     try {
-      await FirebaseAuth.instance.signOut();
-      // Navigate to your login screen or any other screen you desire
-      // For example:
-      Navigator.of(context).pushReplacementNamed('/login');
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      await preferences.remove('email'); // Remove email from SharedPreferences
+      await FirebaseAuth.instance.signOut(); // Sign out from Firebase Auth
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Login()),
+      ); // Navigate to Login screen
       MyDialog.showCustomDialog(
-          context, "LOGGING OUT", "you have to log back in");
+        context,
+        "LOGGING OUT",
+        "You have been logged out.",
+      ); // Show logout confirmation dialog
     } catch (e) {
       print("Error signing out: $e");
+      MyDialog.showCustomDialog(
+        context,
+        "Error",
+        "Failed to log out. Please try again.",
+      ); // Show error dialog if sign-out fails
     }
   }
 }

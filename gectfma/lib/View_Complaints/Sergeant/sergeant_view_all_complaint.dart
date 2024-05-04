@@ -32,11 +32,12 @@ class _SergeantViewAllComplaintState extends State<SergeantViewAllComplaint> {
         children: <Widget>[
           TopBar(
             goto: () {
-             Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) {
-                      return SergeantComplaintSummary(deptName: "Sergeant");
-                    }),(Route<dynamic> route) => false,
-                   );
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) {
+                  return SergeantComplaintSummary(role: "sergeant");
+                }),
+                (Route<dynamic> route) => false,
+              );
             },
             dept: "WELCOME Sergeant",
             iconLabel: 'Go Back',
@@ -72,9 +73,11 @@ class _SergeantViewAllComplaintState extends State<SergeantViewAllComplaint> {
                       return Container(
                         child: Column(
                           children: [
-                            if(filteredData!.isNotEmpty)
-                          Headings(title: 'department of $dept',),
-                          Column(
+                            if (filteredData!.isNotEmpty)
+                              Headings(
+                                title: 'department of $dept',
+                              ),
+                            Column(
                               children: filteredData!.map((complaintData) {
                                 return eachComplaint(dept, complaintData);
                               }).toList(),
@@ -204,7 +207,7 @@ Future<List<Map<String, dynamic>>> getData(String dept, String status) async {
     return data;
   } catch (e) {
     // Handle errors
-    print("Error getting data: $e");
+    // print("Error getting data: $e");
     return [];
   }
 }

@@ -35,6 +35,7 @@ TextEditingController reviewController = TextEditingController();
 String imageURL = '';
 double rating_no = 0.0;
 String str_rating_no = '0.0';
+
 class _completedReviewState extends State<completedReview> {
   String review = '';
   @override
@@ -69,32 +70,29 @@ class _completedReviewState extends State<completedReview> {
           'hod_completed_review': documentSnapshot['hod_completed_review'],
         };
 
-
-        
         setState(() {
-        contactController.text = data['contact'];
-        descController.text = data['desc'];
-        hodController.text = data['hod'];
-        natureController.text = data['nature'];
-        statusController.text = data['status'];
-        titleController.text = data['title'];
-        urgencyController.text = data['urgency'];
-        remarkController.text = data['verification_remark'];
-        reviewController.text = data['hod_completed_review'];
-        str_rating_no = data['rating_no'];
-        imageURL = data['image'];
-
+          contactController.text = data['contact'];
+          descController.text = data['desc'];
+          hodController.text = data['hod'];
+          natureController.text = data['nature'];
+          statusController.text = data['status'];
+          titleController.text = data['title'];
+          urgencyController.text = data['urgency'];
+          remarkController.text = data['verification_remark'];
+          reviewController.text = data['hod_completed_review'];
+          str_rating_no = data['rating_no'];
+          imageURL = data['image'];
         });
-        print(data);
-        print(imageURL);
+        // print(data);
+        // print(imageURL);
         return data;
       } else {
-        print('Document not found');
+        // print('Document not found');
         return {};
       }
     } catch (e) {
       // Handle errors
-      print("Error getting data: $e");
+      // print("Error getting data: $e");
       return {};
     }
   }
@@ -181,20 +179,25 @@ class _completedReviewState extends State<completedReview> {
             controller: urgencyController,
             hintText: "Level",
           ),
-          SizedBox(height: 20,),
-          
+          SizedBox(
+            height: 20,
+          ),
+
           Headings(title: "Verification Remarks"),
           DetailFields(
-            isEnable: false,
-            controller: remarkController,
-            hintText: "No remarks given"),
+              isEnable: false,
+              controller: remarkController,
+              hintText: "No remarks given"),
 
-          SizedBox(height: 20,),
-          
+          SizedBox(
+            height: 20,
+          ),
+
           Headings(title: 'Rating and Review'),
           Center(
-              child: RatingBar.builder(
-              initialRating: str_rating_no==''? 0: double.parse(str_rating_no),
+            child: RatingBar.builder(
+              initialRating:
+                  str_rating_no == '' ? 0 : double.parse(str_rating_no),
               minRating: 1,
               direction: Axis.horizontal,
               allowHalfRating: false,
@@ -205,9 +208,7 @@ class _completedReviewState extends State<completedReview> {
                 color: Colors.amber,
               ),
               onRatingUpdate: (rating) {
-                
-                  rating_no = rating;
-                
+                rating_no = rating;
               },
             ),
           ),
@@ -221,42 +222,40 @@ class _completedReviewState extends State<completedReview> {
           SizedBox(
             height: 20,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children : [
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    review = reviewController.text;
-                    str_rating_no = rating_no.toString();
-                  });
-                  rateAndReview(widget.dept, widget.id, review,str_rating_no);
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.brown[50],
-                  backgroundColor: Colors.brown[800], // Text color
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // Corner radius
-                  ),
-                  minimumSize: Size(150, 50), // Width and height
+          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  review = reviewController.text;
+                  str_rating_no = rating_no.toString();
+                });
+                rateAndReview(widget.dept, widget.id, review, str_rating_no);
+              },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.brown[50],
+                backgroundColor: Colors.brown[800], // Text color
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // Corner radius
                 ),
-                child: Text('SAVE'),
+                minimumSize: Size(150, 50), // Width and height
               ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.brown[50],
-                  backgroundColor: Colors.brown[800], // Text color
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // Corner radius
-                  ),
-                  minimumSize: Size(150, 50), // Width and height
+              child: Text('SAVE'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.brown[50],
+                backgroundColor: Colors.brown[800], // Text color
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // Corner radius
                 ),
-                child: Text('CANCEL'),
+                minimumSize: Size(150, 50), // Width and height
               ),
-            ]),
+              child: Text('CANCEL'),
+            ),
+          ]),
           SizedBox(
             height: 30,
           )
@@ -265,9 +264,10 @@ class _completedReviewState extends State<completedReview> {
     )));
   }
 
-  void rateAndReview(String dept, String id, String review,String rating) async {
+  void rateAndReview(
+      String dept, String id, String review, String rating) async {
     try {
-      if (review == '' ||rating == '0.0') {
+      if (review == '' || rating == '0.0') {
         MyDialog.showCustomDialog(
           context,
           "ERROR!!",
@@ -289,13 +289,16 @@ class _completedReviewState extends State<completedReview> {
         //     }),(Route<dynamic> route) => false,);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) {
-          return ViewAllComplaint(dept: dept,status: 'completed',);
+          return ViewAllComplaint(
+            dept: dept,
+            status: 'completed',
+          );
         }), (route) => false);
         MyDialog.showCustomDialog(
             context, "Thank you", "Your rating and review are added");
       }
     } catch (e) {
-      print("Error adding document: $e");
+      // print("Error adding document: $e");
       MyDialog.showCustomDialog(
         context,
         "ERROR!!",

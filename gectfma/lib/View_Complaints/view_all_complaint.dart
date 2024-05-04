@@ -58,9 +58,10 @@ class _ViewAllComplaintState extends State<ViewAllComplaint> {
                 goto: () {
                   Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (context) {
-                      return ComplaintSummary(deptName: widget.dept );
-                    }),(Route<dynamic> route) => false,
-                   );
+                      return ComplaintSummary(deptName: widget.dept);
+                    }),
+                    (Route<dynamic> route) => false,
+                  );
                 },
               ),
               SizedBox(height: 10),
@@ -134,24 +135,25 @@ class _ViewAllComplaintState extends State<ViewAllComplaint> {
               ),
               child: ListTile(
                 onTap: () {
-                    if (widget.status == 'completed') {
-                      Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                        return completedReview(
-                          dept: widget.dept,
-                          id: complaintData['id'],
-                        );
-                      }));
-                    }
-                    else
-                    {Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                        return ViewComplaint(
-                          dept: widget.dept,
-                          id: complaintData['id'],
-                        );
-                      }));}
+                  if (widget.status == 'completed' || complaintData['status'] == 'completed') {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return completedReview(
+                        dept: widget.dept,
+                        id: complaintData['id'],
+                      );
+                    }));
+                  }
                   
+                  else {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return ViewComplaint(
+                        dept: widget.dept,
+                        id: complaintData['id'],
+                      );
+                    }));
+                  }
                 },
                 title: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -199,7 +201,8 @@ Future<List<Map<String, dynamic>>> getData(String dept, String status) async {
     Query query = collectionRef;
     if (status.isNotEmpty) {
       if (status == "pending") {
-        query = query.where('status', whereIn: ['pending', 'approved','assigned']);
+        query =
+            query.where('status', whereIn: ['pending', 'assigned', 'approved']);
       } else
         query = query.where('status', isEqualTo: status);
     }

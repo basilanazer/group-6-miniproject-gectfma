@@ -65,12 +65,12 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
             } else if (snapshot.hasError) {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else {
-              int? total = snapshot.data?['total'];
-              int? approved = snapshot.data?['approved'];
-              int? declined = snapshot.data?['declined'];
-              int? pending = snapshot.data?['pending'];
-              int? completed = snapshot.data?['completed'];
-              int? assigned  = snapshot.data?['assigned'];
+              int total = snapshot.data?['total']??0;
+              int approved = snapshot.data?['approved']??0;
+              int declined = snapshot.data?['declined']??0;
+              int pending = snapshot.data?['pending']?? 0;
+              int completed = snapshot.data?['completed']??0;
+              int assigned = snapshot.data?['assigned']??0;
 
               return Column(
                 children: <Widget>[
@@ -119,7 +119,7 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
                         }));
                       },
                       complainttype: "Pending",
-                      complaintstatus: (pending! + approved! + assigned!)),
+                      complaintstatus: (pending + approved + assigned)),
                   ComplaintsType(
                       goto: () {
                         Navigator.of(context)
@@ -189,6 +189,7 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
   }
 
   Future<Map<String, int>> getCounts(String dept) async {
+    int pendingCount = 0;
     try {
       // Get a reference to the collection
       CollectionReference collectionRef =
@@ -197,7 +198,7 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
       // Query the collection for documents with status 'pending'
       QuerySnapshot pendingSnapshot =
           await collectionRef.where('status', isEqualTo: 'pending').get();
-      int pendingCount = pendingSnapshot.size;
+      pendingCount = pendingSnapshot.size;
 
       // Query the collection for documents with status 'accepted'
       QuerySnapshot approvedSnapshot =
@@ -217,9 +218,11 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
           await collectionRef.where('status', isEqualTo: 'assigned').get();
       int assignedCount = assignedSnapshot.size;
 
-
-      int totalCount =
-          pendingCount + approvedCount + declinedCount + completedCount + assignedCount;
+      int totalCount = pendingCount +
+          approvedCount +
+          declinedCount +
+          completedCount +
+          assignedCount;
 
       return {
         'pending': pendingCount,
@@ -227,11 +230,11 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
         'declined': declinedCount,
         'completed': completedCount,
         'total': totalCount,
-        'assigned' : assignedCount
+        'assigned': assignedCount
       };
     } catch (e) {
       // Handle errors
-      print("Error getting counts: $e");
+      // print("Error getting counts: $e");
       return {'pending': 0, 'completed': 0, 'declined': 0, 'total': 0};
     }
   }

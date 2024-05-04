@@ -30,7 +30,7 @@ class _FileComplaintState extends State<FileComplaint> {
   Future selectFile() async {
     final result = await FilePicker.platform.pickFiles();
     if (result == null) {
-      print("file didnt selected");
+      // print("file didnt selected");
     }
     setState(() {
       pickedFile = result?.files.first;
@@ -39,7 +39,7 @@ class _FileComplaintState extends State<FileComplaint> {
 
   Future uploadFile() async {
     if (pickedFile == null) {
-      print("No file selected for upload.");
+      // print("No file selected for upload.");
       return;
     }
 
@@ -58,11 +58,11 @@ class _FileComplaintState extends State<FileComplaint> {
       final snapshot = await uploadTask!.whenComplete(() {});
       urlDownload = await snapshot.ref.getDownloadURL();
 
-      print('Download link - $urlDownload');
+      // print('Download link - $urlDownload');
       MyDialog.showCustomDialog(
           context, 'image uploaded', 'The image was successfully uploaded.');
     } catch (e) {
-      print(e);
+      // print(e);
     }
   }
 
@@ -185,27 +185,22 @@ class _FileComplaintState extends State<FileComplaint> {
               if (pickedFile != null)
                 TextButton(
                     onPressed: () => showImageDialog(),
-                    child: 
-                      Text(
-                        pickedFile!.name,
-                        style: 
-                          TextStyle(
+                    child: Text(pickedFile!.name,
+                        style: TextStyle(
                             color: Colors.brown,
-                            decoration: TextDecoration.underline
-                          )
-                      )
-                ),
-                if (pickedFile != null)
+                            decoration: TextDecoration.underline))),
+              if (pickedFile != null)
                 IconButton(
                   onPressed: () {
                     setState(() {
                       pickedFile = null;
                     });
-
-                  }, 
-                  icon: Icon(Icons.close,color: Colors.brown,),
+                  },
+                  icon: Icon(
+                    Icons.close,
+                    color: Colors.brown,
+                  ),
                 ),
-
               ElevatedButton(
                 onPressed: () {
                   uploadFile();
@@ -351,11 +346,11 @@ class _FileComplaintState extends State<FileComplaint> {
           'status': 'pending',
           'filed_date': DateTime.now(),
           'image': urlDownload,
-          'assigned_staff':'',
-          'assigned_staff_no':'',
-          'verification_remark' : '',
+          'assigned_staff': '',
+          'assigned_staff_no': '',
+          'verification_remark': '',
           'rating_no': '',
-          'hod_completed_review' : '',
+          'hod_completed_review': '',
         });
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) {
@@ -367,10 +362,10 @@ class _FileComplaintState extends State<FileComplaint> {
         );
         MyDialog.showCustomDialog(context, "NEW COMPLAINT REGISTERED",
             "Your complaint ID is $customDocId");
-        print("Document added with ID: $customDocId");
+        // print("Document added with ID: $customDocId");
       } // Optionally, confirm document was added
     } catch (e) {
-      print("Error adding document: $e");
+      // print("Error adding document: $e");
       MyDialog.showCustomDialog(
         context,
         "ERROR!!",
