@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gectfma/Notifications/notification_send.dart';
 import 'package:gectfma/Requirements/DateAndTime.dart';
 import 'package:gectfma/Requirements/Headings.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
@@ -270,26 +271,44 @@ class _SergeantApprovedComplaintState extends State<SergeantApprovedComplaint> {
         'status': status,
         'assigned_date': DateTime.now()
       });
-      int completedCount=0;
-    List<String> depts = ['arch','ce','che','cse','ece','ee','me','pe'];
-    for(var d in depts)
-  {  CollectionReference collectionRef = FirebaseFirestore.instance.collection(d);
-      QuerySnapshot completedSnapshot =
+      DocumentSnapshot snap = await FirebaseFirestore.instance
+          .collection("UserTokens")
+          .doc(dept)
+          .get();
+      String token = snap['token'];
+      sendPushMessage(token, "${id.toUpperCase()}", "Staff has been assigned");
+      int completedCount = 0;
+      List<String> depts = [
+        'arch',
+        'ce',
+        'che',
+        'cse',
+        'ece',
+        'ee',
+        'me',
+        'pe'
+      ];
+      for (var d in depts) {
+        CollectionReference collectionRef =
+            FirebaseFirestore.instance.collection(d);
+        QuerySnapshot completedSnapshot =
             await collectionRef.where('status', isEqualTo: 'assigned').get();
-            completedCount += completedSnapshot.size;
+        completedCount += completedSnapshot.size;
+      }
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) {
+          return SergeantViewAllComplaint(
+            total: completedCount,
+            status: 'assigned',
+          );
+        }),
+        (Route<dynamic> route) => false,
+      );
+      MyDialog.showCustomDialog(context, "Staff Assigned",
+          "$assignedStaffName is assigned to complaint $id");
+    } catch (e) {
+      // Handle errors
+      // print("Error updating data: $e");
+    }
   }
-    Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) {
-            return SergeantViewAllComplaint(total: completedCount,status:'assigned',);
-          }),
-          (Route<dynamic> route) => false,
-        );
-    MyDialog.showCustomDialog(context, "Staff Assigned", "$assignedStaffName is assigned to complaint $id");
-    
-  } catch (e) {
-    // Handle errors
-    print("Error updating data: $e");
-  }
-}
-
 }

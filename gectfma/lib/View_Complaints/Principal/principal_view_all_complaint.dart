@@ -30,7 +30,7 @@ class _PrincipalViewAllComplaintState extends State<PrincipalViewAllComplaint> {
         children: <Widget>[
           TopBar(
             goto: () {
-              logout.logOut(context);
+              logout.logOut(context, 'principal');
             },
             dept: "WELCOME Principal",
             iconLabel: "Log Out",

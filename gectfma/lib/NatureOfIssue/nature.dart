@@ -37,7 +37,7 @@ class NatureOfIssue extends StatelessWidget {
                         Navigator.of(context).pop(true);
                       },
                       child: Text(
-                        'yes',
+                        'Yes',
                         style: TextStyle(color: Colors.brown[800]),
                       ),
                     ),
@@ -53,7 +53,7 @@ class NatureOfIssue extends StatelessWidget {
                 children: <Widget>[
                   TopBar(
                       goto: () {
-                        logout.logOut(context);
+                        logout.logOut(context, dept);
                       },
                       iconLabel: "Log Out",
                       title: "navigate to",

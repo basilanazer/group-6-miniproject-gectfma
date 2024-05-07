@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gectfma/NatureOfIssue/comp_verification.dart';
 import 'package:gectfma/NatureOfIssue/list_complints.dart';
+import 'package:gectfma/Notifications/notification_send.dart';
 import 'package:gectfma/Requirements/DateAndTime.dart';
 import 'package:gectfma/Requirements/Headings.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
@@ -264,7 +265,10 @@ class _approveOrDeclineState extends State<approveOrDecline> {
         await docRef.update({
           'verification_remark': remark,
           'status': status,
-          if (status == 'approved') 'approved_date': DateTime.now()
+          if (status == 'approved')
+            'approved_date': DateTime.now()
+          else
+            'declined_date': DateTime.now()
         });
         // Navigator.of(context)
         //     .pushAndRemoveUntil(MaterialPageRoute(builder: (context) {
@@ -276,6 +280,22 @@ class _approveOrDeclineState extends State<approveOrDecline> {
         }), (route) => route is complaintVerification);
         MyDialog.showCustomDialog(
             context, "STATUS UPDATED", "Remarks added and Status is updated");
+        DocumentSnapshot snap = await FirebaseFirestore.instance
+            .collection("UserTokens")
+            .doc(dept)
+            .get();
+        String token = snap['token'];
+        sendPushMessage(token, "${id.toUpperCase()}",
+            "${id.toUpperCase()} has been $status");
+        if (status == "approved") {
+          DocumentSnapshot snap2 = await FirebaseFirestore.instance
+              .collection("UserTokens")
+              .doc("sergeant")
+              .get();
+          String token2 = snap2['token'];
+          sendPushMessage(token2, "${id.toUpperCase()}",
+              "${id.toUpperCase()} has been $status");
+        }
       }
     } catch (e) {
       // print("Error adding document: $e");

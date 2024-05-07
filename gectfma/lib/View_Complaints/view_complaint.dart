@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gectfma/Notifications/notification_send.dart';
 import 'package:gectfma/Requirements/DateAndTime.dart';
 import 'package:gectfma/Requirements/Headings.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
@@ -44,6 +45,9 @@ TextEditingController assignedtimeController = TextEditingController();
 TextEditingController completeddateController = TextEditingController();
 TextEditingController completedtimeController = TextEditingController();
 
+TextEditingController declineddateController = TextEditingController();
+TextEditingController declinedtimeController = TextEditingController();
+
 String status = "";
 String imageURL = '';
 String str_rating_no = '';
@@ -77,6 +81,8 @@ class _ViewComplaintState extends State<ViewComplaint> {
     completedtimeController.clear();
     approveddateController.clear();
     approvedtimeController.clear();
+    declineddateController.clear();
+    declinedtimeController.clear();
   }
 
   @override
@@ -204,6 +210,26 @@ class _ViewComplaintState extends State<ViewComplaint> {
                 ),
               ],
             ),
+          if (['declined'].contains(statusController.text))
+            Column(
+              children: [
+                Headings(title: "Declined Date and Time"),
+                DetailFields(
+                  isEnable: false,
+                  hintText: "Date",
+                  controller: declineddateController,
+                ),
+                DetailFields(
+                  isEnable: false,
+                  hintText: "Time",
+                  controller: declinedtimeController,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
+
           //Verification Remarks
           if (['approved', 'assigned', 'completed']
               .contains(statusController.text))
@@ -373,10 +399,12 @@ class _ViewComplaintState extends State<ViewComplaint> {
           if (['assigned', 'completed'].contains(documentSnapshot['status']))
             'assigned_date': documentSnapshot['assigned_date'],
           if (['completed'].contains(documentSnapshot['status']))
-            'completed_date': documentSnapshot['completed_date']
+            'completed_date': documentSnapshot['completed_date'],
+          if (['declined'].contains(documentSnapshot['status']))
+            'declined_date': documentSnapshot['declined_date']
         };
 
-        DateTime filed, approved, assigned, completed;
+        DateTime filed, approved, assigned, completed, declined;
 
         setState(() {
           contactController.text = data['contact'];
@@ -412,6 +440,11 @@ class _ViewComplaintState extends State<ViewComplaint> {
             completed = data['completed_date'].toDate();
             completeddateController.text = formatDate(completed);
             completedtimeController.text = formatTime(completed);
+          }
+          if (['declined'].contains(statusController.text)) {
+            declined = data['declined_date'].toDate();
+            declineddateController.text = formatDate(declined);
+            declinedtimeController.text = formatTime(declined);
           }
         });
 
@@ -449,7 +482,13 @@ class _ViewComplaintState extends State<ViewComplaint> {
       await collectionRef
           .doc(id)
           .update({'status': status, 'completed_date': DateTime.now()});
-
+      DocumentSnapshot snap = await FirebaseFirestore.instance
+          .collection("UserTokens")
+          .doc(dept)
+          .get();
+      String token = snap['token'];
+      sendPushMessage(token, "${id.toUpperCase()}",
+          "Complaint ${id.toUpperCase()} has been resolved");
       int completedCount = 0;
       List<String> depts = [
         'arch',

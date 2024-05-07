@@ -45,7 +45,7 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
                   Navigator.of(context).pop(true);
                 },
                 child: Text(
-                  'yes',
+                  'Yes',
                   style: TextStyle(color: Colors.brown[800]),
                 ),
               ),
@@ -65,12 +65,12 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
             } else if (snapshot.hasError) {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else {
-              int total = snapshot.data?['total']??0;
-              int approved = snapshot.data?['approved']??0;
-              int declined = snapshot.data?['declined']??0;
-              int pending = snapshot.data?['pending']?? 0;
-              int completed = snapshot.data?['completed']??0;
-              int assigned = snapshot.data?['assigned']??0;
+              int total = snapshot.data?['total'] ?? 0;
+              int approved = snapshot.data?['approved'] ?? 0;
+              int declined = snapshot.data?['declined'] ?? 0;
+              int pending = snapshot.data?['pending'] ?? 0;
+              int completed = snapshot.data?['completed'] ?? 0;
+              int assigned = snapshot.data?['assigned'] ?? 0;
 
               return Column(
                 children: <Widget>[
@@ -92,7 +92,7 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
                           (Route<dynamic> route) => false,
                         );
                       } else {
-                        logout.logOut(context);
+                        logout.logOut(context, widget.deptName);
                       }
                     },
                   ),

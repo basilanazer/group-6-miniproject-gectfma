@@ -58,7 +58,11 @@ class _complaintVerificationState extends State<complaintVerification> {
                                 (Route<dynamic> route) => false,
                               );
                             } else {
-                              logout.logOut(context);
+                              logout.logOut(
+                                  context,
+                                  widget.nature == 'Electrical'
+                                      ? 'ee'
+                                      : 'p-in-charge');
                             }
                           },
                         ),

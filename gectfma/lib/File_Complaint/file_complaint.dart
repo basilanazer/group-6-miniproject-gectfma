@@ -5,8 +5,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gectfma/Complaint_Summary/complaint_summary.dart';
+import 'package:gectfma/Notifications/notification_send.dart';
 import 'package:gectfma/Requirements/Headings.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
+// import 'package:googleapis/androidenterprise/v1.dart';
 import '../Requirements/DetailFields.dart';
 import '../Requirements/TopBar.dart';
 import 'package:file_picker/file_picker.dart';
@@ -68,11 +70,12 @@ class _FileComplaintState extends State<FileComplaint> {
 
   String urgency = levels[0];
   String? nature;
+  String? mtoken = "";
+
   TextEditingController contactController = TextEditingController();
   TextEditingController descController = TextEditingController();
   TextEditingController hodController = TextEditingController();
   TextEditingController titleController = TextEditingController();
-
   @override
   void dispose() {
     // Dispose of the controllers when the widget is removed from the widget tree
@@ -81,6 +84,130 @@ class _FileComplaintState extends State<FileComplaint> {
     descController.dispose();
     hodController.dispose();
     super.dispose();
+  }
+
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   // requestPermission();
+  //   // getToken();
+  //   // initInfo();
+  // }
+
+  void addComplaints(String dept, String hod, String contact, String? nature,
+      String desc, String title, String urgency) async {
+    try {
+      if (dept == '' ||
+          hod == '' ||
+          title == '' ||
+          contact == '' ||
+          nature == null ||
+          desc == '' ||
+          urlDownload == '') {
+        MyDialog.showCustomDialog(
+          context,
+          "ERROR!!",
+          "None of the fields can be empty",
+        );
+      } else {
+        // Generate the custom ID
+        String customDocId = await generateDeptId(dept);
+
+        // Get a reference to the specific document with the custom ID
+        DocumentReference docRef =
+            FirebaseFirestore.instance.collection(dept).doc(customDocId);
+
+        // Set the data in the document with the custom ID
+        await docRef.set({
+          'id': customDocId,
+          'dept': dept,
+          'hod': hod,
+          'contact': contact,
+          'nature': nature,
+          'desc': desc,
+          'title': title,
+          'urgency': urgency,
+          'status': 'pending',
+          'filed_date': DateTime.now(),
+          'image': urlDownload,
+          'assigned_staff': '',
+          'assigned_staff_no': '',
+          'verification_remark': '',
+          'rating_no': '',
+          'hod_completed_review': '',
+        });
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) {
+            return ComplaintSummary(
+              deptName: dept,
+            );
+          }),
+          (Route<dynamic> route) => false,
+        );
+        MyDialog.showCustomDialog(context, "NEW COMPLAINT REGISTERED",
+            "Your complaint ID is $customDocId");
+        DocumentSnapshot snap = await FirebaseFirestore.instance
+            .collection("UserTokens")
+            .doc(nature == "Electrical" ? "ee" : "p-in-charge")
+            .get();
+        String token = snap['token'];
+        sendPushMessage(token, customDocId, "Waiting for your approval");
+
+        // print("Document added with ID: $customDocId");
+      } // Optionally, confirm document was added
+    } catch (e) {
+      // print("Error adding document: $e");
+      MyDialog.showCustomDialog(
+        context,
+        "ERROR!!",
+        "Some error occured. Please try again",
+      ); // Handle errors here
+    }
+  }
+
+  Future<String> generateDeptId(String dept) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    // Reference to the department's collection
+    CollectionReference deptCollection = firestore.collection(dept);
+
+    // Retrieve all documents to count them
+    QuerySnapshot snapshot = await deptCollection.get();
+    int numberOfDocuments = snapshot.docs.length;
+
+    // Generate the ID with padding to ensure it is always three digits
+    String paddedNumber = (numberOfDocuments + 1)
+        .toString()
+        .padLeft(3, '0'); // +1 for the next document
+    return '$dept$paddedNumber';
+  }
+
+  void showImageDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.amber.shade50,
+          content: Container(
+            // You might want to constrain the size here depending on your design needs
+            width: double.maxFinite,
+            child: Image.file(
+              File(pickedFile!.path!),
+              fit: BoxFit.cover,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(), // Close the dialog
+              child: Text(
+                'Close',
+                style: TextStyle(color: Colors.brown),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -308,113 +435,5 @@ class _FileComplaintState extends State<FileComplaint> {
         ],
       ),
     )));
-  }
-
-  void addComplaints(String dept, String hod, String contact, String? nature,
-      String desc, String title, String urgency) async {
-    try {
-      if (dept == '' ||
-          hod == '' ||
-          title == '' ||
-          contact == '' ||
-          nature == null ||
-          desc == '' ||
-          urlDownload == '') {
-        MyDialog.showCustomDialog(
-          context,
-          "ERROR!!",
-          "None of the fields can be empty",
-        );
-      } else {
-        // Generate the custom ID
-        String customDocId = await generateDeptId(dept);
-
-        // Get a reference to the specific document with the custom ID
-        DocumentReference docRef =
-            FirebaseFirestore.instance.collection(dept).doc(customDocId);
-
-        // Set the data in the document with the custom ID
-        await docRef.set({
-          'id': customDocId,
-          'dept': dept,
-          'hod': hod,
-          'contact': contact,
-          'nature': nature,
-          'desc': desc,
-          'title': title,
-          'urgency': urgency,
-          'status': 'pending',
-          'filed_date': DateTime.now(),
-          'image': urlDownload,
-          'assigned_staff': '',
-          'assigned_staff_no': '',
-          'verification_remark': '',
-          'rating_no': '',
-          'hod_completed_review': '',
-        });
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) {
-            return ComplaintSummary(
-              deptName: dept,
-            );
-          }),
-          (Route<dynamic> route) => false,
-        );
-        MyDialog.showCustomDialog(context, "NEW COMPLAINT REGISTERED",
-            "Your complaint ID is $customDocId");
-        // print("Document added with ID: $customDocId");
-      } // Optionally, confirm document was added
-    } catch (e) {
-      // print("Error adding document: $e");
-      MyDialog.showCustomDialog(
-        context,
-        "ERROR!!",
-        "Some error occured. Please try again",
-      ); // Handle errors here
-    }
-  }
-
-  Future<String> generateDeptId(String dept) async {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    // Reference to the department's collection
-    CollectionReference deptCollection = firestore.collection(dept);
-
-    // Retrieve all documents to count them
-    QuerySnapshot snapshot = await deptCollection.get();
-    int numberOfDocuments = snapshot.docs.length;
-
-    // Generate the ID with padding to ensure it is always three digits
-    String paddedNumber = (numberOfDocuments + 1)
-        .toString()
-        .padLeft(3, '0'); // +1 for the next document
-    return '$dept$paddedNumber';
-  }
-
-  void showImageDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.amber.shade50,
-          content: Container(
-            // You might want to constrain the size here depending on your design needs
-            width: double.maxFinite,
-            child: Image.file(
-              File(pickedFile!.path!),
-              fit: BoxFit.cover,
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(), // Close the dialog
-              child: Text(
-                'Close',
-                style: TextStyle(color: Colors.brown),
-              ),
-            ),
-          ],
-        );
-      },
-    );
   }
 }
