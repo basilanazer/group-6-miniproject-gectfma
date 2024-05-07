@@ -228,7 +228,7 @@ Future<List<Map<String, dynamic>>> getData(String dept, String status) async {
     return data;
   } catch (e) {
     // Handle errors
-    print("Error getting data: $e");
+    // print("Error getting data: $e");
     return [];
   }
 }

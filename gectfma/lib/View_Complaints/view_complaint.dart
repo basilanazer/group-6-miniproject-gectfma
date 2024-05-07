@@ -395,7 +395,7 @@ class _ViewComplaintState extends State<ViewComplaint> {
 
           filed = data['filed_date'].toDate();
           fileddateController.text = formatDate(filed);
-          print(fileddateController.text);
+          // print(fileddateController.text);
           filedtimeController.text = formatTime(filed);
           if (['approved', 'assigned', 'completed']
               .contains(documentSnapshot['status'])) {
