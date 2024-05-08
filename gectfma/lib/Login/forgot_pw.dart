@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gectfma/Requirements/DetailFields.dart';
@@ -23,22 +25,22 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             Expanded(
               child: Center(
                 child: Container(
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
+                      SizedBox(
                           height: 80,
                           width: 800,
                           child: Image.asset("assets/images/tiny-lock.png")),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       Text("Trouble logging in?",
                           style: TextStyle(
                             color: Colors.brown[800],
                             fontWeight: FontWeight.bold,
                             fontSize: 25,
                           )),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       Center(
                         child: Text(
                           "Enter your email and we'll send you a link to get back into your account.",
@@ -50,12 +52,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         ),
                       ),
 
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       DetailFields(
                         hintText: "Enter Email",
                         controller: emailController,
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       // Add spacing between text field and button
                       ElevatedButton(
                         onPressed: () {
@@ -71,9 +73,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             borderRadius:
                                 BorderRadius.circular(10), // Corner radius
                           ),
-                          minimumSize: Size(345, 60), // Width and height
+                          minimumSize: const Size(345, 60), // Width and height
                         ),
-                        child: Text('Reset Password'),
+                        child: const Text('Reset Password'),
                       ),
                       TextButton(
                         onPressed: () {
@@ -107,7 +109,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         "EMAIL SENT",
         "An email containing instructions to reset your password has been sent to your email address. Please check your inbox and follow the instructions provided.If you don't receive the email, check your spam folder.",
       );
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException {
       // print(e);
       MyDialog.showCustomDialog(
           context, 'ERROR!!', "Incorrect email. Please try again.");

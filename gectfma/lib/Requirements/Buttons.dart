@@ -14,7 +14,7 @@ class Buttons extends StatelessWidget {
     return Container(
         padding: const EdgeInsets.all(8.0),
         width: 300,
-        height: 50,
+        height: 75,
         decoration: BoxDecoration(
             color: Colors.brown[600], borderRadius: BorderRadius.circular(10)),
         child: TextButton(

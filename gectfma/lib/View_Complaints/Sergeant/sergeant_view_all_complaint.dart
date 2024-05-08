@@ -34,19 +34,17 @@ class _SergeantViewAllComplaintState extends State<SergeantViewAllComplaint> {
             goto: () {
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) {
-                  return SergeantComplaintSummary(role: "sergeant");
+                  return const SergeantComplaintSummary(role: "sergeant");
                 }),
                 (Route<dynamic> route) => false,
               );
             },
             dept: "WELCOME Sergeant",
             iconLabel: 'Go Back',
-            title: "TOTAL " +
-                "${widget.status == "" ? "" : widget.status}" +
-                " COMPLAINTS ${widget.total}",
+            title: "TOTAL ${widget.status == "" ? "" : widget.status} COMPLAINTS ${widget.total}",
             icon: Icons.arrow_back,
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           for (String dept in [
             "arch",
             "ce",
@@ -64,26 +62,24 @@ class _SergeantViewAllComplaintState extends State<SergeantViewAllComplaint> {
                   future: getData(dept, widget.status),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
                       return Center(child: Text("Error: ${snapshot.error}"));
                     } else {
                       temp = snapshot.data;
                       filteredData = temp;
-                      return Container(
-                        child: Column(
-                          children: [
-                            if (filteredData!.isNotEmpty)
-                              Headings(
-                                title: 'department of $dept',
-                              ),
-                            Column(
-                              children: filteredData!.map((complaintData) {
-                                return eachComplaint(dept, complaintData);
-                              }).toList(),
-                            )
-                          ],
-                        ),
+                      return Column(
+                        children: [
+                          if (filteredData!.isNotEmpty)
+                            Headings(
+                              title: 'department of $dept',
+                            ),
+                          Column(
+                            children: filteredData!.map((complaintData) {
+                              return eachComplaint(dept, complaintData);
+                            }).toList(),
+                          )
+                        ],
                       );
                       // return Column(
                       //   children: filteredData!.map((complaintData) {
@@ -93,7 +89,7 @@ class _SergeantViewAllComplaintState extends State<SergeantViewAllComplaint> {
                     }
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
               ],
             ),
         ],
@@ -152,7 +148,7 @@ class _SergeantViewAllComplaintState extends State<SergeantViewAllComplaint> {
                         ),
                         Text(
                           complaintData['title'],
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -160,7 +156,7 @@ class _SergeantViewAllComplaintState extends State<SergeantViewAllComplaint> {
                     ),
                     Text(
                       "Status: ${complaintData['status']}",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -168,7 +164,7 @@ class _SergeantViewAllComplaintState extends State<SergeantViewAllComplaint> {
                 ),
               ),
             ),
-            Divider(),
+            const Divider(),
           ],
         ));
   }

@@ -54,7 +54,7 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
         );
 
         // Return exit if user confirmed, otherwise don't exit
-        return exit ?? false;
+        return exit;
       },
       child: Scaffold(
         body: FutureBuilder(
@@ -76,10 +76,10 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
                 children: <Widget>[
                   TopBar(
                     dept: "DEPARTMENT OF ${widget.deptName}",
-                    iconLabel: widget.deptName == 'ee' ? "Go Back" : "Log Out",
+                    iconLabel: widget.deptName == 'ee' ? "Home" : "Log Out",
                     title: "TOTAL COMPLAINTS $total",
                     icon: widget.deptName == 'ee'
-                        ? Icons.arrow_back
+                        ? Icons.home
                         : Icons.logout,
                     goto: () {
                       if (widget.deptName == 'ee') {

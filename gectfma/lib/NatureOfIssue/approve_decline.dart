@@ -7,6 +7,7 @@ import 'package:gectfma/Notifications/notification_send.dart';
 import 'package:gectfma/Requirements/DateAndTime.dart';
 import 'package:gectfma/Requirements/Headings.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
+import 'package:gectfma/downloadpdf/pdf_manager.dart';
 import '../Requirements/DetailFields.dart';
 import '../Requirements/TopBar.dart';
 
@@ -34,6 +35,7 @@ TextEditingController remarkController = TextEditingController();
 TextEditingController fileddateController = TextEditingController();
 TextEditingController filedtimeController = TextEditingController();
 String imageURL = '';
+String pdf_content = '';
 
 class _approveOrDeclineState extends State<approveOrDecline> {
   String remark = '';
@@ -80,6 +82,43 @@ class _approveOrDeclineState extends State<approveOrDecline> {
           filed = data['filed_date'].toDate();
           fileddateController.text = formatDate(filed);
           filedtimeController.text = formatTime(filed);
+          pdf_content = '''
+Complaint_id :  $id
+
+
+DEPARTMENT DETAILS 
+
+Department   :  Department Of $dept
+
+HOD          :  ${data['hod']}
+
+Contact      :  ${data['contact']}
+
+
+COMPLAINT DETAILS
+
+Nature of complaint :  ${data['nature']}
+
+Current status      :  ${data['status']}
+
+Title               :  ${data['title']}
+
+Urgency             :  ${data['urgency']}
+
+
+COMPLAINT DESCRIPTION
+
+${data['desc']}
+
+
+DATE AND TIME
+
+Filed     :  ${formatDate(filed)}    ${formatTime(filed)}
+
+
+''';
+
+
         });
         // print(data);
         // print(imageURL);
@@ -97,11 +136,6 @@ class _approveOrDeclineState extends State<approveOrDecline> {
 
   @override
   Widget build(BuildContext context) {
-    Future<bool> evictImage(String imageURL) async {
-      final NetworkImage provider = NetworkImage(imageURL);
-      return await provider.evict();
-    }
-
     return SafeArea(
         child: Scaffold(
             body: SingleChildScrollView(
@@ -117,10 +151,34 @@ class _approveOrDeclineState extends State<approveOrDecline> {
               Navigator.of(context).pop();
             },
           ),
-          Headings(title: "Department Details"),
-          DetailFields(
-            isEnable: false,
-            hintText: widget.dept.toUpperCase(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Headings(title: "Department Details"),
+              TextButton.icon(
+                  onPressed: () {
+                    final pdfManager = PDFManager();
+                      pdfManager.generateAndDownloadPDF(
+                        "${widget.id}-${statusController.text}.pdf",
+                        pdf_content,
+                        imageURL
+                      );
+                  },
+                  label: Text(
+                    "View as PDF",
+                    selectionColor: Colors.brown[400],
+                    style: TextStyle(
+                      color: Colors.brown[600],
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                  icon: Icon(
+                    Icons.open_in_new,
+                    color: Colors.brown[600],
+                  ),
+                ),
+                
+            ],
           ),
           DetailFields(
             isEnable: false,
@@ -276,7 +334,7 @@ class _approveOrDeclineState extends State<approveOrDecline> {
         //     }),(Route<dynamic> route) => false,);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) {
-          return listComplaints(status: status, nature: natureController.text);
+          return complaintVerification(nature: natureController.text);
         }), (route) => route is complaintVerification);
         MyDialog.showCustomDialog(
             context, "STATUS UPDATED", "Remarks added and Status is updated");

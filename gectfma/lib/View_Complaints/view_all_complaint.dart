@@ -64,7 +64,7 @@ class _ViewAllComplaintState extends State<ViewAllComplaint> {
                   );
                 },
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               // Padding(
               //   padding: const EdgeInsets.all(8.0),
               //   child: TextFormField(
@@ -97,7 +97,7 @@ class _ViewAllComplaintState extends State<ViewAllComplaint> {
                 future: getData(widget.dept, widget.status),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return Center(child: Text("Error: ${snapshot.error}"));
                   } else {
@@ -171,7 +171,7 @@ class _ViewAllComplaintState extends State<ViewAllComplaint> {
                         ),
                         Text(
                           complaintData['title'],
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -179,7 +179,7 @@ class _ViewAllComplaintState extends State<ViewAllComplaint> {
                     ),
                     Text(
                       "Status: ${complaintData['status']}",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -187,7 +187,7 @@ class _ViewAllComplaintState extends State<ViewAllComplaint> {
                 ),
               ),
             ),
-            Divider(),
+            const Divider(),
           ],
         ));
   }

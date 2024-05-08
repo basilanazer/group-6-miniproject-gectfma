@@ -1,7 +1,9 @@
+import 'package:intl/intl.dart';
+
 String formatDate(DateTime dateTime) {
-  return "${dateTime.day}-${dateTime.month}-${dateTime.year}";
+  return DateFormat('dd MMMM yyyy').format(dateTime);
 }
 
 String formatTime(DateTime dateTime) {
-  return "${dateTime.hour}:${dateTime.minute}:${dateTime.second}";
+  return DateFormat('hh:mm:ss a').format(dateTime);
 }

@@ -1,13 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gectfma/Login/logout.dart';
 import 'package:gectfma/Requirements/ComplaintType.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
-import 'package:gectfma/File_Complaint/file_complaint.dart';
-import 'package:gectfma/Requirements/show_my_dialog.dart';
 import 'package:gectfma/View_Complaints/Sergeant/sergeant_view_all_complaint.dart';
-import 'package:gectfma/View_Complaints/view_all_complaint.dart';
 
 /*
 The Sergeant has 3 complaint access
@@ -59,7 +55,7 @@ class SergeantComplaintSummary extends StatelessWidget {
         );
 
         // Return exit if user confirmed, otherwise don't exit
-        return exit ?? false;
+        return exit;
       },
       child: Scaffold(
         body: FutureBuilder(

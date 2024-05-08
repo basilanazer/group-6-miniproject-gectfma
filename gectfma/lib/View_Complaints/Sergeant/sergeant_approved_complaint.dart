@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gectfma/Complaint_Summary/sergeant_complaint_summary.dart';
 import 'package:gectfma/Notifications/notification_send.dart';
 import 'package:gectfma/Requirements/DateAndTime.dart';
 import 'package:gectfma/Requirements/Headings.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
 import 'package:gectfma/View_Complaints/Sergeant/sergeant_view_all_complaint.dart';
+import 'package:gectfma/downloadpdf/pdf_manager.dart';
 import '../../Requirements/DetailFields.dart';
 import '../../Requirements/TopBar.dart';
 
@@ -43,6 +45,7 @@ String assignedStaffName = "";
 String assignedStaffNumber = "";
 String status = "";
 String imageURL = '';
+String pdf_content = '';
 
 class _SergeantApprovedComplaintState extends State<SergeantApprovedComplaint> {
   @override
@@ -94,6 +97,47 @@ class _SergeantApprovedComplaintState extends State<SergeantApprovedComplaint> {
           approved = data['approved_date'].toDate();
           approveddateController.text = formatDate(approved);
           approvedtimeController.text = formatTime(approved);
+
+          pdf_content = '''
+Complaint_id :  $id
+
+
+DEPARTMENT DETAILS 
+
+Department   :  Department Of $dept
+
+HOD          :  ${data['hod']}
+
+Contact      :  ${data['contact']}
+
+
+COMPLAINT DETAILS
+
+Nature of complaint :  ${data['nature']}
+
+Current status      :  ${data['status']}
+
+Title               :  ${data['title']}
+
+Urgency             :  ${data['urgency']}
+
+
+COMPLAINT DESCRIPTION
+
+${data['desc']}
+
+Verification Remarks : ${data['verification_remark']}
+
+
+DATE AND TIME
+
+Filed     :  ${formatDate(filed)}    ${formatTime(filed)}
+
+Approved  :  ${formatDate(data['approved_date'].toDate())}    ${formatTime(data['approved_date'].toDate())} 
+
+''';
+
+
         });
 
         return data;
@@ -125,7 +169,35 @@ class _SergeantApprovedComplaintState extends State<SergeantApprovedComplaint> {
             title: "${widget.id}".toUpperCase(),
             icon: Icons.arrow_back,
           ),
-          Headings(title: "Department Details"),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Headings(title: "Department Details"),
+              TextButton.icon(
+                  onPressed: () {
+                    final pdfManager = PDFManager();
+                      pdfManager.generateAndDownloadPDF(
+                        "${widget.id}-${statusController.text}.pdf",
+                        pdf_content,
+                        imageURL
+                      );
+                  },
+                  label: Text(
+                    "View as PDF",
+                    selectionColor: Colors.brown[400],
+                    style: TextStyle(
+                      color: Colors.brown[600],
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                  icon: Icon(
+                    Icons.open_in_new,
+                    color: Colors.brown[600],
+                  ),
+                ),
+                
+            ],
+          ),
           DetailFields(
             isEnable: false,
             hintText: widget.dept.toUpperCase(),
@@ -297,10 +369,7 @@ class _SergeantApprovedComplaintState extends State<SergeantApprovedComplaint> {
       }
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) {
-          return SergeantViewAllComplaint(
-            total: completedCount,
-            status: 'assigned',
-          );
+          return SergeantComplaintSummary(role: "sergeant");
         }),
         (Route<dynamic> route) => false,
       );

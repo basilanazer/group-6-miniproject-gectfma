@@ -18,7 +18,7 @@ class complaintVerification extends StatefulWidget {
 class _complaintVerificationState extends State<complaintVerification> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    Widget body = SafeArea(
       child: Scaffold(
         body: FutureBuilder(
           future: getCounts(widget.nature),
@@ -40,11 +40,11 @@ class _complaintVerificationState extends State<complaintVerification> {
                       children: <Widget>[
                         TopBar(
                           iconLabel: widget.nature == 'Electrical'
-                              ? "Go Back"
+                              ? "Home"
                               : "Log Out",
                           title: "Total ${widget.nature} complaints $total",
                           icon: widget.nature == 'Electrical'
-                              ? Icons.arrow_back
+                              ? Icons.home
                               : Icons.logout,
                           dept: "${widget.nature} in-charge",
                           goto: () {
@@ -60,9 +60,7 @@ class _complaintVerificationState extends State<complaintVerification> {
                             } else {
                               logout.logOut(
                                   context,
-                                  widget.nature == 'Electrical'
-                                      ? 'ee'
-                                      : 'p-in-charge');
+                                  'p-in-charge');
                             }
                           },
                         ),
@@ -89,6 +87,49 @@ class _complaintVerificationState extends State<complaintVerification> {
         ),
       ),
     );
+    // Check if nature is 'Plumbing' and wrap with WillPopScope
+  if (widget.nature == 'Plumbing') {
+    body = WillPopScope(
+      onWillPop: () async {
+          // Show exit confirmation dialog
+          bool exit = await showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              backgroundColor: Colors.amber[50],
+              title: Text('Are you sure you want to exit?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    // Close the dialog and return false
+                    Navigator.of(context).pop(false);
+                  },
+                  child: Text(
+                    'No',
+                    style: TextStyle(color: Colors.brown[800]),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    // Close the dialog and return true
+                    Navigator.of(context).pop(true);
+                  },
+                  child: Text(
+                    'Yes',
+                    style: TextStyle(color: Colors.brown[800]),
+                  ),
+                ),
+              ],
+            ),
+          );
+
+          // Return exit if user confirmed, otherwise don't exit
+          return exit;
+        },
+      child: body,
+    );
+  }
+
+  return body;
   }
 
   Future<Map<String, int>> getCounts(String nature) async {
