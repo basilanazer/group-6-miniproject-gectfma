@@ -254,6 +254,7 @@ class _FileComplaintState extends State<FileComplaint> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: DropdownButton(
+                  dropdownColor: Colors.white,
                   hint: Text("Nature Of Issue"),
                   isExpanded: true,
                   underline: SizedBox(),
@@ -288,62 +289,75 @@ class _FileComplaintState extends State<FileComplaint> {
             hintText: "Description",
           ),
           Headings(title: "Additional documents*"),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              if (pickedFile == null)
-                TextButton.icon(
-                  onPressed: () {
-                    selectFile();
-                  },
-                  label: Text(
-                    "select file",
-                    selectionColor: Colors.brown[400],
-                    style: TextStyle(
-                      color: Colors.brown[600],
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                  icon: Icon(
-                    Icons.file_open_outlined,
-                    color: Colors.brown[600],
-                  ),
-                ),
-              if (pickedFile != null)
-                TextButton(
-                    onPressed: () => showImageDialog(),
-                    child: Text(pickedFile!.name,
+          Padding(
+            padding: EdgeInsets.all(8),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  if (pickedFile == null)
+                    TextButton.icon(
+                      onPressed: selectFile,
+                      icon: Icon(
+                        Icons.file_open_outlined,
+                        color: Colors.brown[600],
+                      ),
+                      label: Text(
+                        "Select file",
                         style: TextStyle(
-                            color: Colors.brown,
-                            decoration: TextDecoration.underline))),
-              if (pickedFile != null)
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      pickedFile = null;
-                    });
-                  },
-                  icon: Icon(
-                    Icons.close,
-                    color: Colors.brown,
+                          color: Colors.brown[600],
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  if (pickedFile != null)
+                    Expanded(  // Use Expanded to ensure the row uses all available space.
+                      child: 
+                      Row(
+                        children: [
+                          Flexible(  // Use Flexible to let the text button shrink according to available space.
+                            child: TextButton(
+                              onPressed: showImageDialog,
+                              child: Text(
+                                pickedFile!.name,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: TextStyle(
+                                  color: Colors.brown,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                pickedFile = null;
+                              });
+                            },
+                            icon: Icon(
+                              Icons.close,
+                              color: Colors.brown,
+                            ),
+                          ),
+                        ],
+                      ),
+                   ),
+                  ElevatedButton(
+                    onPressed: uploadFile,
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.brown[50],
+                      backgroundColor: Colors.brown[800],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      minimumSize: Size(150, 50),
+                    ),
+                    child: Text('UPLOAD'),
                   ),
-                ),
-              ElevatedButton(
-                onPressed: () {
-                  uploadFile();
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.brown[50],
-                  backgroundColor: Colors.brown[800], // Text color
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // Corner radius
-                  ),
-                  minimumSize: Size(150, 50), // Width and height
-                ),
-                child: Text('UPLOAD'),
+                ],
               ),
-            ],
-          ),
+            ),
+          
           SizedBox(
             height: 20,
           ),
