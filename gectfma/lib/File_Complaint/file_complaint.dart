@@ -291,7 +291,7 @@ class _FileComplaintState extends State<FileComplaint> {
           Padding(
             padding: const EdgeInsets.all(8),
             child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   if (pickedFile == null)
                     TextButton.icon(
@@ -307,12 +307,11 @@ class _FileComplaintState extends State<FileComplaint> {
                           decoration: TextDecoration.underline,
                         ),
                       ),
-                    )
-                  else
+                    ),
+                  if (pickedFile != null)
                     Expanded(  // Use Expanded to ensure the row uses all available space.
                       child: 
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceArround,
                         children: [
                           Flexible(  // Use Flexible to let the text button shrink according to available space.
                             child: TextButton(
@@ -342,10 +341,8 @@ class _FileComplaintState extends State<FileComplaint> {
                         ],
                       ),
                    ),
-                  if (isloading)
-                    const CircularProgressIndicator() 
-
-                    
+                   if(isloading)
+                    const CircularProgressIndicator()                         
                   else
                   ElevatedButton(
                     onPressed: uploadFile,
