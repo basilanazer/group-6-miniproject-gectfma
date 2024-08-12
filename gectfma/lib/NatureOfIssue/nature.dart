@@ -19,7 +19,7 @@ class NatureOfIssue extends StatelessWidget {
                 context: context,
                 builder: (context) => AlertDialog(
                   backgroundColor: Colors.amber[50],
-                  title: Text('Are you sure you want to exit?'),
+                  title: const Text('Are you sure you want to exit?'),
                   actions: <Widget>[
                     TextButton(
                       onPressed: () {
@@ -46,7 +46,7 @@ class NatureOfIssue extends StatelessWidget {
               );
 
               // Return exit if user confirmed, otherwise don't exit
-              return exit ?? false;
+              return exit;
             },
             child: Scaffold(
               body: Column(
@@ -58,10 +58,10 @@ class NatureOfIssue extends StatelessWidget {
                       iconLabel: "Log Out",
                       title: "navigate to",
                       icon: Icons.logout,
-                      dept: "DEPARTMENT OF ${dept}"),
+                      dept: "DEPARTMENT OF $dept"),
                   Column(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 100,
                       ),
                       Buttons(
@@ -75,7 +75,7 @@ class NatureOfIssue extends StatelessWidget {
                           }));
                         },
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 100,
                       ),
                       Buttons(
@@ -83,7 +83,7 @@ class NatureOfIssue extends StatelessWidget {
                           fn: () {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: (context) {
-                              return complaintVerification(
+                              return const complaintVerification(
                                   nature: "Electrical");
                             }));
                           })

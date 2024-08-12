@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gectfma/Complaint_Summary/complaint_summary.dart';
-import 'package:gectfma/File_Complaint/file_complaint.dart';
-import 'package:gectfma/Requirements/Headings.dart';
 import 'package:gectfma/Requirements/TopBar.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gectfma/View_Complaints/completed_review.dart';
 import 'package:gectfma/View_Complaints/view_complaint.dart';
@@ -203,8 +200,9 @@ Future<List<Map<String, dynamic>>> getData(String dept, String status) async {
       if (status == "pending") {
         query =
             query.where('status', whereIn: ['pending', 'assigned', 'approved']);
-      } else
+      } else {
         query = query.where('status', isEqualTo: status);
+      }
     }
     // Query the collection for all documents
     QuerySnapshot querySnapshot = await query.get();

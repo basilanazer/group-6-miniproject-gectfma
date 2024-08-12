@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 class DetailFields extends StatefulWidget {
   final String hintText;
   final bool isEnable;
-  bool obscure;
+  final bool obscure;
   final String obscureChar;
   final  controller;  // Updated to explicitly require a TextEditingController
 
-  DetailFields({
-    Key? key,
+  const DetailFields({
+    super.key,
     required this.hintText,
     this.obscureChar = "●",
     this.isEnable = true,
     this.obscure = false,
     this.controller, 
-  }) : super(key: key);
+  });
 
   @override
   State<DetailFields> createState() => _DetailFieldsState();
@@ -36,11 +36,11 @@ class _DetailFieldsState extends State<DetailFields> {
         decoration: InputDecoration(
           disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: Colors.black45),
+            borderSide: const BorderSide(color: Colors.black45),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: Colors.brown),
+            borderSide: const BorderSide(color: Colors.brown),
           ),
           hintText: widget.hintText,
           border: OutlineInputBorder(

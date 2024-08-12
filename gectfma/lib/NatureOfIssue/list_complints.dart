@@ -59,36 +59,36 @@ class _listComplaintsState extends State<listComplaints> {
                   );
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               //for(var dept in deptCollection)
               for (var dept in deptCollection)
                 FutureBuilder<List<Map<String, dynamic>>>(
                   future: getData(dept, widget.status, widget.nature),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
                       return Center(child: Text("Error: ${snapshot.error}"));
                     } else {
                       temp = snapshot.data;
 
                       filteredData = temp;
-                      return Container(
-                          child: Column(children: [
-                        if (filteredData!.isNotEmpty)
+                      return Column(
+                        children: [
+                          if (filteredData!.isNotEmpty)
                           Headings(
                             title: 'department of $dept',
                           ),
-                        Column(
-                          // children: snapshot.data!.map((complaintData) {
-                          //   return eachComplaint(complaintData);
-                          // }).toList(),
-                          children: filteredData!.map((complaintData) {
-                            return eachComplaint(complaintData, dept);
-                          }).toList(),
-                        ),
-                        if (filteredData!.isNotEmpty) Divider()
-                      ]));
+                          Column(
+                      // children: snapshot.data!.map((complaintData) {
+                      //   return eachComplaint(complaintData);
+                      // }).toList(),
+                      children: filteredData!.map((complaintData) {
+                        return eachComplaint(complaintData, dept);
+                      }).toList(),
+                                              ),
+                                              if (filteredData!.isNotEmpty) const Divider()
+                                            ]);
                     }
                   },
                 ),
@@ -149,7 +149,7 @@ class _listComplaintsState extends State<listComplaints> {
                         ),
                         Text(
                           complaintData['title'],
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -157,7 +157,7 @@ class _listComplaintsState extends State<listComplaints> {
                     ),
                     Text(
                       "Status: ${complaintData['status']}",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.w500,
                       ),
                     ),

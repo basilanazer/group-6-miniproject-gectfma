@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:gectfma/main.dart'; // Import main.dart where MyApp is defined
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}); // Fix syntax of the constructor
+  const SplashScreen({super.key}); // Fix syntax of the constructor
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -14,8 +14,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-    Future.delayed(Duration(seconds: 3), () {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => HomeScreen()));
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen()));
       // Navigate to MyApp instead of MyHomePage
     });
   }
@@ -55,28 +55,28 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               //   style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
               //   textAlign: TextAlign.center, // Center align the text
               // ),
-              Spacer(), // Takes up remaining space
-              Container(
+              const Spacer(), // Takes up remaining space
+              SizedBox(
                 height: 100,
                 width: 100,
                 child: Image.asset("assets/images/logo2.png"),
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               const CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               const Text(
                 "Loading...",
                 style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              Spacer(), // Takes up remaining space
+              const Spacer(), // Takes up remaining space
               const Text(
                 "Maintained By PTA\nDeveloped By Students of CSE",
                 style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center, // Center align the text
               ),
-              SizedBox(height: 50), // Add space at the bottom
+              const SizedBox(height: 50), // Add space at the bottom
             ],
           ),
       ),

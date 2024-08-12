@@ -28,7 +28,7 @@ class _FileComplaintState extends State<FileComplaint> {
   PlatformFile? pickedFile;
   UploadTask? uploadTask;
   String urlDownload = '';
-
+  bool isloading = false;
   Future selectFile() async {
     final result = await FilePicker.platform.pickFiles();
     if (result == null) {
@@ -44,7 +44,9 @@ class _FileComplaintState extends State<FileComplaint> {
       // print("No file selected for upload.");
       return;
     }
-
+    setState(() {
+      isloading = true;
+    });
     try {
       String fname = await generateDeptId(widget.dept);
       final path = '${widget.dept}/$fname';
@@ -66,6 +68,11 @@ class _FileComplaintState extends State<FileComplaint> {
     } catch (e) {
       // print(e);
     }
+    finally{
+      setState(() {
+        isloading = false;
+      });
+    }
   }
 
   String urgency = levels[0];
@@ -86,14 +93,6 @@ class _FileComplaintState extends State<FileComplaint> {
     super.dispose();
   }
 
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   // requestPermission();
-  //   // getToken();
-  //   // initInfo();
-  // }
 
   void addComplaints(String dept, String hod, String contact, String? nature,
       String desc, String title, String urgency) async {
@@ -188,7 +187,7 @@ class _FileComplaintState extends State<FileComplaint> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.amber.shade50,
-          content: Container(
+          content: SizedBox(
             // You might want to constrain the size here depending on your design needs
             width: double.maxFinite,
             child: Image.file(
@@ -199,7 +198,7 @@ class _FileComplaintState extends State<FileComplaint> {
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(), // Close the dialog
-              child: Text(
+              child: const Text(
                 'Close',
                 style: TextStyle(color: Colors.brown),
               ),
@@ -223,7 +222,7 @@ class _FileComplaintState extends State<FileComplaint> {
       child: Column(
         children: [
           TopBar(
-            dept: "DEPARTMENT OF " + widget.dept,
+            dept: "DEPARTMENT OF ${widget.dept}",
             iconLabel: 'Go Back',
             title: "NEW COMPLAINT",
             icon: Icons.arrow_back,
@@ -231,7 +230,7 @@ class _FileComplaintState extends State<FileComplaint> {
               Navigator.of(context).pop();
             },
           ),
-          Headings(title: "Department Details*"),
+          const Headings(title: "Department Details*"),
           DetailFields(
             isEnable: false,
             hintText: widget.dept,
@@ -244,7 +243,7 @@ class _FileComplaintState extends State<FileComplaint> {
             hintText: "Contact No",
             controller: contactController,
           ),
-          Headings(title: "Complaint Details*"),
+          const Headings(title: "Complaint Details*"),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
@@ -255,21 +254,21 @@ class _FileComplaintState extends State<FileComplaint> {
               ),
               child: DropdownButton(
                   dropdownColor: Colors.white,
-                  hint: Text("Nature Of Issue"),
+                  hint: const Text("Nature Of Issue"),
                   isExpanded: true,
-                  underline: SizedBox(),
+                  underline: const SizedBox(),
                   items: const [
                     DropdownMenuItem<String>(
+                      value: "Plumbing",
                       child: Text(
                         "Plumbing",
                       ),
-                      value: "Plumbing",
                     ),
                     DropdownMenuItem<String>(
+                      value: "Electrical",
                       child: Text(
                         "Electrical",
                       ),
-                      value: "Electrical",
                     )
                   ],
                   value: nature,
@@ -288,11 +287,11 @@ class _FileComplaintState extends State<FileComplaint> {
             controller: descController,
             hintText: "Description",
           ),
-          Headings(title: "Additional documents*"),
+          const Headings(title: "Additional documents*"),
           Padding(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   if (pickedFile == null)
                     TextButton.icon(
@@ -308,11 +307,12 @@ class _FileComplaintState extends State<FileComplaint> {
                           decoration: TextDecoration.underline,
                         ),
                       ),
-                    ),
-                  if (pickedFile != null)
+                    )
+                  else
                     Expanded(  // Use Expanded to ensure the row uses all available space.
                       child: 
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceArround,
                         children: [
                           Flexible(  // Use Flexible to let the text button shrink according to available space.
                             child: TextButton(
@@ -321,7 +321,7 @@ class _FileComplaintState extends State<FileComplaint> {
                                 pickedFile!.name,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.brown,
                                   decoration: TextDecoration.underline,
                                 ),
@@ -334,7 +334,7 @@ class _FileComplaintState extends State<FileComplaint> {
                                 pickedFile = null;
                               });
                             },
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.close,
                               color: Colors.brown,
                             ),
@@ -342,6 +342,11 @@ class _FileComplaintState extends State<FileComplaint> {
                         ],
                       ),
                    ),
+                  if (isloading)
+                    const CircularProgressIndicator() 
+
+                    
+                  else
                   ElevatedButton(
                     onPressed: uploadFile,
                     style: ElevatedButton.styleFrom(
@@ -350,18 +355,18 @@ class _FileComplaintState extends State<FileComplaint> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      minimumSize: Size(150, 50),
+                      minimumSize: const Size(150, 50),
                     ),
-                    child: Text('UPLOAD'),
+                    child: const Text('UPLOAD'),
                   ),
                 ],
               ),
             ),
           
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
-          Headings(title: "Urgency level*"),
+          const Headings(title: "Urgency level*"),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
@@ -380,7 +385,7 @@ class _FileComplaintState extends State<FileComplaint> {
                       },
                       activeColor: Colors.brown[600], // Change the color here
                     ),
-                    Text("High")
+                    const Text("High")
                   ],
                 ),
                 Row(
@@ -395,7 +400,7 @@ class _FileComplaintState extends State<FileComplaint> {
                       },
                       activeColor: Colors.brown[600], // Change the color here
                     ),
-                    Text("Medium")
+                    const Text("Medium")
                   ],
                 ),
                 Row(
@@ -410,16 +415,16 @@ class _FileComplaintState extends State<FileComplaint> {
                       },
                       activeColor: Colors.brown[600], // Change the color here
                     ),
-                    Text("Low")
+                    const Text("Low")
                   ],
                 ),
               ],
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           ElevatedButton(
@@ -439,11 +444,11 @@ class _FileComplaintState extends State<FileComplaint> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10), // Corner radius
               ),
-              minimumSize: Size(150, 50), // Width and height
+              minimumSize: const Size(150, 50), // Width and height
             ),
-            child: Text('SUBMIT'),
+            child: const Text('SUBMIT'),
           ),
-          SizedBox(
+          const SizedBox(
             height: 40,
           )
         ],

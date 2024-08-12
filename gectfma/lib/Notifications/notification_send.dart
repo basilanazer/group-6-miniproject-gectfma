@@ -41,7 +41,7 @@ Future<String> getAccessToken() async {
 
 void sendPushMessage(String token, String notiftitle, String notifbody) async {
   final String accessKey = await getAccessToken();
-  final String fcmUrl =
+  const String fcmUrl =
       'https://fcm.googleapis.com/v1/projects/gectfma/messages:send';
 
   final Map<String, dynamic> notification = {

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gectfma/NatureOfIssue/comp_verification.dart';
-import 'package:gectfma/NatureOfIssue/list_complints.dart';
+//import 'package:gectfma/NatureOfIssue/list_complints.dart';
 import 'package:gectfma/Notifications/notification_send.dart';
 import 'package:gectfma/Requirements/DateAndTime.dart';
 import 'package:gectfma/Requirements/Headings.dart';
@@ -41,7 +41,7 @@ class _approveOrDeclineState extends State<approveOrDecline> {
   String remark = '';
   @override
   void initState() {
-    // TODO: implement initState
+    
     if (widget.id != "") {
       viewComplaint(widget.id, widget.dept);
     }
@@ -143,9 +143,9 @@ Filed     :  ${formatDate(filed)}    ${formatTime(filed)}
       child: Column(
         children: [
           TopBar(
-            dept: "DEPARTMENT OF " + widget.dept,
+            dept: "DEPARTMENT OF ${widget.dept}",
             iconLabel: 'Go Back',
-            title: "${widget.id}".toUpperCase(),
+            title: widget.id.toUpperCase(),
             icon: Icons.arrow_back,
             goto: () {
               Navigator.of(context).pop();
@@ -190,7 +190,7 @@ Filed     :  ${formatDate(filed)}    ${formatTime(filed)}
             hintText: "Contact No",
             controller: contactController,
           ),
-          Headings(title: "Complaint Details"),
+          const Headings(title: "Complaint Details"),
           DetailFields(
               isEnable: false,
               controller: natureController,
@@ -209,9 +209,9 @@ Filed     :  ${formatDate(filed)}    ${formatTime(filed)}
             controller: descController,
             hintText: "Description",
           ),
-          Headings(title: "Image"),
+          const Headings(title: "Image"),
           Padding(
-            padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
+            padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
             child: Image.network(
               imageURL,
               key: ValueKey(widget.id),
@@ -229,20 +229,20 @@ Filed     :  ${formatDate(filed)}    ${formatTime(filed)}
                 );
               },
               errorBuilder: (context, error, stackTrace) {
-                return Text('Error loading image');
+                return const Text('Error loading image');
               },
             ),
           ),
-          Headings(title: "Urgency level"),
+          const Headings(title: "Urgency level"),
           DetailFields(
             isEnable: false,
             controller: urgencyController,
             hintText: "Level",
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
-          Headings(title: "Complaint Filed Date and Time"),
+          const Headings(title: "Complaint Filed Date and Time"),
           DetailFields(
             isEnable: false,
             hintText: "Date",
@@ -253,10 +253,10 @@ Filed     :  ${formatDate(filed)}    ${formatTime(filed)}
             hintText: "Time",
             controller: filedtimeController,
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
-          Headings(title: "Remarks*"),
+          const Headings(title: "Remarks*"),
           DetailFields(
             hintText: "Remarks",
             controller: remarkController,
@@ -277,9 +277,9 @@ Filed     :  ${formatDate(filed)}    ${formatTime(filed)}
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10), // Corner radius
                   ),
-                  minimumSize: Size(150, 50), // Width and height
+                  minimumSize: const Size(150, 50), // Width and height
                 ),
-                child: Text('APPROVE'),
+                child: const Text('APPROVE'),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -292,13 +292,13 @@ Filed     :  ${formatDate(filed)}    ${formatTime(filed)}
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10), // Corner radius
                   ),
-                  minimumSize: Size(150, 50), // Width and height
+                  minimumSize: const Size(150, 50), // Width and height
                 ),
-                child: Text('DECLINE'),
+                child: const Text('DECLINE'),
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 30,
           )
         ],
@@ -343,7 +343,7 @@ Filed     :  ${formatDate(filed)}    ${formatTime(filed)}
             .doc(dept)
             .get();
         String token = snap['token'];
-        sendPushMessage(token, "${id.toUpperCase()}",
+        sendPushMessage(token, id.toUpperCase(),
             "${id.toUpperCase()} has been $status");
         if (status == "approved") {
           DocumentSnapshot snap2 = await FirebaseFirestore.instance
@@ -351,7 +351,7 @@ Filed     :  ${formatDate(filed)}    ${formatTime(filed)}
               .doc("sergeant")
               .get();
           String token2 = snap2['token'];
-          sendPushMessage(token2, "${id.toUpperCase()}",
+          sendPushMessage(token2, id.toUpperCase(),
               "${id.toUpperCase()} has been $status");
         }
       }

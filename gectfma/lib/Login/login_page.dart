@@ -12,20 +12,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class Login extends StatefulWidget {
-  Login({Key? key}) : super(key: key);
+  const Login({super.key});
 
   @override
-  _LoginState createState() => _LoginState();
+  LoginState createState() => LoginState();
 }
 
-class _LoginState extends State<Login> {
+class LoginState extends State<Login> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-
+  bool isloading = false;
   Future<void> _login(BuildContext context) async {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
-
+    setState(() {
+      isloading = true;
+    });
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
@@ -88,14 +90,20 @@ class _LoginState extends State<Login> {
         }
       }
     } on FirebaseAuthException catch (e) {
-      // print('Error logging in user: $e');
+      print('Error logging in user: $e');
       MyDialog.showCustomDialog(context, "Login Failed",
-          "Incorrect email or password. Please try again.");
+          "Incorrect email or password is given!");
     } catch (e) {
       // print('Error: $e');
       MyDialog.showCustomDialog(
           context, "Error", "An error occurred. Please try again later.");
     }
+    finally{
+      setState(() {
+        isloading = false;
+      });
+    }
+
   }
 
   @override
@@ -109,7 +117,7 @@ class _LoginState extends State<Login> {
             context: context,
             builder: (context) => AlertDialog(
               backgroundColor: Colors.amber[50],
-              title: Text('Are you sure you want to exit?'),
+              title: const Text('Are you sure you want to exit?'),
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
@@ -142,7 +150,7 @@ class _LoginState extends State<Login> {
           children: [
             Column(
               children: <Widget>[
-                SizedBox(height: 90),
+                const SizedBox(height: 90),
                 Text(
                   "Government Engineering College Thrissur".toUpperCase(),
                   style: TextStyle(
@@ -150,24 +158,27 @@ class _LoginState extends State<Login> {
                       fontWeight: FontWeight.bold,
                       fontSize: 16),
                 ),
-                SizedBox(height: 20),
-                Container(
+                const SizedBox(height: 20),
+                SizedBox(
                   height: 150,
                   width: 150,
                   child: Image.asset("assets/images/logo.png"),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Text(
                   "LOGIN",
                   style: TextStyle(color: Colors.brown[800], fontSize: 25),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 _buildTextField("Enter Email", emailController),
                 _buildTextField("Enter Password", passwordController,
                     obscureText: true),
-                SizedBox(height: 10),
-                _buildLoginButton(context),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
+                if (isloading)
+                  const CircularProgressIndicator()
+                else 
+                  _buildLoginButton(context),
+                const SizedBox(height: 10),
                 _buildForgotPasswordButton(context),
               ],
             ),
@@ -210,7 +221,7 @@ class _LoginState extends State<Login> {
         ),
         child: TextButton(
           onPressed: () => _login(context),
-          child: Text(
+          child: const Text(
             "LOGIN",
             style: TextStyle(color: Colors.white, fontSize: 18),
           ),
@@ -228,7 +239,7 @@ class _LoginState extends State<Login> {
       ),
       onPressed: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return ForgotPasswordPage();
+          return const ForgotPasswordPage();
         }));
       },
     );

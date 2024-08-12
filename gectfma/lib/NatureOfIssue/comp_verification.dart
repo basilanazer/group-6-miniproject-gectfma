@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gectfma/Login/logout.dart';
 import 'package:gectfma/NatureOfIssue/list_complints.dart';
 import 'package:gectfma/NatureOfIssue/nature.dart';
@@ -9,8 +7,7 @@ import 'package:gectfma/Requirements/TopBar.dart';
 
 class complaintVerification extends StatefulWidget {
   final String nature;
-  const complaintVerification({Key? key, required this.nature})
-      : super(key: key);
+  const complaintVerification({super.key, required this.nature});
   @override
   State<complaintVerification> createState() => _complaintVerificationState();
 }
@@ -24,7 +21,7 @@ class _complaintVerificationState extends State<complaintVerification> {
           future: getCounts(widget.nature),
           builder: (context, AsyncSnapshot<Map<String, int>> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else {
@@ -51,7 +48,7 @@ class _complaintVerificationState extends State<complaintVerification> {
                             if (widget.nature == 'Electrical') {
                               Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(builder: (context) {
-                                  return NatureOfIssue(
+                                  return const NatureOfIssue(
                                     dept: "ee",
                                   );
                                 }),
@@ -65,7 +62,7 @@ class _complaintVerificationState extends State<complaintVerification> {
                           },
                         ),
                         Column(children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 70,
                           ),
                           ComplaintsType(
@@ -96,7 +93,7 @@ class _complaintVerificationState extends State<complaintVerification> {
             context: context,
             builder: (context) => AlertDialog(
               backgroundColor: Colors.amber[50],
-              title: Text('Are you sure you want to exit?'),
+              title: const Text('Are you sure you want to exit?'),
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
@@ -221,7 +218,7 @@ class ComplaintsType extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+      margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
       height: 70,
       decoration: BoxDecoration(
         color: Colors.brown[100],

@@ -31,7 +31,7 @@ class _PrincipalViewAllComplaintState extends State<PrincipalViewAllComplaint> {
           context: context,
           builder: (context) => AlertDialog(
             backgroundColor: Colors.amber[50],
-            title: Text('Are you sure you want to exit?'),
+            title: const Text('Are you sure you want to exit?'),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
@@ -74,7 +74,7 @@ class _PrincipalViewAllComplaintState extends State<PrincipalViewAllComplaint> {
             title: "TOTAL COMPLAINTS ",
             icon: Icons.logout,
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           for (String dept in [
             "arch",
             "ce",
@@ -92,26 +92,24 @@ class _PrincipalViewAllComplaintState extends State<PrincipalViewAllComplaint> {
                   future: getData(dept, widget.status),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
                       return Center(child: Text("Error: ${snapshot.error}"));
                     } else {
                       temp = snapshot.data;
                       filteredData = temp;
-                      return Container(
-                        child: Column(
-                          children: [
-                            if (filteredData!.isNotEmpty)
-                              Headings(
-                                title: 'department of $dept',
-                              ),
-                            Column(
-                              children: filteredData!.map((complaintData) {
-                                return eachComplaint(dept, complaintData);
-                              }).toList(),
-                            )
-                          ],
-                        ),
+                      return Column(
+                        children: [
+                          if (filteredData!.isNotEmpty)
+                            Headings(
+                              title: 'department of $dept',
+                            ),
+                          Column(
+                            children: filteredData!.map((complaintData) {
+                              return eachComplaint(dept, complaintData);
+                            }).toList(),
+                          )
+                        ],
                       );
                       // return Column(
                       //   children: filteredData!.map((complaintData) {
@@ -121,7 +119,7 @@ class _PrincipalViewAllComplaintState extends State<PrincipalViewAllComplaint> {
                     }
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
               ],
             ),
         ],
@@ -167,7 +165,7 @@ class _PrincipalViewAllComplaintState extends State<PrincipalViewAllComplaint> {
                         ),
                         Text(
                           complaintData['title'],
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -175,7 +173,7 @@ class _PrincipalViewAllComplaintState extends State<PrincipalViewAllComplaint> {
                     ),
                     Text(
                       "Status: ${complaintData['status']}",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -183,7 +181,7 @@ class _PrincipalViewAllComplaintState extends State<PrincipalViewAllComplaint> {
                 ),
               ),
             ),
-            Divider(),
+            const Divider(),
           ],
         ));
   }

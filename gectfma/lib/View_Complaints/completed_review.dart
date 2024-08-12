@@ -210,9 +210,9 @@ Completed :  ${formatDate(data['completed_date'].toDate())}    ${formatTime(data
       child: Column(
         children: [
           TopBar(
-            dept: "DEPARTMENT OF " + widget.dept,
+            dept: "DEPARTMENT OF ${widget.dept}",
             iconLabel: 'Go Back',
-            title: "${widget.id}".toUpperCase(),
+            title: widget.id.toUpperCase(),
             icon: Icons.arrow_back,
             goto: () {
               Navigator.of(context).pop();

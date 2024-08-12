@@ -13,6 +13,7 @@ class ForgotPasswordPage extends StatefulWidget {
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+  bool isloading = false;
   @override
   Widget build(BuildContext context) {
     final emailController = TextEditingController();
@@ -59,7 +60,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       ),
                       const SizedBox(height: 10),
                       // Add spacing between text field and button
-                      ElevatedButton(
+                      if (isloading)
+                        const CircularProgressIndicator()
+                      else
+                        ElevatedButton(
                         onPressed: () {
                           setState(() {
                             email = emailController.text.trim();
@@ -73,7 +77,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             borderRadius:
                                 BorderRadius.circular(10), // Corner radius
                           ),
-                          minimumSize: const Size(345, 60), // Width and height
+                          minimumSize: const Size(350, 60), // Width and height
                         ),
                         child: const Text('Reset Password'),
                       ),
@@ -102,6 +106,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   void resetpswd(String email, BuildContext context) async {
+    setState(() {
+      isloading = true;
+    });
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       MyDialog.showCustomDialog(
@@ -113,6 +120,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       // print(e);
       MyDialog.showCustomDialog(
           context, 'ERROR!!', "Incorrect email. Please try again.");
+    }
+    finally{
+      setState(() {
+        isloading = false;
+      });
     }
   }
 }

@@ -4,10 +4,10 @@ class Buttons extends StatelessWidget {
   final String buttonTitle;
   final Function() fn;
   const Buttons({
-    Key? key,
+    super.key,
     required this.buttonTitle,
     required this.fn,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class Buttons extends StatelessWidget {
           onPressed: fn,
           child: Text(
             buttonTitle,
-            style: TextStyle(color: Colors.white, fontSize: 17),
+            style: const TextStyle(color: Colors.white, fontSize: 17),
           ),
         ));
   }

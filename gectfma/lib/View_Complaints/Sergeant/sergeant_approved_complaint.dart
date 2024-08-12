@@ -6,7 +6,6 @@ import 'package:gectfma/Notifications/notification_send.dart';
 import 'package:gectfma/Requirements/DateAndTime.dart';
 import 'package:gectfma/Requirements/Headings.dart';
 import 'package:gectfma/Requirements/show_my_dialog.dart';
-import 'package:gectfma/View_Complaints/Sergeant/sergeant_view_all_complaint.dart';
 import 'package:gectfma/downloadpdf/pdf_manager.dart';
 import '../../Requirements/DetailFields.dart';
 import '../../Requirements/TopBar.dart';
@@ -50,7 +49,7 @@ String pdf_content = '';
 class _SergeantApprovedComplaintState extends State<SergeantApprovedComplaint> {
   @override
   void initState() {
-    // TODO: implement initState
+    
     if (widget.id != "") {
       viewComplaint(widget.id, widget.dept);
     }
@@ -164,9 +163,9 @@ Approved  :  ${formatDate(data['approved_date'].toDate())}    ${formatTime(data[
             goto: () {
               Navigator.of(context).pop();
             },
-            dept: "DEPARTMENT OF " + widget.dept,
+            dept: "DEPARTMENT OF ${widget.dept}",
             iconLabel: 'Go Back',
-            title: "${widget.id}".toUpperCase(),
+            title: widget.id.toUpperCase(),
             icon: Icons.arrow_back,
           ),
           Row(
@@ -212,7 +211,7 @@ Approved  :  ${formatDate(data['approved_date'].toDate())}    ${formatTime(data[
             hintText: "Contact No",
             controller: contactController,
           ),
-          Headings(title: "Complaint Details"),
+          const Headings(title: "Complaint Details"),
           DetailFields(
               isEnable: false,
               controller: natureController,
@@ -231,9 +230,9 @@ Approved  :  ${formatDate(data['approved_date'].toDate())}    ${formatTime(data[
             controller: descController,
             hintText: "Description",
           ),
-          Headings(title: "Image"),
+          const Headings(title: "Image"),
           Padding(
-            padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
+            padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
             child: Image.network(
               imageURL,
               key: ValueKey(widget.id),
@@ -251,23 +250,23 @@ Approved  :  ${formatDate(data['approved_date'].toDate())}    ${formatTime(data[
                 );
               },
               errorBuilder: (context, error, stackTrace) {
-                return Text('loading image');
+                return const Text('loading image');
               },
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
-          Headings(title: "Urgency level*"),
+          const Headings(title: "Urgency level*"),
           DetailFields(
             isEnable: false,
             controller: urgencyController,
             hintText: "Level",
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
-          Headings(title: "Filed Date and Time"),
+          const Headings(title: "Filed Date and Time"),
           DetailFields(
             isEnable: false,
             hintText: "Date",
@@ -278,10 +277,10 @@ Approved  :  ${formatDate(data['approved_date'].toDate())}    ${formatTime(data[
             hintText: "Time",
             controller: filedtimeController,
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
-          Headings(title: "Approved Date and Time"),
+          const Headings(title: "Approved Date and Time"),
           DetailFields(
             isEnable: false,
             hintText: "Date",
@@ -292,10 +291,10 @@ Approved  :  ${formatDate(data['approved_date'].toDate())}    ${formatTime(data[
             hintText: "Time",
             controller: approvedtimeController,
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
-          Headings(title: "Assigned Staff Details"),
+          const Headings(title: "Assigned Staff Details"),
           DetailFields(
             hintText: "Assigned Staff Name",
             controller: assignedstaffNameController,
@@ -319,11 +318,11 @@ Approved  :  ${formatDate(data['approved_date'].toDate())}    ${formatTime(data[
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10), // Corner radius
               ),
-              minimumSize: Size(150, 50), // Width and height
+              minimumSize: const Size(150, 50), // Width and height
             ),
-            child: Text('ASSIGN STAFF'),
+            child: const Text('ASSIGN STAFF'),
           ),
-          SizedBox(
+          const SizedBox(
             height: 30,
           )
         ],
@@ -348,7 +347,7 @@ Approved  :  ${formatDate(data['approved_date'].toDate())}    ${formatTime(data[
           .doc(dept)
           .get();
       String token = snap['token'];
-      sendPushMessage(token, "${id.toUpperCase()}", "Staff has been assigned");
+      sendPushMessage(token, id.toUpperCase(), "Staff has been assigned");
       int completedCount = 0;
       List<String> depts = [
         'arch',
@@ -369,7 +368,7 @@ Approved  :  ${formatDate(data['approved_date'].toDate())}    ${formatTime(data[
       }
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) {
-          return SergeantComplaintSummary(role: "sergeant");
+          return const SergeantComplaintSummary(role: "sergeant");
         }),
         (Route<dynamic> route) => false,
       );

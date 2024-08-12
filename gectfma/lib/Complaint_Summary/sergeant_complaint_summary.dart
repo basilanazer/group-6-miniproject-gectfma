@@ -15,8 +15,7 @@ Pending or Approved refers to the ones approved but staff is not yet assigned
 class SergeantComplaintSummary extends StatelessWidget {
   final String role;
 
-  const SergeantComplaintSummary({Key? key, required this.role})
-      : super(key: key);
+  const SergeantComplaintSummary({super.key, required this.role});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +27,7 @@ class SergeantComplaintSummary extends StatelessWidget {
           context: context,
           builder: (context) => AlertDialog(
             backgroundColor: Colors.amber[50],
-            title: Text('Are you sure you want to exit?'),
+            title: const Text('Are you sure you want to exit?'),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
@@ -62,7 +61,7 @@ class SergeantComplaintSummary extends StatelessWidget {
           future: getCounts(),
           builder: (context, AsyncSnapshot<Map<String, int>> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else {
@@ -118,7 +117,7 @@ class SergeantComplaintSummary extends StatelessWidget {
                       },
                       complainttype: "Pending",
                       complaintstatus: approved),
-                  SizedBox(height: 40),
+                  const SizedBox(height: 40),
                   Column(
                     children: <Widget>[
                       InkWell(

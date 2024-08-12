@@ -1,8 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:gectfma/Complaint_Summary/sergeant_complaint_summary.dart';
-import 'package:gectfma/Requirements/show_my_dialog.dart';
-import 'package:gectfma/NatureOfIssue/nature.dart';
 
 class TopBar extends StatelessWidget {
   final IconData icon;
@@ -11,13 +7,13 @@ class TopBar extends StatelessWidget {
   final String title;
   final Function() goto;
   const TopBar({
-    Key? key,
+    super.key,
     required this.iconLabel,
     required this.title,
     required this.icon,
     required this.dept,
     required this.goto,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +21,7 @@ class TopBar extends StatelessWidget {
     return Column(children: <Widget>[
       Row(
         children: <Widget>[
-          Container(
+          SizedBox(
               height: 50,
               width: 50,
               child: Image.asset("assets/images/logo.png")),
@@ -38,7 +34,7 @@ class TopBar extends StatelessWidget {
           )
         ],
       ),
-      SizedBox(
+      const SizedBox(
         height: 20,
       ),
       Padding(
@@ -121,7 +117,7 @@ class TopBar extends StatelessWidget {
         ),
       ),
       //Size of this line
-      Divider(
+      const Divider(
         thickness: 1,
         color: Colors.black26,
       ),

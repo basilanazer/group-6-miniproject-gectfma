@@ -67,4 +67,5 @@ flutter {
 dependencies {
     // classpath 'com.android.tools.build:gradle:7.3.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
 }

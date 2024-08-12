@@ -10,7 +10,7 @@ import 'package:gectfma/Login/logout.dart';
 class ComplaintSummary extends StatefulWidget {
   final String deptName;
 
-  const ComplaintSummary({Key? key, required this.deptName}) : super(key: key);
+  const ComplaintSummary({super.key, required this.deptName});
 
   @override
   State<ComplaintSummary> createState() => _ComplaintSummaryState();
@@ -27,7 +27,7 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
           context: context,
           builder: (context) => AlertDialog(
             backgroundColor: Colors.amber[50],
-            title: Text('Are you sure you want to exit?'),
+            title: const Text('Are you sure you want to exit?'),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
@@ -61,7 +61,7 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
           future: getCounts(widget.deptName),
           builder: (context, AsyncSnapshot<Map<String, int>> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else {
@@ -85,7 +85,7 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
                       if (widget.deptName == 'ee') {
                         Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(builder: (context) {
-                            return NatureOfIssue(
+                            return const NatureOfIssue(
                               dept: "ee",
                             );
                           }),
@@ -155,7 +155,7 @@ class _ComplaintSummaryState extends State<ComplaintSummary> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 40),
+                  const SizedBox(height: 40),
                   Column(
                     children: <Widget>[
                       InkWell(

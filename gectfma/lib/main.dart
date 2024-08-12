@@ -53,6 +53,7 @@ initInfo() {
     try {
       if (payload != null) {
       } else {}
+    // ignore: empty_catches
     } catch (e) {}
     return;
   });
@@ -93,7 +94,7 @@ void main() async {
     await fetchUserData();
   }
   await initInfo();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 Future<void> fetchUserData() async {
@@ -108,24 +109,30 @@ Future<void> fetchUserData() async {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.brown),
+        useMaterial3: true,
           scaffoldBackgroundColor: Colors.white, primarySwatch: Colors.brown),
       debugShowCheckedModeBanner: false,
       title: "Facilities Management App",
-      home: SplashScreen(),
+      home: const SplashScreen(),
   
       routes: {
         '/login': (context) =>
-            Login(), 
+            const Login(), 
       },
     );
   }
 }
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   Future<Widget> _buildBody() async {
     if (userData != null) {
       var dept = userData['dept'] as String?;
@@ -168,12 +175,12 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.brown[50],
       body: email == null
-          ? Login()
+          ? const Login()
           : FutureBuilder<Widget>(
               future: _buildBody(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 } else {
                   return snapshot.data ??
                       Container(); // Return the built widget or a default empty container
