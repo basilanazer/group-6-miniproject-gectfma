@@ -13,6 +13,8 @@ This Flutter application is designed by S6 CSE students of Government Engineerin
 - **Feedback on Complaints:** Declined complaints are communicated back to the complainant with reasons for the decline.
 - **Visibility:** All complaints are accessible to HODs, the sergeant, and the principal.
 
+( screenshots are in the documents folder )
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
